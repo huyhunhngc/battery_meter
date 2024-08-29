@@ -1,6 +1,8 @@
 package io.github.ifa.glancewidget.glance.battery
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.glance.Button
@@ -18,30 +20,32 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import io.github.ifa.glancewidget.MainActivity
+import io.github.ifa.glancewidget.model.BatteryData
 
 class BatteryWidget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+            context.registerReceiver(null, ifilter)
+        }
         provideContent {
-            Content()
+            Content(batteryStatus?.let { BatteryData.fromIntent(it) })
         }
     }
 
     @Composable
-    private fun Content() {
+    private fun Content(
+        batteryData: BatteryData?
+    ) {
         Column(
             modifier = GlanceModifier.fillMaxSize()
                 .background(GlanceTheme.colors.background),
             verticalAlignment = Alignment.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Where to?", modifier = GlanceModifier.padding(12.dp))
+            Text(text = "${batteryData?.level.toString()}%", modifier = GlanceModifier.padding(12.dp))
             Row(horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
-                    text = "Home",
-                    onClick = actionStartActivity<MainActivity>()
-                )
-                Button(
-                    text = "Work",
+                    text = if (batteryData?.isCharging == true) "Charging" else "Not Charging",
                     onClick = actionStartActivity<MainActivity>()
                 )
             }
