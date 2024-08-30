@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.data
+package io.github.ifa.glancewidget.model
 
 data class BluetoothDevice(
     val name: String?,

@@ -6,29 +6,17 @@ import android.os.Build
 import java.util.Date
 
 data class BatteryData(
-    val timestamp: Date = Date(),
-    val iconSmall: Int,
-    val action: String,
-    val health: Int,
-    val status: Int,
-    val voltage: Int,
-    val temperature: Int,
-    val technology: String?,
-    val level: Int,
-    val scale: Int,
-    val present: Boolean,
-    val batteryLow: Boolean?,
-    val plugged: Int,
-//    val propertyCapacity: Int,
-//    val propertyChargeCounter: Int,
-//    val propertyCurrentAverage: Int,
-//    val propertyCurrentNow: Int,
-//    val propertyEnergyCounter: Long,
-//    val propertyStatus: Int?,
-    val isCharging: Boolean?,
-    // Min. API Level 29
-//    val chargeTimeRemaining: Long?,
+    val batteryDevice: BatteryDevice, val batteryConnectedDevice: BluetoothDevice?
 ) {
+    fun updateValue(intent: Intent): BatteryData {
+        val batteryData = fromIntent(intent)
+        val shouldUpdate = when (intent.action) {
+            Intent.ACTION_BATTERY_CHANGED -> batteryDevice.level != batteryData.batteryDevice.level
+            else -> true
+        }
+        return if (shouldUpdate) batteryData else this
+    }
+
     companion object {
         fun fromIntent(intent: Intent): BatteryData {
             val batteryLow = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -39,7 +27,7 @@ data class BatteryData(
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -99)
             val isCharging =
                 status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
-            return BatteryData(
+            val batteryDevice = BatteryDevice(
                 iconSmall = intent.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -99),
                 action = intent.action.toString(),
                 health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -99),
@@ -54,6 +42,26 @@ data class BatteryData(
                 batteryLow = batteryLow,
                 isCharging = isCharging
             )
+            return BatteryData(
+                batteryDevice = batteryDevice, batteryConnectedDevice = null
+            )
         }
     }
 }
+
+data class BatteryDevice(
+    val timestamp: Date = Date(),
+    val iconSmall: Int,
+    val action: String,
+    val health: Int,
+    val status: Int,
+    val voltage: Int,
+    val temperature: Int,
+    val technology: String?,
+    val level: Int,
+    val scale: Int,
+    val present: Boolean,
+    val batteryLow: Boolean?,
+    val plugged: Int,
+    val isCharging: Boolean?,
+)

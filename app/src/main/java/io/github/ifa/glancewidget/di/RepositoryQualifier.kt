@@ -20,7 +20,7 @@ class RepositoryProvider @Inject constructor(
         }.toMap()
 
     @Composable
-    public fun Provide(content: @Composable () -> Unit) {
+    fun Provide(content: @Composable () -> Unit) {
         CompositionLocalProvider(
             LocalRepositories provides repositoriesMap,
         ) {
