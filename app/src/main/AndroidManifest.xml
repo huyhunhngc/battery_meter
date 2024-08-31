@@ -16,10 +16,6 @@
         android:theme="@style/Theme.GlanceWidget"
         tools:targetApi="31">
 
-        <service
-            android:name=".MonitorService"
-            android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"

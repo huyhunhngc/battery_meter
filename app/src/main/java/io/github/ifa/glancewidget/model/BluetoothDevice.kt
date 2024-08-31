@@ -1,5 +1,8 @@
 package io.github.ifa.glancewidget.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class BluetoothDevice(
     val name: String?,
     val model: SpeakerModel,

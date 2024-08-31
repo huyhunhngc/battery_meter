@@ -3,8 +3,10 @@ package io.github.ifa.glancewidget.model
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
+import kotlinx.serialization.Serializable
 import java.util.Date
 
+@Serializable
 data class BatteryData(
     val batteryDevice: BatteryDevice, val batteryConnectedDevice: BluetoothDevice?
 ) {
@@ -49,8 +51,8 @@ data class BatteryData(
     }
 }
 
+@Serializable
 data class BatteryDevice(
-    val timestamp: Date = Date(),
     val iconSmall: Int,
     val action: String,
     val health: Int,

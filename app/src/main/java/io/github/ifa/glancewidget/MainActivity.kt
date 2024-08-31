@@ -20,19 +20,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GlanceWidgetTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        isCharging = false, level = 0, modifier = Modifier.padding(innerPadding)
-                    )
-                }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(isCharging: Boolean, level: Int, modifier: Modifier = Modifier) {
-    Text(
-        text = if (isCharging) "Charging $level%" else "Not Charging $level%", modifier = modifier
-    )
-}

@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven("https://kotlin.bintray.com/kotlinx")
         gradlePluginPortal()
     }
 }
