@@ -1,5 +1,7 @@
 [versions]
 agp = "8.5.1"
+androidDeviceNamesVersion = "2.1.1"
+appwidgetHost = "0.2.0"
 kotlin = "2.0.10"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -12,9 +14,12 @@ composeBom = "2024.04.01"
 glanceAppwidget = "1.1.0"
 dagger = "2.51.1"
 kotlinxSerialization = "1.7.1"
+glancePreview = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+appwidget-host = { module = "com.google.android.glance.tools:appwidget-host", version.ref = "appwidgetHost" }
+jaredrummler-android-device-names = { module = "com.jaredrummler:android-device-names", version.ref = "androidDeviceNamesVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -29,11 +34,13 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glanceAppwidget" }
+androidx-glance-appwidget-preview = { group = "androidx.glance", name = "glance-appwidget-preview", version.ref = "glanceAppwidget" }
 daggerHiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 daggerHiltAndroidTesting = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger" }
 daggerHiltAndroidCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
 kotlinSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glancePreview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

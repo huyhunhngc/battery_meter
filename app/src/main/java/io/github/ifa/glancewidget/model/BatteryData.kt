@@ -3,6 +3,8 @@ package io.github.ifa.glancewidget.model
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
+import android.util.Log
+import com.jaredrummler.android.device.DeviceName
 import kotlinx.serialization.Serializable
 import java.util.Date
 
@@ -30,6 +32,7 @@ data class BatteryData(
             val isCharging =
                 status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
             val batteryDevice = BatteryDevice(
+                name = DeviceName.getDeviceName(),
                 iconSmall = intent.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -99),
                 action = intent.action.toString(),
                 health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -99),
@@ -53,6 +56,7 @@ data class BatteryData(
 
 @Serializable
 data class BatteryDevice(
+    val name: String,
     val iconSmall: Int,
     val action: String,
     val health: Int,
