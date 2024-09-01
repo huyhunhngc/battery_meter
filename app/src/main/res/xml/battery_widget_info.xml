@@ -1,7 +1,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/glance_default_loading_layout"
     android:minWidth="120dp"
-    android:minHeight="120dp"
+    android:minHeight="60dp"
     android:updatePeriodMillis="1000"
     android:configure="io.github.ifa.glancewidget.MainActivity"
     android:resizeMode="horizontal|vertical">

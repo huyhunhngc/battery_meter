@@ -75,7 +75,6 @@ fun BatteryItem(
                         colorFilter = ColorFilter.tint(GlanceTheme.colors.primaryContainer)
                     )
                 }
-
             }
         }
     }

@@ -55,7 +55,7 @@ class BatteryWidget : GlanceAppWidget() {
     ) {
         val percent = battery?.batteryDevice?.level ?: 100
         val isCharging = battery?.batteryDevice?.isCharging ?: false
-        val connectedDevice = battery?.batteryConnectedDevice
+        val connectedDevice = battery?.batteryConnectedDevices?.firstOrNull()
 
         Box(
             modifier = GlanceModifier
@@ -65,7 +65,7 @@ class BatteryWidget : GlanceAppWidget() {
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 BatteryItem(
-                    deviceType = battery?.batteryDevice?.deviceType ?: DeviceType.Phone,
+                    deviceType = battery?.batteryDevice?.deviceType ?: DeviceType.PHONE,
                     percent = percent,
                     isCharging = isCharging,
                     deviceName = battery?.batteryDevice?.name.toString(),
@@ -74,10 +74,10 @@ class BatteryWidget : GlanceAppWidget() {
                 if (connectedDevice != null) {
                     Spacer(modifier = GlanceModifier.height(PADDING))
                     BatteryItem(
-                        deviceType = battery.batteryDevice.deviceType ?: DeviceType.Phone,
-                        percent = percent,
-                        isCharging = isCharging,
-                        deviceName = battery.batteryDevice.name.toString(),
+                        deviceType = connectedDevice.deviceType,
+                        percent = connectedDevice.batteryInPercentage,
+                        isCharging = false,
+                        deviceName = connectedDevice.name.toString(),
                         modifier = GlanceModifier.defaultWeight()
                     )
                 }
