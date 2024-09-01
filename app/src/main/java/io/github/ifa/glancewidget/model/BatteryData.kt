@@ -1,25 +1,17 @@
 package io.github.ifa.glancewidget.model
 
+import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
-import android.util.Log
-import com.jaredrummler.android.device.DeviceName
+import androidx.annotation.DrawableRes
+import io.github.ifa.glancewidget.R
 import kotlinx.serialization.Serializable
-import java.util.Date
 
 @Serializable
 data class BatteryData(
     val batteryDevice: BatteryDevice, val batteryConnectedDevice: BluetoothDevice?
 ) {
-    fun updateValue(intent: Intent): BatteryData {
-        val batteryData = fromIntent(intent)
-        val shouldUpdate = when (intent.action) {
-            Intent.ACTION_BATTERY_CHANGED -> batteryDevice.level != batteryData.batteryDevice.level
-            else -> true
-        }
-        return if (shouldUpdate) batteryData else this
-    }
 
     companion object {
         fun fromIntent(intent: Intent): BatteryData {
@@ -32,7 +24,7 @@ data class BatteryData(
             val isCharging =
                 status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
             val batteryDevice = BatteryDevice(
-                name = DeviceName.getDeviceName(),
+                name = Build.MANUFACTURER,
                 iconSmall = intent.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -99),
                 action = intent.action.toString(),
                 health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -99),
@@ -70,4 +62,9 @@ data class BatteryDevice(
     val batteryLow: Boolean?,
     val plugged: Int,
     val isCharging: Boolean?,
+    val deviceType: DeviceType = DeviceType.Phone
 )
+
+enum class DeviceType(@DrawableRes val icon: Int) {
+    Phone(R.drawable.ic_smartphone)
+}

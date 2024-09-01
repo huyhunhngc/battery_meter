@@ -2,6 +2,7 @@
 agp = "8.5.1"
 androidDeviceNamesVersion = "2.1.1"
 appwidgetHost = "0.2.0"
+deviceinformation = "1.0.0"
 kotlin = "2.0.10"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -19,6 +20,7 @@ glancePreview = "1.1.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 appwidget-host = { module = "com.google.android.glance.tools:appwidget-host", version.ref = "appwidgetHost" }
+deviceinformation = { module = "com.github.oseamiya:deviceinformation", version.ref = "deviceinformation" }
 jaredrummler-android-device-names = { module = "com.jaredrummler:android-device-names", version.ref = "androidDeviceNamesVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
