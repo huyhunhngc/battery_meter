@@ -10,13 +10,16 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.SizeF
+import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.ifa.glancewidget.glance.MonitorReceiver
 import io.github.ifa.glancewidget.model.BatteryData
-import io.github.ifa.glancewidget.model.BatteryDevice
+import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.model.WidgetSize
 import io.github.ifa.glancewidget.utils.getPairedDevices
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -25,45 +28,18 @@ import kotlinx.coroutines.launch
 class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget get() = BatteryWidget()
 
-
-    private val lock = Object()
-    private var batteryData: BatteryData? = null
-        set(value) {
-            synchronized(lock) {
-                field = value
-            }
-        }
-
-    private val monitorBroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                in BATTERY_ACTIONS -> {
-                    val devices = context.getPairedDevices()
-                    batteryData = BatteryData(
-                        batteryDevice = BatteryDevice.fromIntent(intent),
-                        batteryConnectedDevices = devices
-                    )
-                }
-
-                in BLUETOOTH_STATE_ACTIONS -> {
-                    val devices = context.getPairedDevices()
-                    batteryData = batteryData?.copy(
-                        batteryConnectedDevices = devices
-                    )
-                }
-            }
-            observeData(context)
-        }
-    }
+    private lateinit var monitorBroadcastReceiver: MonitorReceiver
 
     override fun onUpdate(
         context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+        if (::monitorBroadcastReceiver.isInitialized)  {
+            context.applicationContext.unregisterReceiver(monitorBroadcastReceiver)
+        }
+        monitorBroadcastReceiver = MonitorReceiver()
         val filter = IntentFilter().apply {
-            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach {
-                addAction(it)
-            }
+            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.applicationContext.registerReceiver(
@@ -74,36 +50,24 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         }
     }
 
-    private fun observeData(context: Context) {
-        MainScope().launch {
-            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(BatteryWidget::class.java)
-            glanceIds.forEach { glanceId ->
-                updateAppWidgetState(
-                    context = context,
-                    glanceId = glanceId,
-                ) { _ ->
-                    (glanceAppWidget as? BatteryWidget)?.updateIfBatteryChanged(
-                        context, glanceId, batteryData
-                    ) ?: run {
-                        glanceAppWidget.update(context, glanceId)
-                    }
-                }
-            }
-        }
-    }
-
     override fun onAppWidgetOptionsChanged(
         context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-        val sizes = newOptions.getParcelableArrayList<SizeF>(
+
+        val size = newOptions.getParcelableArrayList<SizeF>(
             AppWidgetManager.OPTION_APPWIDGET_SIZES
-        )
-        // Check that the list of sizes is provided by the launcher.
-        if (sizes.isNullOrEmpty()) {
+        )?.firstOrNull()
+        if (size == null) {
             return
         }
-
+        MainScope().launch {
+            (glanceAppWidget as? BatteryWidget)?.updateOnSizeChanged(
+                context = context,
+                glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId),
+                widgetSize = WidgetSize(size.width.toInt(), size.height.toInt())
+            )
+        }
     }
 
     companion object {

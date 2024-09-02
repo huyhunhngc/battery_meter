@@ -1,8 +1,6 @@
 package io.github.ifa.glancewidget.glance.battery
 
 import android.content.Context
-import android.content.IntentFilter
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,7 +9,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Box
@@ -24,6 +24,7 @@ import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.model.WidgetSize
 import io.github.ifa.glancewidget.utils.fromJson
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.flow.first
@@ -49,12 +50,19 @@ class BatteryWidget : GlanceAppWidget() {
         update(context, glanceId)
     }
 
+    suspend fun updateOnSizeChanged(
+        context: Context, glanceId: GlanceId, widgetSize: WidgetSize
+    ) {
+        context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, widgetSize)
+        update(context, glanceId)
+    }
+
     @Composable
     private fun Content(
         battery: BatteryData?
     ) {
-        val percent = battery?.batteryDevice?.level ?: 100
-        val isCharging = battery?.batteryDevice?.isCharging ?: false
+        val percent = battery?.myDevice?.level ?: 100
+        val isCharging = battery?.myDevice?.isCharging ?: false
         val connectedDevice = battery?.batteryConnectedDevices?.firstOrNull()
 
         Box(
@@ -65,10 +73,10 @@ class BatteryWidget : GlanceAppWidget() {
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 BatteryItem(
-                    deviceType = battery?.batteryDevice?.deviceType ?: DeviceType.PHONE,
+                    deviceType = battery?.myDevice?.deviceType ?: DeviceType.PHONE,
                     percent = percent,
                     isCharging = isCharging,
-                    deviceName = battery?.batteryDevice?.name.toString(),
+                    deviceName = battery?.myDevice?.name.toString(),
                     modifier = GlanceModifier.defaultWeight()
                 )
                 if (connectedDevice != null) {

@@ -21,6 +21,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:taskAffinity=":MainActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.GlanceWidget">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,6 +40,15 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/battery_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".glance.MonitorReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
     </application>
 

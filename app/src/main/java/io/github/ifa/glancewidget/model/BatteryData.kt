@@ -3,17 +3,15 @@ package io.github.ifa.glancewidget.model
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
-import androidx.annotation.DrawableRes
-import io.github.ifa.glancewidget.R
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class BatteryData(
-    val batteryDevice: BatteryDevice, val batteryConnectedDevices: List<BonedDevice>
+    val myDevice: MyDevice, val batteryConnectedDevices: List<BonedDevice>
 )
 
 @Serializable
-data class BatteryDevice(
+data class MyDevice(
     val name: String,
     val iconSmall: Int,
     val action: String,
@@ -31,28 +29,28 @@ data class BatteryDevice(
     val deviceType: DeviceType = DeviceType.PHONE
 ) {
     companion object {
-        fun fromIntent(intent: Intent): BatteryDevice {
+        fun fromIntent(intent: Intent): MyDevice {
             val batteryLow = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 intent.getBooleanExtra(BatteryManager.EXTRA_BATTERY_LOW, false)
             } else {
                 null
             }
-            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -99)
+            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
             val isCharging =
                 status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
-            return BatteryDevice(
-                name = Build.MANUFACTURER,
-                iconSmall = intent.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -99),
+            return MyDevice(
+                name = "${Build.MANUFACTURER} ${Build.MODEL}",
+                iconSmall = intent.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -1),
                 action = intent.action.toString(),
-                health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -99),
+                health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1),
                 status = status,
-                voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -99),
-                temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -99),
+                voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1),
+                temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1),
                 level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0),
-                scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -99),
+                scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1),
                 present = intent.getBooleanExtra(BatteryManager.EXTRA_PRESENT, false),
                 technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY),
-                plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -99),
+                plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1),
                 batteryLow = batteryLow,
                 isCharging = isCharging
             )

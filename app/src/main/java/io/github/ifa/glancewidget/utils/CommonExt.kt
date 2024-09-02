@@ -66,6 +66,7 @@ val BluetoothDevice.batteryLevel
     } ?: -1
 
 fun Context.getPairedDevices(): List<BonedDevice> {
+    //if (!checkPermissions(BluetoothPermissions)) return emptyList()
     val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
     val pairedDevices = btManager.adapter.bondedDevices
 
@@ -77,5 +78,5 @@ fun Context.getPairedDevices(): List<BonedDevice> {
             batteryInMinutes = 0,
             deviceType = DeviceType.fromClass(it.bluetoothClass.deviceClass)
         )
-    }
+    }.sortedBy { it.deviceType.ordinal }
 }

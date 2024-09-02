@@ -1,7 +1,10 @@
 package io.github.ifa.glancewidget
 
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +17,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.ifa.glancewidget.glance.MonitorReceiver
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.ui.theme.GlanceWidgetTheme
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
@@ -25,6 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestBluetooth()
+        registerReceiver()
         controlExtras(intent)
         enableEdgeToEdge()
         setContent {
@@ -69,8 +76,19 @@ class MainActivity : ComponentActivity() {
     }
 
     private val requestMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ -> }
 
+    private fun registerReceiver() {
+        val filter = IntentFilter().apply {
+            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            applicationContext.registerReceiver(
+                MonitorReceiver(), filter, Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            applicationContext.registerReceiver(MonitorReceiver(), filter)
+        }
+    }
 }
 

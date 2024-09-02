@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.glance.appwidget.preview)
     implementation(libs.appwidget.host)
     implementation(libs.androidx.glance.preview)
+    implementation(libs.androidx.navigation.compose)
     kapt(libs.daggerHiltAndroidCompiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.daggerHiltAndroidTesting)
