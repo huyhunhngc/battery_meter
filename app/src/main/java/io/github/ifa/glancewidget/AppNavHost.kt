@@ -22,23 +22,27 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import io.github.ifa.glancewidget.presentation.about.aboutScreen
+import io.github.ifa.glancewidget.presentation.main.mainTabScreens
+import io.github.ifa.glancewidget.presentation.widget.widgetScreen
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    onBackClick: () -> Unit,
-    onBackClickBlockNavController: NavController.() -> Unit,
-    onStartMainFlow: () -> Unit,
-    onStopMainFlow: () -> Unit,
     startDestination: String,
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    onBackClickBlockNavController: NavController.() -> Unit,
 ) {
     NavHostWithSharedAxisX(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-
+        mainTabScreens { navController, paddingValues ->
+            widgetScreen()
+            aboutScreen()
+        }
     }
 }
 

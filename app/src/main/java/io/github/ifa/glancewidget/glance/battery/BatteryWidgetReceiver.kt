@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.SizeF
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
@@ -42,11 +43,11 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
             (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.applicationContext.registerReceiver(
+            context.registerReceiver(
                 monitorBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED
             )
         } else {
-            context.applicationContext.registerReceiver(monitorBroadcastReceiver, filter)
+            context.registerReceiver(monitorBroadcastReceiver, filter)
         }
     }
 
@@ -54,18 +55,14 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        val minW = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+        val minH = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
 
-        val size = newOptions.getParcelableArrayList<SizeF>(
-            AppWidgetManager.OPTION_APPWIDGET_SIZES
-        )?.firstOrNull()
-        if (size == null) {
-            return
-        }
         MainScope().launch {
             (glanceAppWidget as? BatteryWidget)?.updateOnSizeChanged(
                 context = context,
                 glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId),
-                widgetSize = WidgetSize(size.width.toInt(), size.height.toInt())
+                widgetSize = WidgetSize(minW, minH)
             )
         }
     }

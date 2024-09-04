@@ -1,17 +1,18 @@
 package io.github.ifa.glancewidget.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
 import android.os.Build
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.model.WidgetSize
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
@@ -65,8 +66,9 @@ val BluetoothDevice.batteryLevel
         method.invoke(device) as Int?
     } ?: -1
 
+
+@SuppressLint("MissingPermission")
 fun Context.getPairedDevices(): List<BonedDevice> {
-    //if (!checkPermissions(BluetoothPermissions)) return emptyList()
     val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
     val pairedDevices = btManager.adapter.bondedDevices
 
@@ -79,4 +81,11 @@ fun Context.getPairedDevices(): List<BonedDevice> {
             deviceType = DeviceType.fromClass(it.bluetoothClass.deviceClass)
         )
     }.sortedBy { it.deviceType.ordinal }
+}
+
+fun List<BonedDevice>.take(widgetSize: WidgetSize): List<BonedDevice> {
+//    val item = when {
+//        widgetSize.width
+//    }
+    return take(2)
 }

@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import io.github.ifa.glancewidget.glance.ui.theme.Type
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -52,7 +53,7 @@ fun GlanceWidgetTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Type.typography,
         content = content
     )
 }

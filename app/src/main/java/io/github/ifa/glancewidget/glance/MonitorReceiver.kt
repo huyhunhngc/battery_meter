@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.BatteryData
@@ -12,7 +14,9 @@ import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.utils.getPairedDevices
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MonitorReceiver: BroadcastReceiver() {
     private val lock = Object()
     private var batteryData: BatteryData? = null

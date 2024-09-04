@@ -2,8 +2,8 @@
     android:initialLayout="@layout/glance_default_loading_layout"
     android:minWidth="120dp"
     android:minHeight="60dp"
-    android:maxHeight="180dp"
-    android:maxResizeHeight="180dp"
+    android:maxHeight="240dp"
+    android:maxResizeHeight="240dp"
     android:updatePeriodMillis="1000"
     android:configure="io.github.ifa.glancewidget.MainActivity"
     android:resizeMode="horizontal|vertical">

@@ -7,9 +7,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import io.github.ifa.glancewidget.glance.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 
 @Composable
-fun TravelApp(
+fun ConfigApp(
     modifier: Modifier = Modifier,
     startDestination: String
 ) {
@@ -22,18 +26,23 @@ fun TravelApp(
 //        )
 //    }
 //
-//    AppTheme(
-//        colorContrast = colorContrast(),
-//    ) {
-//        Surface(
-//            modifier = modifier.fillMaxSize(),
-//            color = colorScheme.background,
-//        ) {
-//            AppNavHost(
-//                windowSize = windowSize,
-//                displayFeatures = displayFeatures,
-//                startDestination = startDestination
-//            )
-//        }
-//    }
+    val navController: NavHostController = rememberNavController()
+    AppTheme {
+        Surface(
+            modifier = modifier.fillMaxSize(),
+            color = colorScheme.background,
+        ) {
+            AppNavHost(
+                navController = navController,
+                startDestination = startDestination,
+                modifier = Modifier,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onBackClickBlockNavController = {
+                    popBackStack()
+                }
+            )
+        }
+    }
 }

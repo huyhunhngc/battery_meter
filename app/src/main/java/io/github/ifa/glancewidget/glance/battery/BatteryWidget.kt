@@ -37,7 +37,8 @@ class BatteryWidget : GlanceAppWidget() {
         provideContent {
             val data by batteryWidgetStore.data.collectAsState(initial)
             Content(
-                fromJson<BatteryData>(data[BATTERY_PREFERENCES])
+                battery = fromJson<BatteryData>(data[BATTERY_PREFERENCES]),
+                size = fromJson<WidgetSize>(data[WIDGET_PREFERENCES]) ?: WidgetSize(100, 90)
             )
         }
 
@@ -53,23 +54,24 @@ class BatteryWidget : GlanceAppWidget() {
     suspend fun updateOnSizeChanged(
         context: Context, glanceId: GlanceId, widgetSize: WidgetSize
     ) {
-        context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, widgetSize)
+        context.batteryWidgetStore.setObject(WIDGET_PREFERENCES, widgetSize)
         update(context, glanceId)
     }
 
     @Composable
     private fun Content(
-        battery: BatteryData?
+        battery: BatteryData?,
+        size: WidgetSize = WidgetSize(100, 90)
     ) {
         val percent = battery?.myDevice?.level ?: 100
         val isCharging = battery?.myDevice?.isCharging ?: false
-        val connectedDevice = battery?.batteryConnectedDevices?.firstOrNull()
+        val connectedDevice = battery?.batteryConnectedDevices?.take(2)
 
         Box(
             modifier = GlanceModifier
                 .fillMaxSize()
                 .padding(PADDING)
-                .background(GlanceTheme.colors.widgetBackground),
+                .background(GlanceTheme.colors.primaryContainer),
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 BatteryItem(
@@ -79,13 +81,13 @@ class BatteryWidget : GlanceAppWidget() {
                     deviceName = battery?.myDevice?.name.toString(),
                     modifier = GlanceModifier.defaultWeight()
                 )
-                if (connectedDevice != null) {
+                connectedDevice?.forEach { device ->
                     Spacer(modifier = GlanceModifier.height(PADDING))
                     BatteryItem(
-                        deviceType = connectedDevice.deviceType,
-                        percent = connectedDevice.batteryInPercentage,
+                        deviceType = device.deviceType,
+                        percent = device.batteryInPercentage,
                         isCharging = false,
-                        deviceName = connectedDevice.name.toString(),
+                        deviceName = device.name.toString(),
                         modifier = GlanceModifier.defaultWeight()
                     )
                 }
@@ -95,6 +97,7 @@ class BatteryWidget : GlanceAppWidget() {
 
     companion object {
         val BATTERY_PREFERENCES = stringPreferencesKey("batteryData")
+        val WIDGET_PREFERENCES = stringPreferencesKey("widgetSize")
         private val PADDING = 8.dp
     }
 }

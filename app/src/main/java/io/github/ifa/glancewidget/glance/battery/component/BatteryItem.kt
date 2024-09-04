@@ -45,7 +45,7 @@ fun BatteryItem(
         Row(
             modifier = GlanceModifier.fillMaxSize()
         ) {
-            for (i in 1..100 step SUPPORTED_ROW_ELEMENTS) {
+            for (i in 0..90 step SUPPORTED_ROW_ELEMENTS) {
                 Segment(currentSegment = i, percent)
             }
         }
@@ -72,7 +72,7 @@ fun BatteryItem(
                         modifier = GlanceModifier.size(12.dp),
                         provider = ImageProvider(R.drawable.ic_bolt),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(GlanceTheme.colors.primaryContainer)
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.widgetBackground)
                     )
                 }
             }
@@ -99,7 +99,7 @@ private fun RowScope.Segment(currentSegment: Int, percent: Int) {
                 val isFilled = i + currentSegment <= percent
                 Spacer(
                     modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(
-                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.primaryContainer
+                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.widgetBackground
                     )
                 )
             }

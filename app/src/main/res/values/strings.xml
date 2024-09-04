@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">GlanceWidget</string>
+    <string name="app_name">Meter Widget</string>
+    <string name="widget_tab">Widget</string>
+    <string name="about_tab">About</string>
 </resources>

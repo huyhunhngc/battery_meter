@@ -8,7 +8,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BatteryData(
     val myDevice: MyDevice, val batteryConnectedDevices: List<BonedDevice>
-)
+) {
+    companion object {
+        fun initial(): BatteryData {
+            return BatteryData(
+                myDevice = MyDevice.fromIntent(Intent()),
+                batteryConnectedDevices = emptyList()
+            )
+        }
+    }
+}
 
 @Serializable
 data class MyDevice(
