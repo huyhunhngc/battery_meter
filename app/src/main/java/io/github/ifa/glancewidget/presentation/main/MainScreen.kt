@@ -58,8 +58,7 @@ fun MainScreen(
             navController = mainTabNavController,
             startDestination = widgetScreenRoute,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+                .fillMaxSize(),
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },
         ) {

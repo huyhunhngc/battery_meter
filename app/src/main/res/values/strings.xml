@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Meter Widget</string>
-    <string name="widget_tab">Widget</string>
+    <string name="widget_tab">Widgets</string>
     <string name="about_tab">About</string>
+    <string name="battery_status">Battery status</string>
+    <string name="battery_information">Extra information</string>
+    <string name="add_your_widget">Add your widget to home screen</string>
+    <string name="show_transparent">Use transparent widget</string>
 </resources>

@@ -35,7 +35,8 @@ fun BatteryItem(
     deviceType: DeviceType,
     percent: Int,
     isCharging: Boolean,
-    deviceName: String,
+    deviceName: String = "",
+    isShowLargeLevel: Boolean = false,
     isTransparent: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -78,9 +79,16 @@ fun BatteryItem(
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
-            ItemText(text = deviceName, modifier = Modifier.fillMaxWidth(0.45f))
-            Spacer(modifier = Modifier.weight(1f))
-            ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+            if (isShowLargeLevel) {
+                Spacer(modifier = Modifier.weight(1f))
+                ItemLargeText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+                Spacer(modifier = Modifier.weight(1f))
+            } else {
+                ItemText(text = deviceName, modifier = Modifier.fillMaxWidth(0.45f))
+                Spacer(modifier = Modifier.weight(1f))
+                ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+            }
+
             if (isCharging) {
                 Image(
                     modifier = Modifier
@@ -108,6 +116,19 @@ private fun ItemText(text: String, modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+private fun ItemLargeText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        modifier = modifier,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.headlineLarge,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary
+    )
+}
+
 @Preview
 @Composable
 fun BatteryPreview() {
@@ -116,6 +137,22 @@ fun BatteryPreview() {
         percent = 50,
         isCharging = true,
         deviceName = "Xiaomi 4545453333",
+        isTransparent = true,
+        modifier = Modifier
+            .height(100.dp)
+            .width(200.dp)
+    )
+}
+
+@Preview
+@Composable
+fun BatteryLargeLevelPreview() {
+    BatteryItem(
+        deviceType = DeviceType.PHONE,
+        percent = 50,
+        isCharging = true,
+        deviceName = "Xiaomi 4545453333",
+        isShowLargeLevel = true,
         isTransparent = true,
         modifier = Modifier
             .height(100.dp)

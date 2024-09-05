@@ -35,8 +35,14 @@ data class MyDevice(
     val batteryLow: Boolean?,
     val plugged: Int,
     val isCharging: Boolean?,
-    val deviceType: DeviceType = DeviceType.PHONE
+    val deviceType: DeviceType = DeviceType.PHONE,
+    val chargeCounter: Int?,
+    val cycleCount: Int?,
+    val chargeType: ChargeType = ChargeType.NONE
 ) {
+    enum class ChargeType(val type: String) {
+        AC("AC"), USB("USB"), NONE("");
+    }
     companion object {
         fun fromIntent(intent: Intent): MyDevice {
             val batteryLow = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -45,8 +51,20 @@ data class MyDevice(
                 null
             }
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+            val chargeCounter = intent.getIntExtra("\"charge_counter\"", -1)
+            val cycleCount = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                intent.getIntExtra(BatteryManager.EXTRA_CYCLE_COUNT, -1)
+            } else {
+                null
+            }
             val isCharging =
                 status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
+            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+            val chargeType = when(chargePlug) {
+                BatteryManager.BATTERY_PLUGGED_AC -> ChargeType.AC
+                BatteryManager.BATTERY_PLUGGED_USB -> ChargeType.USB
+                else -> ChargeType.NONE
+            }
             return MyDevice(
                 name = "${Build.MANUFACTURER} ${Build.MODEL}",
                 iconSmall = intent.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -1),
@@ -61,9 +79,11 @@ data class MyDevice(
                 technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY),
                 plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1),
                 batteryLow = batteryLow,
-                isCharging = isCharging
+                isCharging = isCharging,
+                chargeCounter = chargeCounter,
+                cycleCount = cycleCount,
+                chargeType = chargeType
             )
         }
     }
-
 }

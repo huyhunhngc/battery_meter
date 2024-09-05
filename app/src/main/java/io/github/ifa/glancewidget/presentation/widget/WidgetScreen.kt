@@ -7,20 +7,19 @@ import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
@@ -30,7 +29,10 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,14 +45,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.model.BatteryData
+import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryItem
+import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
+import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.utils.findActivity
+import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
+import kotlinx.coroutines.launch
 
 const val widgetScreenRoute = "widget_screen_route"
 
@@ -60,65 +75,97 @@ fun NavGraphBuilder.widgetScreen() {
     }
 }
 
-
 @Composable
-fun WidgetScreen(
+internal fun WidgetScreen(
     viewModel: WidgetViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val showBottomSheet by rememberUpdatedState(uiState.setupWidgetId != INVALID_APPWIDGET_ID)
     val context = LocalContext.current
     val activity = context.findActivity()
-
-    val showBottomSheet by rememberUpdatedState(uiState.setupWidgetId != INVALID_APPWIDGET_ID)
+    val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         val intent = activity?.intent ?: return@LaunchedEffect
         viewModel.controlExtras(intent)
     }
-    Scaffold { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                with(uiState.batteryData.myDevice) {
-                    BatteryItem(
-                        deviceType = deviceType,
-                        percent = level,
-                        isCharging = isCharging ?: false,
-                        deviceName = name,
-                        isTransparent = true,
-                        modifier = Modifier
-                            .height(100.dp)
-                            .fillMaxWidth(0.8f)
-                    )
-                }
-            }
+    WidgetScreen(
+        uiState = uiState,
+        snackbarHostState = snackbarHostState,
+        isShowBottomSheet = showBottomSheet,
+        onDisMissBottomSheet = viewModel::hideBottomSheet
+    ) {
+        val resultValue = Intent().apply {
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId)
         }
+        activity?.setResult(RESULT_OK, resultValue)
+        activity?.finish()
+    }
+}
 
 
-        if (showBottomSheet) {
-            AddWidgetBottomSheet(uiState = uiState, padding = padding) {
-                val resultValue = Intent().apply {
-                    putExtra(
-                        AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId
-                    )
-                }
-                activity?.setResult(RESULT_OK, resultValue)
-                activity?.finish()
-            }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WidgetScreen(
+    uiState: WidgetViewModel.WidgetScreenUiState,
+    snackbarHostState: SnackbarHostState,
+    isShowBottomSheet: Boolean = false,
+    onDisMissBottomSheet: () -> Unit = {},
+    onClickAddWidget: () -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            AnimatedTextTopAppBar(
+                title = stringResource(id = MainScreenTab.Widget.label),
+                scrollBehavior = scrollBehavior
+            )
+        },
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .padding(bottom = 80.dp)
+        ) {
+            batteryOverall(
+                myDevice = uiState.batteryData.myDevice,
+                modifier = Modifier.padding(16.dp)
+            )
         }
+
+        if (isShowBottomSheet) {
+            AddWidgetBottomSheet(
+                uiState = uiState,
+                padding = padding,
+                onDisMiss = onDisMissBottomSheet,
+                onClickAddWidget = onClickAddWidget
+            )
+        }
+    }
+}
+
+
+private fun LazyListScope.batteryOverall(
+    myDevice: MyDevice, modifier: Modifier = Modifier
+) {
+    item {
+        val context = LocalContext.current
+        val extraBatteryInfo = remember {
+            context.getExtraBatteryInformation()
+        }
+        BatteryOverall(myDevice, extraBatteryInfo, modifier)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AddWidgetBottomSheet(
+private fun AddWidgetBottomSheet(
     uiState: WidgetViewModel.WidgetScreenUiState,
     padding: PaddingValues,
-    onClickAddWidget: () -> Unit
+    onDisMiss: () -> Unit,
+    onClickAddWidget: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -126,16 +173,20 @@ internal fun AddWidgetBottomSheet(
 
     ModalBottomSheet(
         onDismissRequest = {
-            //scope.launch { sheetState.hide() }
+            onDisMiss()
+            scope.launch { sheetState.hide() }
         }, sheetState = sheetState
     ) {
-        Text(text = "Add your widget")
+        Text(
+            text = stringResource(id = R.string.add_your_widget),
+            modifier = Modifier.fillMaxWidth(),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
+        )
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(padding),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             with(uiState.batteryData.myDevice) {
@@ -146,40 +197,55 @@ internal fun AddWidgetBottomSheet(
                     deviceName = name,
                     isTransparent = isTransparentSelected,
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(120.dp)
                         .fillMaxWidth(0.8f)
                 )
             }
-            IconToggleButton(
-                checked = isTransparentSelected,
-                onCheckedChange = { isTransparentSelected = !isTransparentSelected },
+            Row(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .size(24.dp)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                    .clip(CircleShape)
+                    .fillMaxWidth(0.8f)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                AnimatedVisibility(
-                    visible = isTransparentSelected,
-                    enter = scaleIn(),
-                    exit = scaleOut()
+                IconToggleButton(
+                    checked = isTransparentSelected,
+                    onCheckedChange = { isTransparentSelected = !isTransparentSelected },
+                    modifier = Modifier
+                        .size(20.dp)
+                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                        .clip(CircleShape)
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                    )
+                    AnimatedVisibility(
+                        visible = isTransparentSelected, enter = scaleIn(), exit = scaleOut()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.CheckCircle,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                 }
+                Text(
+                    text = stringResource(id = R.string.show_transparent),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
+
             Button(
-                onClick = onClickAddWidget,
-                modifier = Modifier
-                    .padding(top = 16.dp)
+                onClick = onClickAddWidget, modifier = Modifier
                     .fillMaxWidth(0.85f)
+                    .padding(16.dp)
             ) {
                 Text(text = "Add Widget")
             }
         }
-
     }
+}
+
+@Preview
+@Composable
+fun WidgetBottomSheetPreview() {
+    AddWidgetBottomSheet(uiState = WidgetViewModel.WidgetScreenUiState(-1, BatteryData.initial()),
+        padding = PaddingValues(),
+        onDisMiss = { /*TODO*/ }) {}
 }

@@ -37,6 +37,9 @@ class WidgetViewModel @Inject constructor(
         WidgetScreenUiState(setupWidgetId, batteryData)
     }
 
+    fun hideBottomSheet() {
+        _setupWidgetId.value = INVALID_APPWIDGET_ID
+    }
 
     fun controlExtras(intent: Intent) {
         val extras = intent.extras
