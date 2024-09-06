@@ -10,6 +10,8 @@ import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
 class DefaultBatteryStateRepository(

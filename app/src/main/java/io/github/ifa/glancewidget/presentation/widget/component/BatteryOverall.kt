@@ -25,6 +25,7 @@ import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MAH_UNIT
 import io.github.ifa.glancewidget.utils.Constants.WATT_UNIT
+import io.github.ifa.glancewidget.utils.toHHMMSS
 
 @Composable
 fun BatteryOverall(
@@ -43,6 +44,19 @@ fun BatteryOverall(
     ) {
         SessionText(
             text = stringResource(id = R.string.battery_status), modifier = Modifier.padding(8.dp)
+        )
+        val remainTime = if (myDevice.isCharging == true) {
+            stringResource(
+                id = R.string.remain_time_charging,
+                extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
+            )
+        } else {
+            stringResource(id = R.string.remain_time_battery, "")
+        }
+        Text(
+            text = remainTime,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 8.dp)
         )
         Row {
             with(myDevice) {
@@ -71,6 +85,7 @@ fun BatteryOverall(
                 }
             }
         }
+
         SessionText(
             text = stringResource(id = R.string.battery_information),
             modifier = Modifier.padding(8.dp)

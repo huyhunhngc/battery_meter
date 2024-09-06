@@ -27,4 +27,6 @@
     <string name="over_voltage_status">Over voltage</string>
     <string name="cold_status">Cold</string>
     <string name="unknown_status">Unknown</string>
+    <string name="remain_time_charging">Charging time remaining: %s</string>
+    <string name="remain_time_battery">Remaining time battery: %s</string>
 </resources>

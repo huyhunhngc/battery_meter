@@ -7,6 +7,7 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.data.batteryWidgetStore
+import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY_PREFERENCES
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
@@ -16,9 +17,13 @@ import io.github.ifa.glancewidget.utils.getPairedDevices
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MonitorReceiver : BroadcastReceiver() {
+    @Inject
+    lateinit var batteryStateRepository: BatteryStateRepository
+
     private val lock = Object()
     private var batteryData: BatteryData? = null
         set(value) {
@@ -39,6 +44,9 @@ class MonitorReceiver : BroadcastReceiver() {
             Intent.ACTION_POWER_CONNECTED -> {
                 batteryData = (batteryData ?: BatteryData.initial()).run {
                     copy(myDevice = myDevice.copy(isCharging = true))
+                }
+                MainScope().launch {
+                    batteryStateRepository.saveExtraBatteryInformation()
                 }
             }
 
