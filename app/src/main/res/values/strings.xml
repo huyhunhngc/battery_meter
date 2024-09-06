@@ -5,6 +5,7 @@
     <string name="battery_status">Battery status</string>
     <string name="battery_information">Extra information</string>
     <string name="add_your_widget">Add your widget to home screen</string>
+    <string name="add_widget">Add widget</string>
     <string name="show_transparent">Use transparent widget</string>
     <string name="temperature">Temperature</string>
     <string name="technology">Technology</string>

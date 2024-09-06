@@ -22,9 +22,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -56,11 +58,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryItem
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
+import io.github.ifa.glancewidget.presentation.widget.component.ConnectedDevice
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.utils.findActivity
 import kotlinx.coroutines.launch
@@ -90,7 +94,8 @@ internal fun WidgetScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         isShowBottomSheet = showBottomSheet,
-        onDisMissBottomSheet = viewModel::hideBottomSheet
+        onDisMissBottomSheet = viewModel::hideBottomSheet,
+        onMoreClick = {}
     ) {
         val resultValue = Intent().apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId)
@@ -107,8 +112,9 @@ private fun WidgetScreen(
     uiState: WidgetViewModel.WidgetScreenUiState,
     snackbarHostState: SnackbarHostState,
     isShowBottomSheet: Boolean = false,
+    onMoreClick: () -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
-    onClickAddWidget: () -> Unit
+    onClickAddWidget: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -116,7 +122,15 @@ private fun WidgetScreen(
         topBar = {
             AnimatedTextTopAppBar(
                 title = stringResource(id = MainScreenTab.Widget.label),
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(onClick = onMoreClick) {
+                        Icon(
+                            Icons.Filled.MoreVert,
+                            contentDescription = null
+                        )
+                    }
+                }
             )
         },
     ) { padding ->
@@ -131,6 +145,10 @@ private fun WidgetScreen(
                 myDevice = uiState.batteryData.myDevice,
                 extraBatteryInfo = uiState.extraBatteryInfo,
                 batteryHealth = uiState.batteryHealth,
+                modifier = Modifier.padding(16.dp)
+            )
+            connectedDevices(
+                batteryConnectedDevices = uiState.batteryData.batteryConnectedDevices,
                 modifier = Modifier.padding(16.dp)
             )
         }
@@ -155,6 +173,15 @@ private fun LazyListScope.batteryOverall(
 ) {
     item {
         BatteryOverall(myDevice, extraBatteryInfo, batteryHealth, modifier)
+    }
+}
+
+private fun LazyListScope.connectedDevices(
+    batteryConnectedDevices: List<BonedDevice>,
+    modifier: Modifier = Modifier
+) {
+    item {
+        ConnectedDevice(batteryConnectedDevices, modifier)
     }
 }
 
@@ -235,7 +262,7 @@ private fun AddWidgetBottomSheet(
                     .fillMaxWidth(0.85f)
                     .padding(16.dp)
             ) {
-                Text(text = "Add Widget")
+                Text(text = stringResource(id = R.string.add_widget))
             }
         }
     }

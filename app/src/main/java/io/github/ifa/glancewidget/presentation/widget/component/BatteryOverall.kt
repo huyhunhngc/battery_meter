@@ -45,7 +45,7 @@ fun BatteryOverall(
         SessionText(
             text = stringResource(id = R.string.battery_status), modifier = Modifier.padding(8.dp)
         )
-        val remainTime = if (myDevice.isCharging == true) {
+        val remainTime = if (myDevice.isCharging == true && myDevice.level < 100) {
             stringResource(
                 id = R.string.remain_time_charging,
                 extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
