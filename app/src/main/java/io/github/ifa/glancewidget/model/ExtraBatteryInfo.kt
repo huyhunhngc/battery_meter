@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExtraBatteryInfo(
-    val capacity: Long = -1,
-    val chargeCounter: Long = -1,
-    val fullChargeCapacity: Long = -1,
+    val capacity: Int = -1,
+    val chargeCounter: Int = -1,
+    val fullChargeCapacity: Int = -1,
 )

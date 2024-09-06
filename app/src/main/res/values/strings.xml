@@ -1,9 +1,30 @@
 <resources>
     <string name="app_name">Meter Widget</string>
-    <string name="widget_tab">Widgets</string>
+    <string name="widget_tab">Monitor</string>
     <string name="about_tab">About</string>
     <string name="battery_status">Battery status</string>
     <string name="battery_information">Extra information</string>
     <string name="add_your_widget">Add your widget to home screen</string>
     <string name="show_transparent">Use transparent widget</string>
+    <string name="temperature">Temperature</string>
+    <string name="technology">Technology</string>
+    <string name="health">Heath</string>
+    <string name="voltage">Voltage</string>
+    <string name="design_capacity">Design Capacity</string>
+    <string name="full_charge_capacity">Full Charge Capacity</string>
+    <string name="charge_counter">Charge Counter</string>
+    <string name="cycle_count">Cycle Count</string>
+    <string name="charging">Charging</string>
+    <string name="discharging">Discharging</string>
+    <string name="full_power">Full charge</string>
+    <string name="power">Power</string>
+    <string name="current">Current</string>
+    <string name="very_good_status">Very good</string>
+    <string name="good_status">Good</string>
+    <string name="bad_status">Bad</string>
+    <string name="require_replacement_status">Require replacement</string>
+    <string name="overheat_status">Overheat</string>
+    <string name="over_voltage_status">Over voltage</string>
+    <string name="cold_status">Cold</string>
+    <string name="unknown_status">Unknown</string>
 </resources>

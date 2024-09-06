@@ -43,18 +43,23 @@ class MainActivity : ComponentActivity() {
         if (!applicationContext.checkPermissions(BluetoothPermissions)) {
             requestMultiplePermissions.launch(BluetoothPermissions.toTypedArray())
         } else {
-            registerReceiver()
+            registerReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
         }
     }
 
     private val requestMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
-            registerReceiver()
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val isGranted = permissions.entries.all { it.value }
+            if (isGranted) {
+                registerReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
+            } else {
+                registerReceiver(BATTERY_ACTIONS)
+            }
         }
 
-    private fun registerReceiver() {
+    private fun registerReceiver(actions: List<String>) {
         val filter = IntentFilter().apply {
-            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
+            actions.forEach { addAction(it) }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)

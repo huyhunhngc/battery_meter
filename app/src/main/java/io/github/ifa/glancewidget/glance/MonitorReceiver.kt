@@ -37,20 +37,20 @@ class MonitorReceiver : BroadcastReceiver() {
             }
 
             Intent.ACTION_POWER_CONNECTED -> {
-                batteryData = batteryData?.run {
+                batteryData = (batteryData ?: BatteryData.initial()).run {
                     copy(myDevice = myDevice.copy(isCharging = true))
                 }
             }
 
             Intent.ACTION_POWER_DISCONNECTED -> {
-                batteryData = batteryData?.run {
+                batteryData = (batteryData ?: BatteryData.initial()).run {
                     copy(myDevice = myDevice.copy(isCharging = true))
                 }
             }
 
             in BLUETOOTH_STATE_ACTIONS -> {
                 val devices = context.getPairedDevices()
-                batteryData = batteryData?.copy(
+                batteryData = (batteryData ?: BatteryData.initial()).copy(
                     batteryConnectedDevices = devices
                 )
             }

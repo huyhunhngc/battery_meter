@@ -24,7 +24,9 @@ class WidgetViewModel @Inject constructor(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryData: BatteryData,
         val extraBatteryInfo: ExtraBatteryInfo,
-    )
+    ) {
+        val batteryHealth = batteryData.myDevice.getBatteryHealth(extraBatteryInfo)
+    }
 
     private val _setupWidgetId = MutableStateFlow(INVALID_APPWIDGET_ID)
     private val _extraBatteryInfo = batteryStateRepository.extraBatteryFlow().stateIn(

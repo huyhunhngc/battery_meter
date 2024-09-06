@@ -69,8 +69,10 @@ val BluetoothDevice.batteryLevel
 
 @SuppressLint("MissingPermission")
 fun Context.getPairedDevices(): List<BonedDevice> {
-    val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
-    val pairedDevices = btManager.adapter.bondedDevices
+    val pairedDevices = kotlin.runCatching {
+        val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
+        btManager.adapter.bondedDevices
+    }.getOrDefault(emptyList())
 
     return pairedDevices.filter { it.batteryLevel in 0..100 }.map {
         BonedDevice(

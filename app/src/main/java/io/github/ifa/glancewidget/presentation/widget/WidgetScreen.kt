@@ -130,6 +130,7 @@ private fun WidgetScreen(
             batteryOverall(
                 myDevice = uiState.batteryData.myDevice,
                 extraBatteryInfo = uiState.extraBatteryInfo,
+                batteryHealth = uiState.batteryHealth,
                 modifier = Modifier.padding(16.dp)
             )
         }
@@ -147,10 +148,13 @@ private fun WidgetScreen(
 
 
 private fun LazyListScope.batteryOverall(
-    myDevice: MyDevice, extraBatteryInfo: ExtraBatteryInfo, modifier: Modifier = Modifier
+    myDevice: MyDevice,
+    extraBatteryInfo: ExtraBatteryInfo,
+    batteryHealth: MyDevice.BatteryHealth,
+    modifier: Modifier = Modifier
 ) {
     item {
-        BatteryOverall(myDevice, extraBatteryInfo, modifier)
+        BatteryOverall(myDevice, extraBatteryInfo, batteryHealth, modifier)
     }
 }
 
