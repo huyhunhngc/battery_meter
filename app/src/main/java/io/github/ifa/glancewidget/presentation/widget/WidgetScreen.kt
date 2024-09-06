@@ -50,21 +50,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.model.BatteryData
+import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryItem
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.utils.findActivity
-import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
 import kotlinx.coroutines.launch
 
 const val widgetScreenRoute = "widget_screen_route"
@@ -131,6 +129,7 @@ private fun WidgetScreen(
         ) {
             batteryOverall(
                 myDevice = uiState.batteryData.myDevice,
+                extraBatteryInfo = uiState.extraBatteryInfo,
                 modifier = Modifier.padding(16.dp)
             )
         }
@@ -148,13 +147,9 @@ private fun WidgetScreen(
 
 
 private fun LazyListScope.batteryOverall(
-    myDevice: MyDevice, modifier: Modifier = Modifier
+    myDevice: MyDevice, extraBatteryInfo: ExtraBatteryInfo, modifier: Modifier = Modifier
 ) {
     item {
-        val context = LocalContext.current
-        val extraBatteryInfo = remember {
-            context.getExtraBatteryInformation()
-        }
         BatteryOverall(myDevice, extraBatteryInfo, modifier)
     }
 }
@@ -240,12 +235,4 @@ private fun AddWidgetBottomSheet(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun WidgetBottomSheetPreview() {
-    AddWidgetBottomSheet(uiState = WidgetViewModel.WidgetScreenUiState(-1, BatteryData.initial()),
-        padding = PaddingValues(),
-        onDisMiss = { /*TODO*/ }) {}
 }

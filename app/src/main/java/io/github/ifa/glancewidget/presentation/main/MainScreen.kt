@@ -11,7 +11,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -57,8 +56,7 @@ fun MainScreen(
         NavHost(
             navController = mainTabNavController,
             startDestination = widgetScreenRoute,
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },
         ) {

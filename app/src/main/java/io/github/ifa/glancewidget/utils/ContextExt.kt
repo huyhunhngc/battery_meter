@@ -6,7 +6,6 @@ import android.content.ContextWrapper
 import android.os.BatteryManager
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 
-
 fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
@@ -14,10 +13,10 @@ fun Context.findActivity(): Activity? = when (this) {
 }
 
 fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
-    val mBatteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+    val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
     val chargeCounter =
-        mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
-    val capacity = mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+    val capacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
 
     val fullChargeCapacity = if (chargeCounter == Int.MIN_VALUE || capacity == Int.MIN_VALUE) {
         0

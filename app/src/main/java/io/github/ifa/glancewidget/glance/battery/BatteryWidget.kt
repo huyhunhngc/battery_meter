@@ -9,9 +9,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Box
@@ -45,9 +43,8 @@ class BatteryWidget : GlanceAppWidget() {
     }
 
     suspend fun updateIfBatteryChanged(
-        context: Context, glanceId: GlanceId, batteryData: BatteryData?
+        context: Context, glanceId: GlanceId
     ) {
-        context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, batteryData)
         update(context, glanceId)
     }
 
@@ -60,17 +57,14 @@ class BatteryWidget : GlanceAppWidget() {
 
     @Composable
     private fun Content(
-        battery: BatteryData?,
-        size: WidgetSize = WidgetSize(100, 90)
+        battery: BatteryData?, size: WidgetSize = WidgetSize(100, 90)
     ) {
         val percent = battery?.myDevice?.level ?: 100
         val isCharging = battery?.myDevice?.isCharging ?: false
         val connectedDevice = battery?.batteryConnectedDevices?.take(2)
 
         Box(
-            modifier = GlanceModifier
-                .fillMaxSize()
-                .padding(PADDING)
+            modifier = GlanceModifier.fillMaxSize().padding(PADDING)
                 .background(GlanceTheme.colors.primaryContainer),
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {

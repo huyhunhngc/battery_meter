@@ -1,9 +1,11 @@
 package io.github.ifa.glancewidget.di.battery
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
@@ -26,9 +28,10 @@ abstract class BatteryRepositoryModule {
         @Singleton
         @Provides
         fun provideBatteryStateRepository(
-            batteryDataStore: BatteryDataStore
+            batteryDataStore: BatteryDataStore,
+            @ApplicationContext context: Context
         ): BatteryStateRepository {
-            return DefaultBatteryStateRepository(batteryDataStore)
+            return DefaultBatteryStateRepository(batteryDataStore, context)
         }
     }
 }
