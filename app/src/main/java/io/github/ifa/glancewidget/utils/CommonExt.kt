@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
 
 inline fun <reified T> fromJson(jsonString: String?): T? {
     if (jsonString == null) return null
@@ -24,7 +25,7 @@ inline fun <reified T> fromJson(jsonString: String?): T? {
         ignoreUnknownKeys = true
         explicitNulls = false
     }
-    return json.decodeFromString<T>(jsonString)
+    return runCatching { json.decodeFromString<T>(jsonString) }.getOrNull()
 }
 
 inline fun <reified T> toJson(value: T): String {
@@ -83,11 +84,4 @@ fun Context.getPairedDevices(): List<BonedDevice> {
             deviceType = DeviceType.fromClass(it.bluetoothClass.deviceClass)
         )
     }.sortedBy { it.deviceType.ordinal }
-}
-
-fun List<BonedDevice>.take(widgetSetting: WidgetSetting): List<BonedDevice> {
-//    val item = when {
-//        widgetSize.width
-//    }
-    return take(2)
 }

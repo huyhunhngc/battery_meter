@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.presentation.widget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,15 +11,18 @@ import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.buildUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class WidgetViewModel @Inject constructor(
-    batteryStateRepository: BatteryStateRepository
+    private val batteryStateRepository: BatteryStateRepository
 ) : ViewModel() {
     data class WidgetScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
@@ -56,6 +60,12 @@ class WidgetViewModel @Inject constructor(
                 AppWidgetManager.EXTRA_APPWIDGET_ID, INVALID_APPWIDGET_ID
             )
             _setupWidgetId.value = appWidgetId
+        }
+    }
+
+    fun saveTransparentSettings(isTransparent: Boolean, appWidgetId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            batteryStateRepository.saveWidgetTransparentSetting(isTransparent, appWidgetId)
         }
     }
 }

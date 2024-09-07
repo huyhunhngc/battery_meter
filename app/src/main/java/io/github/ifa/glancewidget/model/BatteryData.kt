@@ -23,22 +23,22 @@ data class BatteryData(
 
 @Serializable
 data class MyDevice(
-    val name: String,
-    val iconSmall: Int,
-    val action: String,
-    val health: Int,
-    val status: Int,
-    val voltage: Float,
-    val temperature: Temperature,
-    val technology: String?,
-    val level: Int,
-    val scale: Int,
-    val present: Boolean,
-    val batteryLow: Boolean?,
-    val plugged: Int,
-    val isCharging: Boolean?,
+    val name: String = "",
+    val iconSmall: Int = -1,
+    val action: String = "",
+    val health: Int = -1,
+    val status: Int = -1,
+    val voltage: Float = -1f,
+    val temperature: Temperature = Temperature(),
+    val technology: String = "",
+    val level: Int = 0,
+    val scale: Int = -1,
+    val present: Boolean = false,
+    val batteryLow: Boolean = false,
+    val plugged: Int = -1,
+    val isCharging: Boolean = false,
     val deviceType: DeviceType = DeviceType.PHONE,
-    val cycleCount: Int?,
+    val cycleCount: Int = 0,
     val chargeType: ChargeType = ChargeType.NONE,
 ) {
     enum class ChargeType(val type: String) {
@@ -47,7 +47,7 @@ data class MyDevice(
 
     @Serializable
     data class Temperature(
-        val temperature: Float, val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS
+        val temperature: Float = -1f, val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS
     ) {
         enum class TemperatureUnit(val unit: String) {
             CELSIUS("°C"), FAHRENHEIT("°F")
@@ -86,7 +86,7 @@ data class MyDevice(
             val batteryLow = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 intent.getBooleanExtra(BatteryManager.EXTRA_BATTERY_LOW, false)
             } else {
-                null
+                false
             }
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
 
@@ -115,7 +115,7 @@ data class MyDevice(
                 level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0),
                 scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1),
                 present = intent.getBooleanExtra(BatteryManager.EXTRA_PRESENT, false),
-                technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY),
+                technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY).orEmpty(),
                 plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1),
                 batteryLow = batteryLow,
                 isCharging = isCharging,

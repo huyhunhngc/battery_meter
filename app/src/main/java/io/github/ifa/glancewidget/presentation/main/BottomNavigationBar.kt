@@ -1,15 +1,11 @@
 package io.github.ifa.glancewidget.presentation.main
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -51,15 +48,20 @@ fun BottomNavigationBar(
     val currentTab = MainScreenTab.routeToTab(navBackStackEntry?.destination?.route)
 
     NavigationBar(
-        modifier = modifier.height(88.dp),
-        tonalElevation = 1.dp
+        modifier = modifier, tonalElevation = 1.dp
     ) {
         MainScreenTab.entries.forEach { tab ->
             val isSelected = tab == currentTab
             NavigationBarItem(
                 modifier = Modifier.padding(1.dp),
-                label = { Text(text = stringResource(id = tab.label)) },
-                alwaysShowLabel = true,
+                label = {
+                    Text(
+                        text = stringResource(id = tab.label),
+                        color = colorScheme.surfaceTint,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
+                },
+                alwaysShowLabel = true, selected = isSelected,
                 icon = {
                     Icon(
                         painter = painterResource(id = if (isSelected) tab.selectedIcon else tab.icon),
@@ -69,7 +71,6 @@ fun BottomNavigationBar(
                     )
                 },
                 onClick = {
-                    Log.d("!@#", "BottomNavigationBar: ${tab.route}")
                     navController.navigate(tab.route) {
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) { saveState = true }
@@ -78,7 +79,6 @@ fun BottomNavigationBar(
                         restoreState = true
                     }
                 },
-                selected = isSelected
             )
         }
     }

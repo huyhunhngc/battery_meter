@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Meter Widget</string>
+    <string name="app_name">Battery Meter</string>
     <string name="widget_tab">Monitor</string>
     <string name="about_tab">About</string>
     <string name="battery_status">Battery status</string>

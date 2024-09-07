@@ -16,11 +16,10 @@ import androidx.glance.layout.RowScope
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
-import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -39,9 +38,7 @@ fun BatteryItem(
     modifier: GlanceModifier = GlanceModifier
 ) {
     Box(
-        modifier = modifier
-            .cornerRadius(16.dp)
-            .background(GlanceTheme.colors.primaryContainer)
+        modifier = modifier.cornerRadius(16.dp).background(GlanceTheme.colors.primaryContainer)
     ) {
         Row(
             modifier = GlanceModifier.fillMaxSize()
@@ -87,7 +84,10 @@ private fun ItemText(text: String, modifier: GlanceModifier = GlanceModifier) {
         text = text,
         modifier = modifier,
         maxLines = 2,
-        style = TextStyle(color = GlanceTheme.colors.primary, fontWeight = FontWeight.Medium)
+        style = TextStyle(
+            color = GlanceTheme.colors.primary,
+            fontWeight = FontWeight.Bold
+        )
     )
 }
 

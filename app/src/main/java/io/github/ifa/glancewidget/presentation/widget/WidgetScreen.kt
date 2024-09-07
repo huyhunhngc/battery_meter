@@ -8,6 +8,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -90,7 +91,6 @@ internal fun WidgetScreen(
     LaunchedEffect(Unit) {
         val intent = activity?.intent ?: return@LaunchedEffect
         viewModel.controlExtras(intent)
-        activity.intent = null
     }
     WidgetScreen(uiState = uiState,
         snackbarHostState = snackbarHostState,
@@ -100,8 +100,8 @@ internal fun WidgetScreen(
         onClickAddWidget = { params ->
             val resultValue = Intent().apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId)
-                putExtra("isTransparent", params.isTransparent)
             }
+            viewModel.saveTransparentSettings(params.isTransparent, uiState.setupWidgetId)
             activity?.setResult(RESULT_OK, resultValue)
             activity?.finish()
         }
@@ -231,7 +231,8 @@ private fun AddWidgetBottomSheet(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .clickable { isTransparentSelected = !isTransparentSelected },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconToggleButton(
