@@ -3,25 +3,18 @@ package io.github.ifa.glancewidget.glance.battery
 import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.SizeF
-import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.glance.MonitorReceiver
-import io.github.ifa.glancewidget.model.BatteryData
-import io.github.ifa.glancewidget.model.MyDevice
-import io.github.ifa.glancewidget.model.WidgetSize
-import io.github.ifa.glancewidget.utils.getPairedDevices
+import io.github.ifa.glancewidget.model.WidgetSetting
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -57,12 +50,11 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         val minW = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
         val minH = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-
         MainScope().launch {
             (glanceAppWidget as? BatteryWidget)?.updateOnSizeChanged(
                 context = context,
                 glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId),
-                widgetSize = WidgetSize(minW, minH)
+                widgetSetting = WidgetSetting(appWidgetId = appWidgetId, width = minW, height = minH)
             )
         }
     }

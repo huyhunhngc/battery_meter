@@ -93,7 +93,7 @@ data class MyDevice(
             val cycleCount = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 intent.getIntExtra(BatteryManager.EXTRA_CYCLE_COUNT, -1)
             } else {
-                null
+                0
             }
             val isCharging =
                 status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL

@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.presentation.widget.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,13 +33,13 @@ import io.github.ifa.glancewidget.model.DeviceType
 
 @Composable
 fun BatteryItem(
+    modifier: Modifier = Modifier,
     deviceType: DeviceType,
     percent: Int,
     isCharging: Boolean,
     deviceName: String = "",
     isShowLargeLevel: Boolean = false,
     isTransparent: Boolean,
-    modifier: Modifier = Modifier
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -63,7 +64,6 @@ fun BatteryItem(
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.inversePrimary)
         )
-
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -98,7 +98,7 @@ fun BatteryItem(
                         .padding(2.dp),
                     painter = painterResource(R.drawable.ic_bolt),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.background)
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer)
                 )
             }
         }

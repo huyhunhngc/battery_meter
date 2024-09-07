@@ -12,7 +12,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
-import io.github.ifa.glancewidget.model.WidgetSize
+import io.github.ifa.glancewidget.model.WidgetSetting
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
@@ -85,7 +85,7 @@ fun Context.getPairedDevices(): List<BonedDevice> {
     }.sortedBy { it.deviceType.ordinal }
 }
 
-fun List<BonedDevice>.take(widgetSize: WidgetSize): List<BonedDevice> {
+fun List<BonedDevice>.take(widgetSetting: WidgetSetting): List<BonedDevice> {
 //    val item = when {
 //        widgetSize.width
 //    }

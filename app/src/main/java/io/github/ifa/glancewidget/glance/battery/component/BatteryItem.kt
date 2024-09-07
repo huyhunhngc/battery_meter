@@ -20,6 +20,7 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -34,11 +35,11 @@ fun BatteryItem(
     percent: Int,
     isCharging: Boolean,
     deviceName: String,
+    deviceNameWidth: Int = 100,
     modifier: GlanceModifier = GlanceModifier
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .cornerRadius(16.dp)
             .background(GlanceTheme.colors.primaryContainer)
     ) {
@@ -60,7 +61,7 @@ fun BatteryItem(
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
             )
-            ItemText(text = deviceName)
+            ItemText(text = deviceName, modifier = GlanceModifier.width(deviceNameWidth.dp))
             Spacer(modifier = GlanceModifier.defaultWeight())
             ItemText(text = "$percent%", modifier = GlanceModifier.padding(end = 4.dp))
             if (isCharging) {
@@ -85,7 +86,8 @@ private fun ItemText(text: String, modifier: GlanceModifier = GlanceModifier) {
     Text(
         text = text,
         modifier = modifier,
-        style = TextStyle(color = GlanceTheme.colors.primary, fontWeight = FontWeight.Bold)
+        maxLines = 2,
+        style = TextStyle(color = GlanceTheme.colors.primary, fontWeight = FontWeight.Medium)
     )
 }
 
@@ -99,7 +101,7 @@ private fun RowScope.Segment(currentSegment: Int, percent: Int) {
                 val isFilled = i + currentSegment <= percent
                 Spacer(
                     modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(
-                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.widgetBackground
+                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.primaryContainer
                     )
                 )
             }

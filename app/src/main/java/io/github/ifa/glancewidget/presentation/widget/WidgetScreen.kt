@@ -58,6 +58,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
@@ -89,20 +90,22 @@ internal fun WidgetScreen(
     LaunchedEffect(Unit) {
         val intent = activity?.intent ?: return@LaunchedEffect
         viewModel.controlExtras(intent)
+        activity.intent = null
     }
-    WidgetScreen(
-        uiState = uiState,
+    WidgetScreen(uiState = uiState,
         snackbarHostState = snackbarHostState,
         isShowBottomSheet = showBottomSheet,
         onDisMissBottomSheet = viewModel::hideBottomSheet,
-        onMoreClick = {}
-    ) {
-        val resultValue = Intent().apply {
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId)
+        onMoreClick = {},
+        onClickAddWidget = { params ->
+            val resultValue = Intent().apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId)
+                putExtra("isTransparent", params.isTransparent)
+            }
+            activity?.setResult(RESULT_OK, resultValue)
+            activity?.finish()
         }
-        activity?.setResult(RESULT_OK, resultValue)
-        activity?.finish()
-    }
+    )
 }
 
 
@@ -114,24 +117,21 @@ private fun WidgetScreen(
     isShowBottomSheet: Boolean = false,
     onMoreClick: () -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
-    onClickAddWidget: () -> Unit,
+    onClickAddWidget: (AddWidgetParams) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            AnimatedTextTopAppBar(
-                title = stringResource(id = MainScreenTab.Widget.label),
+            AnimatedTextTopAppBar(title = stringResource(id = MainScreenTab.Widget.label),
                 scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = onMoreClick) {
                         Icon(
-                            Icons.Filled.MoreVert,
-                            contentDescription = null
+                            Icons.Filled.MoreVert, contentDescription = null
                         )
                     }
-                }
-            )
+                })
         },
     ) { padding ->
         LazyColumn(
@@ -177,11 +177,12 @@ private fun LazyListScope.batteryOverall(
 }
 
 private fun LazyListScope.connectedDevices(
-    batteryConnectedDevices: List<BonedDevice>,
-    modifier: Modifier = Modifier
+    batteryConnectedDevices: List<BonedDevice>, modifier: Modifier = Modifier
 ) {
-    item {
-        ConnectedDevice(batteryConnectedDevices, modifier)
+    if (batteryConnectedDevices.isNotEmpty()) {
+        item {
+            ConnectedDevice(batteryConnectedDevices, modifier)
+        }
     }
 }
 
@@ -191,7 +192,7 @@ private fun AddWidgetBottomSheet(
     uiState: WidgetViewModel.WidgetScreenUiState,
     padding: PaddingValues,
     onDisMiss: () -> Unit,
-    onClickAddWidget: () -> Unit,
+    onClickAddWidget: (AddWidgetParams) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -258,7 +259,9 @@ private fun AddWidgetBottomSheet(
             }
 
             Button(
-                onClick = onClickAddWidget, modifier = Modifier
+                onClick = {
+                    onClickAddWidget(AddWidgetParams(isTransparent = isTransparentSelected))
+                }, modifier = Modifier
                     .fillMaxWidth(0.85f)
                     .padding(16.dp)
             ) {

@@ -34,7 +34,6 @@ fun AnimatedTextTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
             )
         },

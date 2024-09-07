@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
@@ -14,16 +17,21 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
-import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.height
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
+import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
+import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
+import io.github.ifa.glancewidget.glance.battery.component.TwoRowItem
+import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.DeviceType
-import io.github.ifa.glancewidget.model.WidgetSize
+import io.github.ifa.glancewidget.model.WidgetSetting
+import io.github.ifa.glancewidget.model.WidgetSettings
 import io.github.ifa.glancewidget.utils.fromJson
+import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.flow.first
 
@@ -34,12 +42,19 @@ class BatteryWidget : GlanceAppWidget() {
 
         provideContent {
             val data by batteryWidgetStore.data.collectAsState(initial)
-            Content(
-                battery = fromJson<BatteryData>(data[BATTERY_PREFERENCES]),
-                size = fromJson<WidgetSize>(data[WIDGET_PREFERENCES]) ?: WidgetSize(100, 90)
-            )
+            val widgetSettingsJson by rememberUpdatedState(data[WIDGET_PREFERENCES])
+            val batteryJson by rememberUpdatedState(data[BATTERY_PREFERENCES])
+            val battery = remember(batteryJson) {
+                fromJson<BatteryData>(batteryJson)
+            }
+            val setting = remember(widgetSettingsJson) {
+                val settings = fromJson<WidgetSettings>(widgetSettingsJson)
+                settings?.getSettingByGlance(context, id)
+            }
+            GlanceTheme {
+                Content(battery = battery, setting = setting)
+            }
         }
-
     }
 
     suspend fun updateIfBatteryChanged(
@@ -49,23 +64,51 @@ class BatteryWidget : GlanceAppWidget() {
     }
 
     suspend fun updateOnSizeChanged(
-        context: Context, glanceId: GlanceId, widgetSize: WidgetSize
+        context: Context, glanceId: GlanceId, widgetSetting: WidgetSetting
     ) {
-        context.batteryWidgetStore.setObject(WIDGET_PREFERENCES, widgetSize)
+        val store = context.batteryWidgetStore
+        val widgetSettings = store.getObject<WidgetSettings>(WIDGET_PREFERENCES) ?: WidgetSettings()
+        val savedSetting = widgetSettings.getSettingByGlance(context, glanceId) ?: WidgetSetting()
+        val newWidgetSetting = savedSetting.copy(
+            appWidgetId = widgetSetting.appWidgetId,
+            width = widgetSetting.width,
+            height = widgetSetting.height
+        )
+        val newSettings =
+            widgetSettings.copy(settings = widgetSettings.settings.toMutableMap().apply {
+                this[newWidgetSetting.appWidgetId] = newWidgetSetting
+            })
+        store.setObject(WIDGET_PREFERENCES, newSettings)
         update(context, glanceId)
     }
 
     @Composable
     private fun Content(
-        battery: BatteryData?, size: WidgetSize = WidgetSize(100, 90)
+        battery: BatteryData?, setting: WidgetSetting?
     ) {
         val percent = battery?.myDevice?.level ?: 100
         val isCharging = battery?.myDevice?.isCharging ?: false
-        val connectedDevice = battery?.batteryConnectedDevices?.take(2)
+
+        val typeWidget = remember(setting) {
+            setting?.getType() ?: WidgetSetting.Type.Small
+        }
+
+        val connectedDevice = remember(typeWidget, battery) {
+            battery?.batteryConnectedDevices?.take(typeWidget.itemOnSize())
+        }
+
+        val isTransparent = remember(setting) {
+            setting?.isTransparent ?: false
+        }
 
         Box(
-            modifier = GlanceModifier.fillMaxSize().padding(PADDING)
-                .background(GlanceTheme.colors.primaryContainer),
+            modifier = GlanceModifier.fillMaxSize().padding(PADDING).background(
+                if (isTransparent) {
+                    ColorProvider(Color.Transparent)
+                } else {
+                    GlanceTheme.colors.widgetBackground
+                }
+            ),
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 BatteryItem(
@@ -75,15 +118,22 @@ class BatteryWidget : GlanceAppWidget() {
                     deviceName = battery?.myDevice?.name.toString(),
                     modifier = GlanceModifier.defaultWeight()
                 )
-                connectedDevice?.forEach { device ->
-                    Spacer(modifier = GlanceModifier.height(PADDING))
-                    BatteryItem(
-                        deviceType = device.deviceType,
-                        percent = device.batteryInPercentage,
-                        isCharging = false,
-                        deviceName = device.name.toString(),
-                        modifier = GlanceModifier.defaultWeight()
-                    )
+                if (!connectedDevice.isNullOrEmpty()) {
+                    when (typeWidget) {
+                        WidgetSetting.Type.FullWidex1, WidgetSetting.Type.Wide -> {
+                            GridWrapItem(
+                                connectedDevice = connectedDevice,
+                                modifier = GlanceModifier.defaultWeight().fillMaxWidth()
+                            )
+                        }
+
+                        else -> {
+                            TwoRowItem(
+                                connectedDevices = connectedDevice,
+                                modifier = GlanceModifier.defaultWeight().fillMaxWidth()
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -91,7 +141,7 @@ class BatteryWidget : GlanceAppWidget() {
 
     companion object {
         val BATTERY_PREFERENCES = stringPreferencesKey("batteryData")
-        val WIDGET_PREFERENCES = stringPreferencesKey("widgetSize")
-        private val PADDING = 8.dp
+        val WIDGET_PREFERENCES = stringPreferencesKey("widgetSetting")
+        val PADDING = 8.dp
     }
 }
