@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.presentation.widget.component
 import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,13 +43,14 @@ fun BatteryOverall(
             .padding(vertical = 8.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
+            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp),
+            .padding(8.dp)
     ) {
         SessionText(
             text = stringResource(id = R.string.battery_status), modifier = Modifier.padding(8.dp)
         )
-        val remainTime = if (myDevice.isCharging == true && myDevice.level < 100) {
+        val remainTime = if (myDevice.isCharging && myDevice.level < 100) {
             stringResource(
                 id = R.string.remain_time_charging,
                 extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
@@ -66,7 +69,7 @@ fun BatteryOverall(
                 BatteryItem(
                     deviceType = deviceType,
                     percent = level,
-                    isCharging = isCharging ?: false,
+                    isCharging = isCharging,
                     deviceName = name,
                     isShowLargeLevel = true,
                     isTransparent = true,
@@ -76,7 +79,7 @@ fun BatteryOverall(
                 )
                 Column(modifier.padding(8.dp)) {
                     ShortInformationRow(
-                        key = stringResource(id = if (isCharging == true) R.string.charging else R.string.discharging),
+                        key = stringResource(id = if (isCharging) R.string.charging else R.string.discharging),
                         value = myDevice.chargeType.type
                     )
                     ShortInformationRow(
@@ -97,7 +100,7 @@ fun BatteryOverall(
             InformationRow(
                 key = R.string.temperature, value = myDevice.temperature.formatTemperature()
             )
-            InformationRow(key = R.string.technology, value = myDevice.technology.toString())
+            InformationRow(key = R.string.technology, value = myDevice.technology)
             InformationRow(key = R.string.health, value = stringResource(id = batteryHealth.type))
             InformationRow(key = R.string.voltage, value = "${myDevice.voltage} V")
             InformationRow(
@@ -121,12 +124,14 @@ private fun ShortInformationRow(key: String, value: String) {
         Text(
             text = key,
             modifier = Modifier.padding(bottom = 4.dp, end = 4.dp),
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
         )
         Text(
             text = value,
             modifier = Modifier.padding(bottom = 4.dp),
             fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.tertiary
         )
     }

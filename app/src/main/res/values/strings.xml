@@ -3,6 +3,7 @@
     <string name="widget_tab">Monitor</string>
     <string name="about_tab">About</string>
     <string name="battery_status">Battery status</string>
+    <string name="connected_devices">Connected devices</string>
     <string name="battery_information">Extra information</string>
     <string name="add_your_widget">Add your widget to home screen</string>
     <string name="add_widget">Add widget</string>
