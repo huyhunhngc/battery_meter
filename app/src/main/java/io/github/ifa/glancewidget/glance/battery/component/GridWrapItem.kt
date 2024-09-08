@@ -25,7 +25,7 @@ fun GridWrapItem(
                     deviceType = device.deviceType,
                     percent = device.batteryInPercentage,
                     isCharging = false,
-                    deviceName = device.name.toString(),
+                    deviceName = device.name,
                     deviceNameWidth = deviceNameWidth,
                     modifier = GlanceModifier.defaultWeight()
                 )

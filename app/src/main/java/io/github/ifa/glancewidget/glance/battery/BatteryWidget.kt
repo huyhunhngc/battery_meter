@@ -24,7 +24,7 @@ import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
 import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
-import io.github.ifa.glancewidget.glance.battery.component.TwoRowItem
+import io.github.ifa.glancewidget.glance.battery.component.FullWidthItem
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.DeviceType
@@ -128,7 +128,7 @@ class BatteryWidget : GlanceAppWidget() {
                         }
 
                         else -> {
-                            TwoRowItem(
+                            FullWidthItem(
                                 connectedDevices = connectedDevice,
                                 modifier = GlanceModifier.defaultWeight().fillMaxWidth()
                             )

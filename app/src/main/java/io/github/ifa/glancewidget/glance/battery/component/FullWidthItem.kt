@@ -8,7 +8,7 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.PADDING
 import io.github.ifa.glancewidget.model.BonedDevice
 
 @Composable
-fun TwoRowItem(
+fun FullWidthItem(
     connectedDevices: List<BonedDevice>,
     modifier: GlanceModifier,
 ) {
@@ -18,7 +18,7 @@ fun TwoRowItem(
             deviceType = device.deviceType,
             percent = device.batteryInPercentage,
             isCharging = false,
-            deviceName = device.name.toString(),
+            deviceName = device.name,
             modifier = modifier
         )
     }
