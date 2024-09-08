@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 
@@ -45,7 +46,7 @@ internal fun AboutScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             AnimatedTextTopAppBar(
-                title = stringResource(id = MainScreenTab.About.label),
+                title = stringResource(id = R.string.about_tab),
                 scrollBehavior = scrollBehavior
             )
         },

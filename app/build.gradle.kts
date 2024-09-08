@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.androidx.media3.effect)
     kapt(libs.daggerHiltAndroidCompiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.daggerHiltAndroidTesting)

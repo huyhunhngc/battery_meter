@@ -34,8 +34,6 @@ import io.github.ifa.glancewidget.utils.Constants.ANDROID_SETTING_PACKAGE
 import io.github.ifa.glancewidget.utils.Constants.BLUETOOTH_SETTING_CLASS
 
 const val SUPPORTED_ROW_ELEMENTS = 10
-const val MAX_WIDTH_FULL = 120
-const val MAX_WIDTH_HALF = 50
 
 @Composable
 fun BatteryItem(
@@ -43,7 +41,7 @@ fun BatteryItem(
     percent: Int,
     isCharging: Boolean,
     deviceName: String,
-    deviceNameWidth: Int = MAX_WIDTH_FULL,
+    fontSizeScale: Int = 14,
     modifier: GlanceModifier = GlanceModifier
 ) {
     val action = remember(deviceType) {
@@ -53,8 +51,6 @@ fun BatteryItem(
             actionStartActivity(ComponentName(ANDROID_SETTING_PACKAGE, BLUETOOTH_SETTING_CLASS))
         }
     }
-
-    val nameFontSize = if (deviceNameWidth >= MAX_WIDTH_FULL) 14 else 11
 
     Box(
         modifier = modifier
@@ -82,15 +78,15 @@ fun BatteryItem(
             )
             Text(
                 text = deviceName,
-                style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = nameFontSize.sp),
+                style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = fontSizeScale.sp),
                 fontWeight = FontWeight.Bold,
-                modifier = GlanceModifier.width(deviceNameWidth.dp)
+                modifier = GlanceModifier.defaultWeight()
             )
-            Spacer(modifier = GlanceModifier.defaultWeight())
+
             if (percent > 0) {
                 Text(
                     text = "$percent%",
-                    style = TextStyle(color = GlanceTheme.colors.primary, fontSize = nameFontSize.sp),
+                    style = TextStyle(color = GlanceTheme.colors.primary, fontSize = fontSizeScale.sp),
                     fontWeight = FontWeight.Bold,
                     modifier = GlanceModifier.padding(end = 4.dp)
                 )

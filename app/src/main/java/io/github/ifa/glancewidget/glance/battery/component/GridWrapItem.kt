@@ -20,13 +20,13 @@ fun GridWrapItem(
         Row(modifier = modifier.fillMaxWidth()) {
             devices.forEachIndexed { index, device ->
                 if (index == 1) Spacer(modifier = GlanceModifier.width(PADDING))
-                val deviceNameWidth = if (devices.size == 2) MAX_WIDTH_HALF else MAX_WIDTH_FULL
+                val fontSizeScale = if (devices.size == 2) 11 else 14
                 BatteryItem(
                     deviceType = device.deviceType,
                     percent = device.batteryInPercentage,
                     isCharging = false,
                     deviceName = device.name,
-                    deviceNameWidth = deviceNameWidth,
+                    fontSizeScale = fontSizeScale,
                     modifier = GlanceModifier.defaultWeight()
                 )
             }

@@ -128,7 +128,8 @@ private fun ItemText(text: String, modifier: Modifier = Modifier) {
         modifier = modifier,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
-        style = TextStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Bold
     )
 }
 
@@ -166,6 +167,22 @@ fun BatteryLargeLevelPreview() {
     BatteryItem(
         deviceType = DeviceType.HEADSET,
         percent = 50,
+        isCharging = false,
+        deviceName = "Xiaomi 4545453333",
+        isShowLargeLevel = true,
+        isTransparent = true,
+        modifier = Modifier
+            .height(100.dp)
+            .width(200.dp)
+    )
+}
+
+@Preview
+@Composable
+fun BatteryLargeLevelNotConnectPreview() {
+    BatteryItem(
+        deviceType = DeviceType.HEADSET,
+        percent = -50,
         isCharging = false,
         deviceName = "Xiaomi 4545453333",
         isShowLargeLevel = true,

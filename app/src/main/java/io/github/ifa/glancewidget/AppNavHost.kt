@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.about.aboutScreen
 import io.github.ifa.glancewidget.presentation.main.mainTabScreens
+import io.github.ifa.glancewidget.presentation.settings.settingsScreen
 import io.github.ifa.glancewidget.presentation.widget.widgetScreen
 
 @Composable
@@ -41,8 +42,9 @@ fun AppNavHost(
     ) {
         mainTabScreens { navController, paddingValues ->
             widgetScreen()
-            aboutScreen()
+            settingsScreen()
         }
+        aboutScreen()
     }
 }
 
