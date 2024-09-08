@@ -12,12 +12,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
-import io.github.ifa.glancewidget.model.WidgetSetting
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 
 inline fun <reified T> fromJson(jsonString: String?): T? {
     if (jsonString == null) return null
@@ -75,7 +73,7 @@ fun Context.getPairedDevices(): List<BonedDevice> {
         btManager.adapter.bondedDevices
     }.getOrDefault(emptyList())
 
-    return pairedDevices.filter { it.batteryLevel in 0..100 }.map {
+    return pairedDevices.map {
         BonedDevice(
             name = it.name,
             address = it.address,

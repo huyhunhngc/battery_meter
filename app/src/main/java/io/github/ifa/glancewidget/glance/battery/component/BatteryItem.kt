@@ -19,7 +19,6 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
-import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -34,7 +33,7 @@ fun BatteryItem(
     percent: Int,
     isCharging: Boolean,
     deviceName: String,
-    deviceNameWidth: Int = 100,
+    deviceNameWidth: Int = 120,
     modifier: GlanceModifier = GlanceModifier
 ) {
     Box(
@@ -60,7 +59,18 @@ fun BatteryItem(
             )
             ItemText(text = deviceName, modifier = GlanceModifier.width(deviceNameWidth.dp))
             Spacer(modifier = GlanceModifier.defaultWeight())
-            ItemText(text = "$percent%", modifier = GlanceModifier.padding(end = 4.dp))
+            if (percent > 0) {
+                ItemText(text = "$percent%", modifier = GlanceModifier.padding(end = 4.dp))
+            }
+            if (deviceType != DeviceType.PHONE) {
+                Image(
+                    modifier = GlanceModifier.size(16.dp),
+                    provider = ImageProvider(if (percent > 0) R.drawable.ic_bluetooth_connected else R.drawable.ic_bluetooth),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
+                )
+            }
+
             if (isCharging) {
                 Box(
                     modifier = GlanceModifier.size(16.dp).background(GlanceTheme.colors.primary)
