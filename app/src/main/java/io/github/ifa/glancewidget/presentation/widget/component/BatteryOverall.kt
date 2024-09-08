@@ -6,23 +6,26 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
@@ -38,18 +41,36 @@ fun BatteryOverall(
     batteryHealth: MyDevice.BatteryHealth,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .padding(vertical = 8.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                RoundedCornerShape(16.dp)
+            )
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {
-        SessionText(
-            text = stringResource(id = R.string.battery_status), modifier = Modifier.padding(8.dp)
-        )
+        Row(Modifier.fillMaxWidth()) {
+            SessionText(
+                text = stringResource(id = R.string.battery_status),
+                modifier = Modifier.padding(8.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = {
+                startActivity(context, Intent(Intent.ACTION_POWER_USAGE_SUMMARY), null)
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_monitoring),
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = null
+                )
+            }
+        }
         val remainTime = if (myDevice.isCharging && myDevice.level < 100) {
             stringResource(
                 id = R.string.remain_time_charging,

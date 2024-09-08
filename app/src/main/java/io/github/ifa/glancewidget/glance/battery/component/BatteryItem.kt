@@ -1,12 +1,17 @@
 package io.github.ifa.glancewidget.glance.battery.component
 
+import android.content.ComponentName
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -22,10 +27,15 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.utils.Constants.ANDROID_SETTING_PACKAGE
+import io.github.ifa.glancewidget.utils.Constants.BLUETOOTH_SETTING_CLASS
 
 const val SUPPORTED_ROW_ELEMENTS = 10
+const val MAX_WIDTH_FULL = 120
+const val MAX_WIDTH_HALF = 50
 
 @Composable
 fun BatteryItem(
@@ -33,11 +43,24 @@ fun BatteryItem(
     percent: Int,
     isCharging: Boolean,
     deviceName: String,
-    deviceNameWidth: Int = 120,
+    deviceNameWidth: Int = MAX_WIDTH_FULL,
     modifier: GlanceModifier = GlanceModifier
 ) {
+    val action = remember(deviceType) {
+        if (deviceType == DeviceType.PHONE) {
+            actionStartActivity<MainActivity>()
+        } else {
+            actionStartActivity(ComponentName(ANDROID_SETTING_PACKAGE, BLUETOOTH_SETTING_CLASS))
+        }
+    }
+
+    val nameFontSize = if (deviceNameWidth >= MAX_WIDTH_FULL) 14 else 11
+
     Box(
-        modifier = modifier.cornerRadius(16.dp).background(GlanceTheme.colors.primaryContainer)
+        modifier = modifier
+            .cornerRadius(16.dp)
+            .background(GlanceTheme.colors.primaryContainer)
+            .clickable(action)
     ) {
         Row(
             modifier = GlanceModifier.fillMaxSize()
@@ -57,10 +80,20 @@ fun BatteryItem(
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
             )
-            ItemText(text = deviceName, modifier = GlanceModifier.width(deviceNameWidth.dp))
+            Text(
+                text = deviceName,
+                style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = nameFontSize.sp),
+                fontWeight = FontWeight.Bold,
+                modifier = GlanceModifier.width(deviceNameWidth.dp)
+            )
             Spacer(modifier = GlanceModifier.defaultWeight())
             if (percent > 0) {
-                ItemText(text = "$percent%", modifier = GlanceModifier.padding(end = 4.dp))
+                Text(
+                    text = "$percent%",
+                    style = TextStyle(color = GlanceTheme.colors.primary, fontSize = nameFontSize.sp),
+                    fontWeight = FontWeight.Bold,
+                    modifier = GlanceModifier.padding(end = 4.dp)
+                )
             }
             if (deviceType != DeviceType.PHONE) {
                 Image(
@@ -89,15 +122,17 @@ fun BatteryItem(
 }
 
 @Composable
-private fun ItemText(text: String, modifier: GlanceModifier = GlanceModifier) {
+private fun Text(
+    text: String,
+    style: TextStyle,
+    fontWeight: FontWeight = FontWeight.Normal,
+    modifier: GlanceModifier = GlanceModifier
+) {
     Text(
         text = text,
         modifier = modifier,
         maxLines = 2,
-        style = TextStyle(
-            color = GlanceTheme.colors.primary,
-            fontWeight = FontWeight.Bold
-        )
+        style = style.copy(fontWeight = fontWeight, color = GlanceTheme.colors.primary)
     )
 }
 
@@ -111,7 +146,7 @@ private fun RowScope.Segment(currentSegment: Int, percent: Int) {
                 val isFilled = i + currentSegment <= percent
                 Spacer(
                     modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(
-                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.primaryContainer
+                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.secondaryContainer
                     )
                 )
             }

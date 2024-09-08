@@ -17,6 +17,7 @@
     <string name="charge_counter">Charge Counter</string>
     <string name="cycle_count">Cycle Count</string>
     <string name="charging">Charging</string>
+    <string name="not_active">Not active</string>
     <string name="discharging">Discharging</string>
     <string name="full_power">Full charge</string>
     <string name="power">Power</string>

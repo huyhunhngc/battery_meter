@@ -2,7 +2,6 @@ package io.github.ifa.glancewidget.presentation.widget.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +41,7 @@ fun BatteryItem(
     isShowLargeLevel: Boolean = false,
     isTransparent: Boolean,
 ) {
+    val isActive = percent > 0
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -81,7 +82,14 @@ fun BatteryItem(
             )
             if (isShowLargeLevel) {
                 Spacer(modifier = Modifier.weight(1f))
-                ItemLargeText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+                if (isActive) {
+                    ItemLargeText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+                } else {
+                    ItemText(
+                        text = stringResource(id = R.string.not_active),
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
             } else {
                 ItemText(text = deviceName, modifier = Modifier.fillMaxWidth(0.45f))
@@ -99,6 +107,14 @@ fun BatteryItem(
                     painter = painterResource(R.drawable.ic_bolt),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer)
+                )
+            }
+            if (deviceType != DeviceType.PHONE) {
+                Image(
+                    modifier = Modifier.size(16.dp),
+                    painter = painterResource(if (isActive) R.drawable.ic_bluetooth_connected else R.drawable.ic_bluetooth),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                 )
             }
         }
@@ -148,9 +164,9 @@ fun BatteryPreview() {
 @Composable
 fun BatteryLargeLevelPreview() {
     BatteryItem(
-        deviceType = DeviceType.PHONE,
+        deviceType = DeviceType.HEADSET,
         percent = 50,
-        isCharging = true,
+        isCharging = false,
         deviceName = "Xiaomi 4545453333",
         isShowLargeLevel = true,
         isTransparent = true,
