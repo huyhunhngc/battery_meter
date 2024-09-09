@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_tab">Theo dõi</string>
+    <string name="about_tab">Giới thiệu</string>
+    <string name="settings">Cài đặt</string>
+    <string name="battery_status">Trạng thái pin</string>
+    <string name="connected_devices">Thiết bị được kết nối</string>
+    <string name="battery_information">Thông tin bổ sung</string>
+    <string name="add_your_widget">Thêm tiện ích của bạn vào màn hình chính</string>
+    <string name="add_widget">Thêm tiện ích</string>
+    <string name="show_transparent">Sử dụng tiện ích trong suốt</string>
+    <string name="temperature">Nhiệt độ</string>
+    <string name="technology">Công nghệ</string>
+    <string name="health">Sức khỏe</string>
+    <string name="voltage">Điện áp</string>
+    <string name="design_capacity">Công suất thiết kế</string>
+    <string name="full_charge_capacity">Công suất sạc đầy</string>
+    <string name="charge_counter">Bộ đếm sạc</string>
+    <string name="cycle_count">Số chu kỳ</string>
+    <string name="charging">Đang sạc</string>
+    <string name="not_active">Không hoạt động</string>
+    <string name="discharging">Đang xả</string>
+    <string name="full_power">Sạc đầy</string>
+    <string name="power">Công suất</string>
+    <string name="current">Dòng điện</string>
+    <string name="very_good_status">Rất tốt</string>
+    <string name="good_status">Tốt</string>
+    <string name="bad_status">Kém</string>
+    <string name="require_replacement_status">Cần thay thế</string>
+    <string name="overheat_status">Quá nhiệt</string>
+    <string name="over_voltage_status">Quá điện áp</string>
+    <string name="cold_status">Lạnh</string>
+    <string name="unknown_status">Không xác định</string>
+    <string name="remain_time_charging">Thời gian sạc còn lại: %s</string>
+    <string name="remain_time_battery">Thời gian pin còn lại: %s</string>
+    <string name="follow_system">Theo dõi hệ thống</string>
+    <string name="dark_theme">Tối</string>
+    <string name="light_theme">Sáng</string>
+    <string name="theme">Chủ đề</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="notification_settings">Thông báo &amp; Cài đặt tiện ích</string>
+    <string name="show_paired_devices">Hiển thị các thiết bị được ghép nối</string>
+    <string name="show_paired_devices_desc">Hiển thị các thiết bị được ghép nối trong tiện ích (theo dõi thiết bị này và tất cả các thiết bị được ghép nối).</string>
+    <string name="battery_alert">Cảnh báo pin</string>
+    <string name="battery_alert_desc">Gửi cảnh báo dưới dạng thông báo nổi khi pin quá nóng.</string>
+</resources>

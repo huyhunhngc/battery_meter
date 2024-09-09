@@ -15,7 +15,7 @@ import javax.inject.Singleton
 internal class BatteryDataStoreModule {
     @Singleton
     @Provides
-    fun provideAuthenticationUserDataStore(
+    fun provideBatteryDataStore(
         @BatteryDataStoreQualifier
         dataStore: DataStore<Preferences>,
     ): BatteryDataStore {

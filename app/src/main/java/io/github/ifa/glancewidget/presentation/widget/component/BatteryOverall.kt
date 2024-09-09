@@ -47,11 +47,6 @@ fun BatteryOverall(
             .padding(vertical = 8.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                RoundedCornerShape(16.dp)
-            )
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {

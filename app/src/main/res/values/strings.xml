@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">Battery Meter</string>
+    <string name="app_name" translatable="false">Battery Meter</string>
+    <string name="english_language" translatable="false">English</string>
+    <string name="french_language" translatable="false">Français</string>
+    <string name="vietnamese_language" translatable="false">Tiếng Việt</string>
+    <string name="japanese_language" translatable="false">日本語</string>
     <string name="widget_tab">Monitor</string>
     <string name="about_tab">About</string>
     <string name="settings">Settings</string>

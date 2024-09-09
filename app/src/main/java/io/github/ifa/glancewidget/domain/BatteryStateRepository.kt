@@ -16,6 +16,6 @@ interface BatteryStateRepository {
 }
 
 @Composable
-fun localAuthenticationRepository(): BatteryStateRepository {
+fun localBatteryRepository(): BatteryStateRepository {
     return LocalRepositories.current[BatteryStateRepository::class] as BatteryStateRepository
 }

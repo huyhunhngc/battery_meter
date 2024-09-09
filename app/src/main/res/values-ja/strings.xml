@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_tab">モニター</string>
+    <string name="about_tab">バージョン情報</string>
+    <string name="settings">設定</string>
+    <string name="battery_status">バッテリーの状態</string>
+    <string name="connected_devices">接続されたデバイス</string>
+    <string name="battery_information">追加情報</string>
+    <string name="add_your_widget">ウィジェットをホーム画面に追加</string>
+    <string name="add_widget">ウィジェットを追加</string>
+    <string name="show_transparent">透明なウィジェットを使用する</string>
+    <string name="temperature">温度</string>
+    <string name="technology">テクノロジー</string>
+    <string name="health">健康</string>
+    <string name="voltage">電圧</string>
+    <string name="design_capacity">設計容量</string>
+    <string name="full_charge_capacity">フル充電容量</string>
+    <string name="charge_counter">充電カウンター</string>
+    <string name="cycle_count">サイクルカウント</string>
+    <string name="charging">充電中</string>
+    <string name="not_active">非アクティブ</string>
+    <string name="discharging">放電中</string>
+    <string name="full_power">フル充電</string>
+    <string name="power">電力</string>
+    <string name="current">電流</string>
+    <string name="very_good_status">非常に良好</string>
+    <string name="good_status">良好</string>
+    <string name="bad_status">不良</string>
+    <string name="require_replacement_status">交換が必要</string>
+    <string name="overheat_status">過熱</string>
+    <string name="over_voltage_status">過電圧</string>
+    <string name="cold_status">低温</string>
+    <string name="unknown_status">不明</string>
+    <string name="remain_time_charging">充電残り時間: %s</string>
+    <string name="remain_time_battery">バッテリー残り時間: %s</string>
+    <string name="follow_system">フォローシステム</string>
+    <string name="dark_theme">ダーク</string>
+    <string name="light_theme">ライト</string>
+    <string name="theme">テーマ</string>
+    <string name="language">言語</string>
+    <string name="notification_settings">通知とウィジェット設定</string>
+    <string name="show_paired_devices">ペアリングされたデバイスを表示</string>
+    <string name="show_paired_devices_desc">ウィジェットにペアリングされたデバイスを表示します (このデバイスとすべてのペアリングされたデバイスを追跡します)。</string>
+    <string name="battery_alert">バッテリーアラート</string>
+    <string name="battery_alert_desc">バッテリーが過熱したときに、フローティング通知の形式でアラートを送信します。</string>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_tab">Surveillance</string>
+    <string name="about_tab">À propos</string>
+    <string name="settings">Paramètres</string>
+    <string name="battery_status">État de la batterie</string>
+    <string name="connected_devices">Appareils connectés</string>
+    <string name="battery_information">Informations supplémentaires</string>
+    <string name="add_your_widget">Ajoutez votre widget à l\'écran d\'accueil</string>
+    <string name="add_widget">Ajouter un widget</string>
+    <string name="show_transparent">Utiliser un widget transparent</string>
+    <string name="temperature">Température</string>
+    <string name="technology">Technologie</string>
+    <string name="health">Santé</string>
+    <string name="voltage">Tension</string>
+    <string name="design_capacity">Capacité de conception</string>
+    <string name="full_charge_capacity">Capacité de charge complète</string>
+    <string name="charge_counter">Compteur de charge</string>
+    <string name="cycle_count">Nombre de cycles</string>
+    <string name="charging">Chargement</string>
+    <string name="not_active">Non actif</string>
+    <string name="discharging">Déchargement</string>
+    <string name="full_power">Charge complète</string>
+    <string name="power">Alimentation</string>
+    <string name="current">Courant</string>
+    <string name="very_good_status">Très bien</string>
+    <string name="good_status">Bon</string>
+    <string name="bad_status">Mauvais</string>
+    <string name="require_replacement_status">Remplacer</string>
+    <string name="overheat_status">Surchauffe</string>
+    <string name="over_voltage_status">Surtension</string>
+    <string name="cold_status">Froid</string>
+    <string name="unknown_status">Inconnu</string>
+    <string name="remain_time_charging">Temps de charge restant: %s</string>
+    <string name="remain_time_battery">Temps restant de la batterie: %s</string>
+    <string name="follow_system">Suivre le système</string>
+    <string name="dark_theme">Sombre</string>
+    <string name="light_theme">Clair</string>
+    <string name="theme">Thème</string>
+    <string name="language">Langue</string>
+    <string name="notification_settings">Notification et Paramètres du widget</string>
+    <string name="show_paired_devices">Afficher les appareils appairés</string>
+    <string name="show_paired_devices_desc">Afficher les appareils appairés dans le widget (suivi de cet appareil et de tous les appareils appairés).</string>
+    <string name="battery_alert">Alerte de batterie</string>
+    <string name="battery_alert_desc">Envoyer une alerte sous la forme d\'une notification flottante lorsque la batterie surchauffe.</string>
+</resources>

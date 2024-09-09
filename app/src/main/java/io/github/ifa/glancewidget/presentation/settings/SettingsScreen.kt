@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.presentation.settings
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,14 +8,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -25,18 +28,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSettingItem
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
+import io.github.ifa.glancewidget.ui.component.DropdownTextField
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
 
@@ -55,7 +63,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     SettingsScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
-        onSelectTheme = viewModel::setThemeType
+        onSelectTheme = viewModel::setThemeType,
+        onSelectLanguage = viewModel::setLanguage
     )
 }
 
@@ -65,6 +74,7 @@ internal fun SettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
     onSelectTheme: (ThemeType) -> Unit,
+    onSelectLanguage: (AppSettings.Language) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -83,7 +93,7 @@ internal fun SettingsScreen(
                 .padding(16.dp)
         ) {
             ThemeSetting(onSelectTheme = onSelectTheme, uiState = uiState)
-            LanguageSetting(uiState = uiState)
+            LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
             JobSetting(uiState = uiState)
         }
     }
@@ -142,20 +152,50 @@ fun JobSetting(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageSetting(
-    uiState: SettingsViewModel.SettingsScreenUiState
+    uiState: SettingsViewModel.SettingsScreenUiState,
+    onSelectLanguage: (AppSettings.Language) -> Unit
 ) {
+    val context = LocalContext.current
+    val deviceLocale = context.resources.configuration.locales.get(0)
+    val selectedLanguage =  uiState.language ?: AppSettings.Language.fromCode(deviceLocale.language)
     Row(verticalAlignment = Alignment.CenterVertically) {
         TextWithImage(
             text = stringResource(R.string.language),
             image = painterResource(id = R.drawable.ic_language),
             modifier = Modifier.weight(1f)
         )
-        IconButton(modifier = Modifier.padding(4.dp), onClick = { /*TODO*/ }) {
-            Row {
-                Text(text = "en")
-                Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+        DropdownTextField(
+            selectedValue = selectedLanguage.code,
+            options = AppSettings.Language.options(),
+            transformOption = { option ->
+                stringResource(id = AppSettings.Language.fromCode(option).displayNameResId())
+            },
+            onValueChangedEvent = { selectedValue ->
+                onSelectLanguage(AppSettings.Language.fromCode(selectedValue))
+            },
+        ) { selectedValue, expanded ->
+            Row(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .width(150.dp)
+                    .menuAnchor(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = selectedValue,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Icon(
+                    Icons.Filled.ArrowDropDown,
+                    null,
+                    Modifier.rotate(if (expanded) 180f else 0f),
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
