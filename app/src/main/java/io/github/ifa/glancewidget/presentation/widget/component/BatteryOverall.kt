@@ -1,9 +1,9 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,14 +31,17 @@ import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MAH_UNIT
+import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
 import io.github.ifa.glancewidget.utils.Constants.WATT_UNIT
 import io.github.ifa.glancewidget.utils.toHHMMSS
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun BatteryOverall(
     myDevice: MyDevice,
     extraBatteryInfo: ExtraBatteryInfo,
     batteryHealth: MyDevice.BatteryHealth,
+    remainBatteryTime: String,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -66,13 +69,16 @@ fun BatteryOverall(
                 )
             }
         }
-        val remainTime = if (myDevice.isCharging && myDevice.level < 100) {
+        val remainTime = if (myDevice.isCharging) {
             stringResource(
                 id = R.string.remain_time_charging,
                 extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
             )
         } else {
-            stringResource(id = R.string.remain_time_battery, "")
+            stringResource(
+                id = R.string.remain_time_battery,
+                remainBatteryTime
+            )
         }
         Text(
             text = remainTime,
@@ -98,11 +104,16 @@ fun BatteryOverall(
                         key = stringResource(id = if (isCharging) R.string.charging else R.string.discharging),
                         value = myDevice.chargeType.type
                     )
+                    val power = extraBatteryInfo.powerInWatt(myDevice.voltage)
+                    if (power > 0) {
+                        ShortInformationRow(
+                            key = stringResource(id = R.string.power),
+                            value = "${String.format("%.2f", power)} $WATT_UNIT"
+                        )
+                    }
                     ShortInformationRow(
-                        key = stringResource(id = R.string.power), value = "1.4$WATT_UNIT"
-                    )
-                    ShortInformationRow(
-                        key = stringResource(id = R.string.current), value = "230$MAH_UNIT"
+                        key = stringResource(id = R.string.current),
+                        value = "${extraBatteryInfo.chargeCurrent} $MA_UNIT"
                     )
                 }
             }
@@ -178,6 +189,7 @@ fun BatteryOverallPreview() {
     BatteryOverall(
         myDevice = MyDevice.fromIntent(Intent()),
         extraBatteryInfo = ExtraBatteryInfo(4100, 100, 100),
+        remainBatteryTime = "00:00:00",
         batteryHealth = MyDevice.BatteryHealth.GOOD
     )
 }

@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.LocaleList
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.ConfigurationCompat
 import androidx.core.os.LocaleListCompat
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
@@ -30,22 +29,27 @@ fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
     val chargeCounter =
         batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
     val capacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
-    val fullChargeCapacity = if (chargeCounter == Int.MIN_VALUE || capacity == Int.MIN_VALUE) {
-        0
-    } else {
-        (chargeCounter / capacity * 100)
-    }
+    val fullChargeCapacity = chargeCounter.toFloat() / capacity.toFloat() * 100f
     val chargingTimeRemaining = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         batteryManager.computeChargeTimeRemaining() / 1000
     } else {
         -1
     }
+
+    val chargeCurrent = batteryManager.getIntProperty(
+        BatteryManager.BATTERY_PROPERTY_CURRENT_NOW
+    ) / 1_000 // micro to millis
+
+    val remainedCapacity = batteryManager.getIntProperty(
+        BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER
+    ) / 1_000_000
+
     return ExtraBatteryInfo(
         capacity = getDesignCapacity(),
-        fullChargeCapacity = fullChargeCapacity,
+        fullChargeCapacity = fullChargeCapacity.toInt(),
         chargeCounter = chargeCounter,
-        chargingTimeRemaining = chargingTimeRemaining
+        chargingTimeRemaining = chargingTimeRemaining,
+        chargeCurrent = chargeCurrent / -1
     )
 }
 
@@ -64,7 +68,10 @@ fun Context.getDesignCapacity(): Int {
     }
 }
 
-fun Context.getChargingTimeRemaining(myDevice: MyDevice, extraBatteryInfo: ExtraBatteryInfo): String {
+fun Context.getChargingTimeRemaining(
+    myDevice: MyDevice,
+    extraBatteryInfo: ExtraBatteryInfo
+): String {
     var chargingTimeRemaining: Double
     val batteryLevel = myDevice.level
     val currentCapacity = extraBatteryInfo.chargeCounter

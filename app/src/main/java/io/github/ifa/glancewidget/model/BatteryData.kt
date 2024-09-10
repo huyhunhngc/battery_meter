@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
+import android.util.Log
 import androidx.annotation.StringRes
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.utils.getPairedDevices
@@ -77,8 +78,8 @@ data class MyDevice(
             health == BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE -> BatteryHealth.OVER_VOLTAGE
             health == BatteryManager.BATTERY_HEALTH_COLD -> BatteryHealth.COLD
             lossCapacityInPercent in 0.0..9.0 -> BatteryHealth.VERY_GOOD
-            lossCapacityInPercent in 10.0..25.0 -> BatteryHealth.GOOD
-            lossCapacityInPercent in 26.0..59.0 -> BatteryHealth.BAD
+            lossCapacityInPercent in 9.0 .. 25.0 -> BatteryHealth.GOOD
+            lossCapacityInPercent in 25.0..59.0 -> BatteryHealth.BAD
             else -> BatteryHealth.UNKNOWN
         }
     }

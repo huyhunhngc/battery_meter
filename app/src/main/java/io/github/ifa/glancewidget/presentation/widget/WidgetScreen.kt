@@ -145,6 +145,7 @@ private fun WidgetScreen(
                 myDevice = uiState.batteryData.myDevice,
                 extraBatteryInfo = uiState.extraBatteryInfo,
                 batteryHealth = uiState.batteryHealth,
+                remainBatteryTime = uiState.remainBatteryTime,
                 modifier = Modifier.padding(16.dp)
             )
             connectedDevices(
@@ -169,10 +170,11 @@ private fun LazyListScope.batteryOverall(
     myDevice: MyDevice,
     extraBatteryInfo: ExtraBatteryInfo,
     batteryHealth: MyDevice.BatteryHealth,
+    remainBatteryTime: String,
     modifier: Modifier = Modifier
 ) {
     item {
-        BatteryOverall(myDevice, extraBatteryInfo, batteryHealth, modifier)
+        BatteryOverall(myDevice, extraBatteryInfo, batteryHealth, remainBatteryTime, modifier)
     }
 }
 

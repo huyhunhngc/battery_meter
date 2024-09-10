@@ -6,19 +6,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
-import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.WIDGET_PREFERENCES
-import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.WidgetSetting
-import io.github.ifa.glancewidget.model.WidgetSettings
+import io.github.ifa.glancewidget.utils.chunked
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
-import io.github.ifa.glancewidget.utils.getObject
-import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.map
 
 class DefaultBatteryStateRepository(
     private val batteryDataStore: BatteryDataStore, private val context: Context
@@ -36,9 +31,10 @@ class DefaultBatteryStateRepository(
     }
 
     override fun extraBatteryFlow(): Flow<ExtraBatteryInfo> {
-        return batteryDataStore.getExtraBatteryInformation().onStart {
-            saveExtraBatteryInformation()
-        }
+        return batteryDataStore.getExtraBatteryInformation()
+            .chunked(4)
+            .conflate()
+            .map { it.average() }
     }
 
     override suspend fun saveExtraBatteryInformation() {
@@ -58,4 +54,14 @@ class DefaultBatteryStateRepository(
             })
         batteryDataStore.saveWidgetSettings(newSettings)
     }
+}
+
+fun List<ExtraBatteryInfo>.average(): ExtraBatteryInfo {
+    return ExtraBatteryInfo(
+        capacity = this.map { it.capacity }.average().toInt(),
+        chargeCounter = this.map { it.chargeCounter }.average().toInt(),
+        fullChargeCapacity = this.map { it.fullChargeCapacity }.average().toInt(),
+        chargingTimeRemaining = this.map { it.chargingTimeRemaining }.average().toLong(),
+        chargeCurrent = this.map { it.chargeCurrent }.average().toInt(),
+    )
 }

@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.core.splashscreen)
     kapt(libs.daggerHiltAndroidCompiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.daggerHiltAndroidTesting)
