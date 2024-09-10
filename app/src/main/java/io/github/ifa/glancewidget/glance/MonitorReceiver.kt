@@ -13,10 +13,13 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.MyDevice
-import io.github.ifa.glancewidget.utils.getPairedDevices
 import io.github.ifa.glancewidget.utils.setObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,44 +36,51 @@ class MonitorReceiver : BroadcastReceiver() {
         }
 
     override fun onReceive(context: Context, intent: Intent) {
-        when (intent.action) {
+        val updatedBatteryData = when (intent.action) {
             Intent.ACTION_BATTERY_CHANGED -> {
-                batteryData = BatteryData(
-                    myDevice = MyDevice.fromIntent(intent),
-                    batteryConnectedDevices = context.getPairedDevices()
-                )
+                batteryData.copy(myDevice = MyDevice.fromIntent(intent)).setPairedDevices(context)
             }
 
-            Intent.ACTION_POWER_CONNECTED -> {
-                batteryData = batteryData.setChargingStatus(true)
-                MainScope().launch {
-                    batteryStateRepository.saveExtraBatteryInformation()
-                }
-            }
+            Intent.ACTION_POWER_CONNECTED -> batteryData.setChargingStatus(true)
 
-            Intent.ACTION_POWER_DISCONNECTED -> {
-                batteryData = batteryData.setChargingStatus(false)
-            }
+            Intent.ACTION_POWER_DISCONNECTED -> batteryData.setChargingStatus(false)
 
-            in BLUETOOTH_STATE_ACTIONS -> {
-                batteryData = batteryData.setPairedDevices(context)
+            in BLUETOOTH_STATE_ACTIONS -> batteryData.setPairedDevices(context)
+
+            else -> batteryData
+        }
+        goAsync(MainScope()) {
+            if (updatedBatteryData != batteryData) {
+                batteryData = updatedBatteryData
+                updateBatteryWidget(context)
             }
         }
-        observeData(context)
     }
 
-    private fun observeData(context: Context) {
-        MainScope().launch {
+    private suspend fun updateBatteryWidget(context: Context) = coroutineScope {
+        withContext(Dispatchers.IO) {
+            batteryStateRepository.saveExtraBatteryInformation()
             context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, batteryData)
-            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(BatteryWidget::class.java)
-            glanceIds.forEach { glanceId ->
-                updateAppWidgetState(
-                    context = context,
-                    glanceId = glanceId,
-                ) { _ ->
-                    BatteryWidget().updateIfBatteryChanged(context, glanceId)
-                }
+        }
+        val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(BatteryWidget::class.java)
+        glanceIds.forEach { glanceId ->
+            updateAppWidgetState(
+                context = context,
+                glanceId = glanceId,
+            ) { _ ->
+                BatteryWidget().updateIfBatteryChanged(context, glanceId)
             }
         }
+    }
+}
+
+fun BroadcastReceiver.goAsync(
+    coroutineScope: CoroutineScope,
+    block: suspend () -> Unit
+) {
+    val pendingResult = goAsync()
+    coroutineScope.launch {
+        block()
+        pendingResult.finish()
     }
 }
