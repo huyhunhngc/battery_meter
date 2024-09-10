@@ -11,6 +11,7 @@ import android.os.LocaleList
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.ConfigurationCompat
+import androidx.core.os.LocaleListCompat
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
@@ -82,6 +83,7 @@ fun Context.setLocale(localeCode: String) {
     } else {
         setLocaleForDevicesLowerApi33(code)
     }
+    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(code))
 }
 
 fun getSystemLocale(): String {

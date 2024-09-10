@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
+    implementation(libs.accompanist.systemuicontroller)
     kapt(libs.daggerHiltAndroidCompiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.daggerHiltAndroidTesting)

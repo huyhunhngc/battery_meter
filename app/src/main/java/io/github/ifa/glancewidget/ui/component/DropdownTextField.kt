@@ -1,5 +1,7 @@
 package io.github.ifa.glancewidget.ui.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,12 +63,19 @@ fun DropdownTextField(
                         Text(
                             text = transformOption(option),
                             maxLines = 1,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     },
                     onClick = {
                         expanded = false
                         onValueChangedEvent(option)
+                    },
+                    modifier = Modifier.fillMaxWidth().let {
+                        if (selectedValue == option) {
+                            it.background(MaterialTheme.colorScheme.primaryContainer)
+                        } else {
+                            it
+                        }
                     }
                 )
             }

@@ -31,7 +31,7 @@ data class AppSettings(
             }
 
             fun options(): List<String> {
-                return entries.map { it.code }.sortedBy { it }
+                return entries.filter { it != DEFAULT }.map { it.code }.sortedBy { it }
             }
         }
     }

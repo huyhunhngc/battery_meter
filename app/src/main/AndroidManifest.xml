@@ -24,6 +24,7 @@
             android:taskAffinity=":MainActivity"
             android:launchMode="singleTask"
             android:localeConfig="@xml/locales_config"
+            android:configChanges="layoutDirection|locale|uiMode"
             android:theme="@style/Theme.GlanceWidget"
             tools:targetApi="tiramisu">
             <intent-filter>
