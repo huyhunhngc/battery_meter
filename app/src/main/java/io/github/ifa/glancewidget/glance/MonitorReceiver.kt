@@ -25,7 +25,7 @@ class MonitorReceiver : BroadcastReceiver() {
     lateinit var batteryStateRepository: BatteryStateRepository
 
     private val lock = Object()
-    private var batteryData: BatteryData? = null
+    private var batteryData: BatteryData = BatteryData.initial()
         set(value) {
             synchronized(lock) {
                 field = value
@@ -35,32 +35,25 @@ class MonitorReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_BATTERY_CHANGED -> {
-                val devices = context.getPairedDevices()
                 batteryData = BatteryData(
-                    myDevice = MyDevice.fromIntent(intent), batteryConnectedDevices = devices
+                    myDevice = MyDevice.fromIntent(intent),
+                    batteryConnectedDevices = context.getPairedDevices()
                 )
             }
 
             Intent.ACTION_POWER_CONNECTED -> {
-                batteryData = (batteryData ?: BatteryData.initial()).run {
-                    copy(myDevice = myDevice.copy(isCharging = true))
-                }
+                batteryData = batteryData.setChargingStatus(true)
                 MainScope().launch {
                     batteryStateRepository.saveExtraBatteryInformation()
                 }
             }
 
             Intent.ACTION_POWER_DISCONNECTED -> {
-                batteryData = (batteryData ?: BatteryData.initial()).run {
-                    copy(myDevice = myDevice.copy(isCharging = true))
-                }
+                batteryData = batteryData.setChargingStatus(false)
             }
 
             in BLUETOOTH_STATE_ACTIONS -> {
-                val devices = context.getPairedDevices()
-                batteryData = (batteryData ?: BatteryData.initial()).copy(
-                    batteryConnectedDevices = devices
-                )
+                batteryData = batteryData.setPairedDevices(context)
             }
         }
         observeData(context)

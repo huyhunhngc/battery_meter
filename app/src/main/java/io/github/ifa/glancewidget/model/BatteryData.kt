@@ -1,10 +1,12 @@
 package io.github.ifa.glancewidget.model
 
+import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
 import androidx.annotation.StringRes
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.utils.getPairedDevices
 import kotlinx.serialization.Serializable
 import kotlin.math.round
 
@@ -12,6 +14,16 @@ import kotlin.math.round
 data class BatteryData(
     val myDevice: MyDevice, val batteryConnectedDevices: List<BonedDevice>
 ) {
+    fun setChargingStatus(isCharging: Boolean): BatteryData {
+        return copy(myDevice = myDevice.copy(isCharging = isCharging))
+    }
+
+    fun setPairedDevices(context: Context): BatteryData {
+        return copy(
+            batteryConnectedDevices = context.getPairedDevices()
+                .ifEmpty { batteryConnectedDevices })
+    }
+
     companion object {
         fun initial(): BatteryData {
             return BatteryData(

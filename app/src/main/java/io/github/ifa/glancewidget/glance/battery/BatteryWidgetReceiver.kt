@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
@@ -25,10 +24,12 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     private lateinit var monitorBroadcastReceiver: MonitorReceiver
 
     override fun onUpdate(
-        context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        if (::monitorBroadcastReceiver.isInitialized)  {
+        if (::monitorBroadcastReceiver.isInitialized) {
             context.applicationContext.unregisterReceiver(monitorBroadcastReceiver)
         }
         monitorBroadcastReceiver = MonitorReceiver()
@@ -45,7 +46,10 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     }
 
     override fun onAppWidgetOptionsChanged(
-        context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         val minW = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
@@ -54,7 +58,11 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
             (glanceAppWidget as? BatteryWidget)?.updateOnSizeChanged(
                 context = context,
                 glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId),
-                widgetSetting = WidgetSetting(appWidgetId = appWidgetId, width = minW, height = minH)
+                widgetSetting = WidgetSetting(
+                    appWidgetId = appWidgetId,
+                    width = minW,
+                    height = minH
+                )
             )
         }
     }
