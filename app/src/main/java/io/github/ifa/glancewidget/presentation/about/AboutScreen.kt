@@ -2,7 +2,12 @@ package io.github.ifa.glancewidget.presentation.about
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -21,17 +26,21 @@ import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 
 const val aboutScreenRoute = "about_screen_route"
 
-fun NavGraphBuilder.aboutScreen() {
+fun NavGraphBuilder.aboutScreen(onNavigationIconClick: () -> Unit) {
     composable(aboutScreenRoute) {
-        AboutScreen()
+        AboutScreen(onNavigationIconClick = onNavigationIconClick)
     }
 }
 
 @Composable
-fun AboutScreen(viewModel: AboutViewModel = hiltViewModel()) {
+fun AboutScreen(viewModel: AboutViewModel = hiltViewModel(), onNavigationIconClick: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    AboutScreen(uiState = uiState, snackbarHostState = snackbarHostState)
+    AboutScreen(
+        uiState = uiState,
+        snackbarHostState = snackbarHostState,
+        onNavigationIconClick = onNavigationIconClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +48,7 @@ fun AboutScreen(viewModel: AboutViewModel = hiltViewModel()) {
 internal fun AboutScreen(
     uiState: AboutViewModel.AboutScreenUiState,
     snackbarHostState: SnackbarHostState,
+    onNavigationIconClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -46,6 +56,15 @@ internal fun AboutScreen(
         topBar = {
             AnimatedTextTopAppBar(
                 title = stringResource(id = R.string.about_tab),
+                navigationIcon = {
+                    IconButton(onClick = { onNavigationIconClick() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            contentDescription = "Back",
+                        )
+                    }
+                },
                 scrollBehavior = scrollBehavior
             )
         },

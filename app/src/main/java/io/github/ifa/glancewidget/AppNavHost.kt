@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.about.aboutScreen
+import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
 import io.github.ifa.glancewidget.presentation.main.mainTabScreens
 import io.github.ifa.glancewidget.presentation.settings.settingsScreen
 import io.github.ifa.glancewidget.presentation.widget.widgetScreen
@@ -40,12 +41,16 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        mainTabScreens { navController, paddingValues ->
+        mainTabScreens { navMainController, paddingValues ->
             widgetScreen()
-            settingsScreen()
+            settingsScreen(onOpenAboutScreen = navController::navigateToAboutScreen)
         }
-        aboutScreen()
+        aboutScreen(onNavigationIconClick = navController::popBackStack)
     }
+}
+
+fun NavController.navigateToAboutScreen() {
+    navigate(aboutScreenRoute)
 }
 
 @Composable

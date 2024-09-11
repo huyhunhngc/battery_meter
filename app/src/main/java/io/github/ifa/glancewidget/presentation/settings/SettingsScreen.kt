@@ -3,17 +3,21 @@ package io.github.ifa.glancewidget.presentation.settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
@@ -34,7 +38,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,22 +58,25 @@ import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.DropdownTextField
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
+import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
+import io.github.ifa.glancewidget.ui.component.appPadding
 
 const val settingsScreenRoute = "settings_screen_route"
 
-fun NavGraphBuilder.settingsScreen() {
+fun NavGraphBuilder.settingsScreen(onOpenAboutScreen: () -> Unit) {
     composable(settingsScreenRoute) {
-        SettingsScreen()
+        SettingsScreen(onOpenAboutScreen = onOpenAboutScreen)
     }
 }
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
+fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutScreen: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     SettingsScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        onOpenAboutScreen = onOpenAboutScreen,
         onSelectTheme = viewModel::setThemeType,
         onSelectLanguage = viewModel::setLanguage,
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
@@ -81,6 +90,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
 internal fun SettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
+    onOpenAboutScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
@@ -111,19 +121,29 @@ internal fun SettingsScreen(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
+                .appPadding()
+                .fillMaxSize()
                 .padding(padding)
-                .fillMaxWidth()
-                .padding(16.dp)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            ThemeSetting(onSelectTheme = onSelectTheme, uiState = uiState)
-            LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-            JobSetting(
-                uiState = uiState,
-                onSetNotificationEnabled = onSetNotificationEnabled,
-                onSetShowPairedDevice = onSetShowPairedDevice
-            )
+            item {
+                ThemeSetting(onSelectTheme = onSelectTheme, uiState = uiState)
+            }
+            item {
+                LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+            }
+            item {
+                JobSetting(
+                    uiState = uiState,
+                    onSetNotificationEnabled = onSetNotificationEnabled,
+                    onSetShowPairedDevice = onSetShowPairedDevice
+                )
+            }
+            item {
+                OtherSession(onOpenAboutScreen)
+            }
         }
     }
 }
@@ -140,7 +160,9 @@ fun ThemeSetting(
     Spacer(modifier = Modifier.height(16.dp))
     LazyVerticalGrid(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(96.dp),
         columns = GridCells.Adaptive(minSize = 96.dp)
     ) {
         items(ThemeType.entries) { theme ->
@@ -249,3 +271,24 @@ fun LanguageSetting(
     }
 }
 
+@Composable
+fun OtherSession(onOpenAboutScreen: () -> Unit) {
+    TextWithImage(
+        text = stringResource(R.string.about_tab),
+        image = painterResource(id = R.drawable.ic_info),
+        modifier = Modifier.padding(vertical = 16.dp)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(8.dp),
+    ) {
+        TextWithRightArrow(text = "About", onClick = onOpenAboutScreen)
+
+        TextWithRightArrow(text = "License") {
+
+        }
+    }
+}

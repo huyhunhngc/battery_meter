@@ -52,9 +52,7 @@ fun SwitchWithDescription(
                 text = description,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .padding(vertical = 4.dp)
-                    .wrapContentWidth()
+                modifier = Modifier.padding(vertical = 4.dp)
             )
         }
 

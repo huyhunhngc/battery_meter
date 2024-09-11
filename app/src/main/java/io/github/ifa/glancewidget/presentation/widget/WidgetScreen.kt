@@ -69,6 +69,7 @@ import io.github.ifa.glancewidget.presentation.widget.component.BatteryItem
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
 import io.github.ifa.glancewidget.presentation.widget.component.ConnectedDevice
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
+import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
 import kotlinx.coroutines.launch
 
@@ -137,6 +138,7 @@ private fun WidgetScreen(
     ) { padding ->
         LazyColumn(
             modifier = Modifier
+                .appPadding()
                 .fillMaxSize()
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -145,17 +147,17 @@ private fun WidgetScreen(
                 myDevice = uiState.batteryData.myDevice,
                 extraBatteryInfo = uiState.extraBatteryInfo,
                 remainBatteryTime = uiState.remainBatteryTime,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
             batteryExtraInformation(
                 myDevice = uiState.batteryData.myDevice,
                 extraBatteryInfo = uiState.extraBatteryInfo,
                 batteryHealth = uiState.batteryHealth,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
             connectedDevices(
                 batteryConnectedDevices = uiState.batteryData.batteryConnectedDevices,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
 

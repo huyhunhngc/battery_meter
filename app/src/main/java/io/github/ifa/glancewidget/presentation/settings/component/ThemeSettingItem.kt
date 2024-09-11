@@ -39,9 +39,7 @@ fun ThemeSettingItem(
         border = BorderStroke(
             width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = selectedAlpha)
         ),
-        modifier = modifier
-            .height(96.dp)
-            .fillMaxWidth(),
+        modifier = modifier.height(90.dp).fillMaxWidth(),
         tonalElevation = if (selected) 6.dp else 0.dp,
         contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = selectedAlpha)
     ) {
