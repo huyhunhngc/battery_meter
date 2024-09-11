@@ -1,6 +1,8 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -114,7 +116,7 @@ fun BatteryItem(
                 ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
             }
 
-            AnimatedVisibility(visible = isCharging) {
+            AnimatedVisibility(visible = isCharging, enter = scaleIn(), exit = scaleOut()) {
                 Image(
                     modifier = Modifier
                         .size(16.dp)

@@ -3,7 +3,6 @@ package io.github.ifa.glancewidget.presentation.widget.component
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -128,26 +127,29 @@ fun BatteryOverall(
                     .weight(1f)
                     .height(120.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(if (myDevice.isCharging) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background)
                     .padding(16.dp)
             ) {
-
                 Column {
                     ShortInformationRow(
                         key = stringResource(id = if (myDevice.isCharging) R.string.charging else R.string.discharging),
                         value = myDevice.chargeType.type
                     )
-
-                    ShortInformationRow(
-                        key = "",
-                        value = "${extraBatteryInfo.chargeCurrent} $MA_UNIT"
+                    Text(
+                        text = "${extraBatteryInfo.chargeCurrent} $MA_UNIT",
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
                 Icon(
                     painter = painterResource(id = R.drawable.ic_bolt),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(16.dp).align(Alignment.BottomEnd)
+                    modifier = Modifier
+                        .size(16.dp)
+                        .align(Alignment.BottomEnd)
                 )
             }
         }
@@ -220,7 +222,7 @@ private fun InformationRow(@StringRes key: Int, value: String) {
 @Composable
 fun BatteryOverallPreview() {
     BatteryOverall(
-        myDevice = MyDevice.fromIntent(Intent()),
+        myDevice = MyDevice.fromIntent(Intent()).copy(isCharging = true),
         extraBatteryInfo = ExtraBatteryInfo(4100, 100, 100),
         remainBatteryTime = "00:00:00",
         batteryHealth = MyDevice.BatteryHealth.GOOD
