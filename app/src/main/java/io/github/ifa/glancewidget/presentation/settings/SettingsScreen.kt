@@ -1,6 +1,8 @@
 package io.github.ifa.glancewidget.presentation.settings
 
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +16,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,7 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -33,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -64,7 +69,10 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         onSelectTheme = viewModel::setThemeType,
-        onSelectLanguage = viewModel::setLanguage
+        onSelectLanguage = viewModel::setLanguage,
+        onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
+        onSetShowPairedDevice = viewModel::onShowPairedDeviceChanged,
+        onApplySettings = viewModel::onApplySettings
     )
 }
 
@@ -74,7 +82,10 @@ internal fun SettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
     onSelectTheme: (ThemeType) -> Unit,
-    onSelectLanguage: (AppSettings.Language) -> Unit
+    onSelectLanguage: (AppSettings.Language) -> Unit,
+    onSetNotificationEnabled: (Boolean) -> Unit,
+    onSetShowPairedDevice: (Boolean) -> Unit,
+    onApplySettings: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -85,6 +96,20 @@ internal fun SettingsScreen(
                 scrollBehavior = scrollBehavior
             )
         },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = uiState.showApplyButton,
+                enter = scaleIn(),
+                exit = scaleOut()
+            ) {
+                ExtendedFloatingActionButton(
+                    onClick = onApplySettings,
+                    icon = { Icon(Icons.Filled.Check, "Extended floating action button.") },
+                    text = { Text(text = stringResource(id = R.string.apply)) },
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         Column(
             modifier = Modifier
@@ -94,7 +119,11 @@ internal fun SettingsScreen(
         ) {
             ThemeSetting(onSelectTheme = onSelectTheme, uiState = uiState)
             LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-            JobSetting(uiState = uiState)
+            JobSetting(
+                uiState = uiState,
+                onSetNotificationEnabled = onSetNotificationEnabled,
+                onSetShowPairedDevice = onSetShowPairedDevice
+            )
         }
     }
 }
@@ -127,8 +156,21 @@ fun ThemeSetting(
 
 @Composable
 fun JobSetting(
-    uiState: SettingsViewModel.SettingsScreenUiState
+    uiState: SettingsViewModel.SettingsScreenUiState,
+    onSetNotificationEnabled: (Boolean) -> Unit,
+    onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
+    var notificationEnabled by remember(uiState.notificationSetting.batteryAlert) {
+        mutableStateOf(
+            uiState.newNotificationSetting?.batteryAlert ?: uiState.notificationSetting.batteryAlert
+        )
+    }
+    var showPairedDevice by remember(uiState.notificationSetting.showPairedDevices) {
+        mutableStateOf(
+            uiState.newNotificationSetting?.showPairedDevices
+                ?: uiState.notificationSetting.showPairedDevices
+        )
+    }
     TextWithImage(
         text = stringResource(R.string.notification_settings),
         image = painterResource(id = R.drawable.ic_notifications),
@@ -138,8 +180,11 @@ fun JobSetting(
     SwitchWithDescription(
         label = stringResource(id = R.string.battery_alert),
         description = stringResource(id = R.string.battery_alert_desc),
-        onCheckedChange = {},
-        checked = false
+        onCheckedChange = { checked ->
+            onSetNotificationEnabled(checked)
+            notificationEnabled = checked
+        },
+        checked = notificationEnabled
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -147,8 +192,11 @@ fun JobSetting(
     SwitchWithDescription(
         label = stringResource(id = R.string.show_paired_devices),
         description = stringResource(id = R.string.show_paired_devices_desc),
-        onCheckedChange = {},
-        checked = true
+        onCheckedChange = { checked ->
+            onSetShowPairedDevice(checked)
+            showPairedDevice = checked
+        },
+        checked = showPairedDevice
     )
 }
 
@@ -160,7 +208,7 @@ fun LanguageSetting(
 ) {
     val context = LocalContext.current
     val deviceLocale = context.resources.configuration.locales.get(0)
-    val selectedLanguage =  uiState.language ?: AppSettings.Language.fromCode(deviceLocale.language)
+    val selectedLanguage = uiState.language ?: AppSettings.Language.fromCode(deviceLocale.language)
     Row(verticalAlignment = Alignment.CenterVertically) {
         TextWithImage(
             text = stringResource(R.string.language),

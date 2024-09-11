@@ -43,4 +43,5 @@
     <string name="show_paired_devices_desc">Afficher les appareils appairés dans le widget (suivi de cet appareil et de tous les appareils appairés).</string>
     <string name="battery_alert">Alerte de batterie</string>
     <string name="battery_alert_desc">Envoyer une alerte sous la forme d\'une notification flottante lorsque la batterie surchauffe.</string>
+    <string name="apply">Appliquer</string>
 </resources>

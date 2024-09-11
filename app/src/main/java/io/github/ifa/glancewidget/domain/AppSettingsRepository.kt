@@ -10,6 +10,7 @@ interface AppSettingsRepository {
     fun get(): Flow<AppSettings>
     suspend fun saveLocaleLanguage(language: AppSettings.Language)
     suspend fun saveTheme(themeType: ThemeType)
+    suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting)
 }
 
 @Composable

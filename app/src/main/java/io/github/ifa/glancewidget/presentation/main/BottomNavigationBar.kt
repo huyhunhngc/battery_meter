@@ -41,16 +41,13 @@ enum class MainScreenTab(
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavController,
-    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentTab = MainScreenTab.routeToTab(navBackStackEntry?.destination?.route)
 
-    NavigationBar(
-        modifier = modifier, tonalElevation = 1.dp
-    ) {
+    NavigationBar {
         MainScreenTab.entries.forEach { tab ->
             val isSelected = tab == currentTab
             NavigationBarItem(

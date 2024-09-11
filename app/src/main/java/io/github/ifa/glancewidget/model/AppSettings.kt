@@ -7,7 +7,14 @@ import kotlinx.serialization.Serializable
 data class AppSettings(
     val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
     val language: Language = Language.DEFAULT,
+    val notificationSetting: NotificationSetting = NotificationSetting()
 ) {
+    @Serializable
+    data class NotificationSetting(
+        val batteryAlert: Boolean = false,
+        val showPairedDevices: Boolean = true
+    )
+
     enum class Language(val code: String) {
         DEFAULT("sys"),
         ENGLISH("en"),

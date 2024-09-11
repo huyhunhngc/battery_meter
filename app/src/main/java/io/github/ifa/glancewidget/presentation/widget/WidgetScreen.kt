@@ -140,7 +140,6 @@ private fun WidgetScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .padding(bottom = 80.dp)
         ) {
             batteryOverall(
                 myDevice = uiState.batteryData.myDevice,

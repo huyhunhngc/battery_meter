@@ -47,4 +47,5 @@
     <string name="show_paired_devices_desc">Show paired devices in the widget (tracking this device and all paired devices).</string>
     <string name="battery_alert">Battery Alert</string>
     <string name="battery_alert_desc">Send an alert in the form of a floating notification when the battery overheats.</string>
+    <string name="apply">Apply</string>
 </resources>

@@ -43,4 +43,5 @@
     <string name="show_paired_devices_desc">ウィジェットにペアリングされたデバイスを表示します (このデバイスとすべてのペアリングされたデバイスを追跡します)。</string>
     <string name="battery_alert">バッテリーアラート</string>
     <string name="battery_alert_desc">バッテリーが過熱したときに、フローティング通知の形式でアラートを送信します。</string>
+    <string name="apply">適用する</string>
 </resources>

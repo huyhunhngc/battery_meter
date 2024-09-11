@@ -43,4 +43,5 @@
     <string name="show_paired_devices_desc">Hiển thị các thiết bị được ghép nối trong tiện ích (theo dõi thiết bị này và tất cả các thiết bị được ghép nối).</string>
     <string name="battery_alert">Cảnh báo pin</string>
     <string name="battery_alert_desc">Gửi cảnh báo dưới dạng thông báo nổi khi pin quá nóng.</string>
+    <string name="apply">Áp dụng</string>
 </resources>

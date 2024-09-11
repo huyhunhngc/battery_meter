@@ -25,4 +25,9 @@ class DefaultAppSettingsRepository(
         val settings = appSettingDataStore.getSettings()
         appSettingDataStore.saveSettings(settings.copy(theme = themeType))
     }
+
+    override suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting) {
+        val settings = appSettingDataStore.getSettings()
+        appSettingDataStore.saveSettings(settings.copy(notificationSetting = notificationSetting))
+    }
 }

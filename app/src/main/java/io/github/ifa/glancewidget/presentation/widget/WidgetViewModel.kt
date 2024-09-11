@@ -6,7 +6,9 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.buildUiState
@@ -24,15 +26,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WidgetViewModel @Inject constructor(
-    private val batteryStateRepository: BatteryStateRepository
+    private val batteryStateRepository: BatteryStateRepository,
+    private val appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
     data class WidgetScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryData: BatteryData,
         val extraBatteryInfo: ExtraBatteryInfo,
-        val remainBatteryTime: String
     ) {
         val batteryHealth = batteryData.myDevice.getBatteryHealth(extraBatteryInfo)
+        val remainBatteryTime = extraBatteryInfo.batteryTimeRemaining.toHHMMSS()
     }
 
     init {
@@ -45,28 +48,33 @@ class WidgetViewModel @Inject constructor(
     }
 
     private val _setupWidgetId = MutableStateFlow(INVALID_APPWIDGET_ID)
+    private val _appSettings = appSettingsRepository.get().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AppSettings()
+    )
     private val _extraBatteryInfo = batteryStateRepository.extraBatteryFlow().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ExtraBatteryInfo()
     )
-    private val _remainBattery: StateFlow<Long> =
-        _extraBatteryInfo.map { it.batteryTimeRemaining }.chunked(3).map {
-            it.average().toLong()
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = -1
-        )
+
     private val _batteryData = batteryStateRepository.batteryFlow().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = BatteryData.initial()
     )
     val uiState: StateFlow<WidgetScreenUiState> = buildUiState(
-        _setupWidgetId, _batteryData, _extraBatteryInfo, _remainBattery
-    ) { setupWidgetId, batteryData, extraBatteryInfo, remainBattery ->
-        WidgetScreenUiState(setupWidgetId, batteryData, extraBatteryInfo, remainBattery.toHHMMSS())
+        _setupWidgetId, _batteryData, _extraBatteryInfo, _appSettings
+    ) { setupWidgetId, batteryData, extraBatteryInfo, appSettings ->
+        val battery = batteryData.copy(
+            batteryConnectedDevices = if (appSettings.notificationSetting.showPairedDevices) {
+                batteryData.batteryConnectedDevices
+            } else {
+                emptyList()
+            }
+        )
+        WidgetScreenUiState(setupWidgetId, battery, extraBatteryInfo)
     }
 
     fun hideBottomSheet() {
