@@ -1,8 +1,11 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +41,7 @@ fun BatteryItem(
     isCharging: Boolean,
     deviceName: String = "",
     isShowLargeLevel: Boolean = false,
+    description: String = "",
     isTransparent: Boolean,
 ) {
     val isActive = percent > 0
@@ -82,14 +85,28 @@ fun BatteryItem(
             )
             if (isShowLargeLevel) {
                 Spacer(modifier = Modifier.weight(1f))
-                if (isActive) {
-                    ItemLargeText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
-                } else {
-                    ItemText(
-                        text = stringResource(id = R.string.not_active),
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (isActive) {
+                        ItemLargeText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+                    } else {
+                        ItemText(
+                            text = stringResource(id = R.string.not_active),
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                    }
+                    if (description.isNotEmpty()) {
+                        Text(
+                            text = description,
+                            modifier = Modifier.padding(end = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
+
                 Spacer(modifier = Modifier.weight(1f))
             } else {
                 ItemText(text = deviceName, modifier = Modifier.fillMaxWidth(0.45f))
@@ -97,7 +114,7 @@ fun BatteryItem(
                 ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
             }
 
-            if (isCharging) {
+            AnimatedVisibility(visible = isCharging) {
                 Image(
                     modifier = Modifier
                         .size(16.dp)
@@ -109,6 +126,7 @@ fun BatteryItem(
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer)
                 )
             }
+
             if (deviceType != DeviceType.PHONE) {
                 Image(
                     modifier = Modifier.size(16.dp),
@@ -169,6 +187,7 @@ fun BatteryLargeLevelPreview() {
         percent = 50,
         isCharging = false,
         deviceName = "Xiaomi 4545453333",
+        description = "remain time",
         isShowLargeLevel = true,
         isTransparent = true,
         modifier = Modifier
