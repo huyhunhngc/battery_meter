@@ -13,6 +13,7 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

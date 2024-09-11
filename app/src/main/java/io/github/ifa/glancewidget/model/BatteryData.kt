@@ -73,6 +73,7 @@ data class MyDevice(
         val lossCapacityInPercent =
             100.0 - (extraBatteryInfo.fullChargeCapacity.toFloat() / extraBatteryInfo.capacity.toFloat()) * 100.0
         return when {
+            health == BatteryManager.BATTERY_HEALTH_GOOD -> BatteryHealth.GOOD
             health == BatteryManager.BATTERY_HEALTH_OVERHEAT -> BatteryHealth.OVERHEAT
             health == BatteryManager.BATTERY_HEALTH_DEAD -> BatteryHealth.REQUIRE_REPLACEMENT
             health == BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE -> BatteryHealth.OVER_VOLTAGE

@@ -45,7 +45,6 @@ import io.github.ifa.glancewidget.utils.toHHMMSS
 fun BatteryOverall(
     myDevice: MyDevice,
     extraBatteryInfo: ExtraBatteryInfo,
-    batteryHealth: MyDevice.BatteryHealth,
     remainBatteryTime: String,
     modifier: Modifier = Modifier
 ) {
@@ -153,68 +152,6 @@ fun BatteryOverall(
                 )
             }
         }
-
-        SessionText(
-            text = stringResource(id = R.string.battery_information),
-            modifier = Modifier.padding(8.dp)
-        )
-        Column {
-            InformationRow(
-                key = R.string.temperature, value = myDevice.temperature.formatTemperature()
-            )
-            InformationRow(key = R.string.technology, value = myDevice.technology)
-            InformationRow(key = R.string.health, value = stringResource(id = batteryHealth.type))
-            InformationRow(key = R.string.voltage, value = "${myDevice.voltage} V")
-            InformationRow(
-                key = R.string.design_capacity, value = "${extraBatteryInfo.capacity} $MAH_UNIT"
-            )
-            InformationRow(
-                key = R.string.full_charge_capacity,
-                value = "${extraBatteryInfo.fullChargeCapacity} $MAH_UNIT"
-            )
-            InformationRow(
-                key = R.string.charge_counter, value = "${extraBatteryInfo.chargeCounter} $MAH_UNIT"
-            )
-            InformationRow(key = R.string.cycle_count, value = "${myDevice.cycleCount}")
-        }
-    }
-}
-
-@Composable
-private fun ShortInformationRow(key: String, value: String) {
-    Row {
-        Text(
-            text = key,
-            modifier = Modifier.padding(bottom = 4.dp, end = 4.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        Text(
-            text = value,
-            modifier = Modifier.padding(bottom = 4.dp),
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.tertiary
-        )
-    }
-}
-
-@Composable
-private fun InformationRow(@StringRes key: Int, value: String) {
-    Row {
-        Text(
-            text = stringResource(id = key),
-            modifier = Modifier
-                .width(190.dp)
-                .padding(8.dp),
-            color = MaterialTheme.colorScheme.tertiary,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = value,
-            modifier = Modifier.padding(8.dp),
-            color = MaterialTheme.colorScheme.tertiary
-        )
     }
 }
 
@@ -222,9 +159,8 @@ private fun InformationRow(@StringRes key: Int, value: String) {
 @Composable
 fun BatteryOverallPreview() {
     BatteryOverall(
-        myDevice = MyDevice.fromIntent(Intent()).copy(isCharging = true),
-        extraBatteryInfo = ExtraBatteryInfo(4100, 100, 100),
+        myDevice = MyDevice.fromIntent(Intent()).copy(isCharging = true, voltage = 4.5f),
+        extraBatteryInfo = ExtraBatteryInfo(4100, 100, 100, chargeCurrent = 1200),
         remainBatteryTime = "00:00:00",
-        batteryHealth = MyDevice.BatteryHealth.GOOD
     )
 }

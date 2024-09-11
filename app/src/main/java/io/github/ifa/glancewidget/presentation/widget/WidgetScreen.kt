@@ -64,6 +64,7 @@ import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
+import io.github.ifa.glancewidget.presentation.widget.component.BatteryExtraInformation
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryItem
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
 import io.github.ifa.glancewidget.presentation.widget.component.ConnectedDevice
@@ -144,8 +145,13 @@ private fun WidgetScreen(
             batteryOverall(
                 myDevice = uiState.batteryData.myDevice,
                 extraBatteryInfo = uiState.extraBatteryInfo,
-                batteryHealth = uiState.batteryHealth,
                 remainBatteryTime = uiState.remainBatteryTime,
+                modifier = Modifier.padding(16.dp)
+            )
+            batteryExtraInformation(
+                myDevice = uiState.batteryData.myDevice,
+                extraBatteryInfo = uiState.extraBatteryInfo,
+                batteryHealth = uiState.batteryHealth,
                 modifier = Modifier.padding(16.dp)
             )
             connectedDevices(
@@ -169,12 +175,22 @@ private fun WidgetScreen(
 private fun LazyListScope.batteryOverall(
     myDevice: MyDevice,
     extraBatteryInfo: ExtraBatteryInfo,
-    batteryHealth: MyDevice.BatteryHealth,
     remainBatteryTime: String,
     modifier: Modifier = Modifier
 ) {
     item {
-        BatteryOverall(myDevice, extraBatteryInfo, batteryHealth, remainBatteryTime, modifier)
+        BatteryOverall(myDevice, extraBatteryInfo, remainBatteryTime, modifier)
+    }
+}
+
+private fun LazyListScope.batteryExtraInformation(
+    myDevice: MyDevice,
+    extraBatteryInfo: ExtraBatteryInfo,
+    batteryHealth: MyDevice.BatteryHealth,
+    modifier: Modifier = Modifier
+) {
+    item {
+        BatteryExtraInformation(myDevice, extraBatteryInfo, batteryHealth, modifier)
     }
 }
 
