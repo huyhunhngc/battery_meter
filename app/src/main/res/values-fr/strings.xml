@@ -44,4 +44,7 @@
     <string name="battery_alert">Alerte de batterie</string>
     <string name="battery_alert_desc">Envoyer une alerte sous la forme d\'une notification flottante lorsque la batterie surchauffe.</string>
     <string name="apply">Appliquer</string>
+    <string name="other">Autres</string>
+    <string name="license">Licence</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
 </resources>

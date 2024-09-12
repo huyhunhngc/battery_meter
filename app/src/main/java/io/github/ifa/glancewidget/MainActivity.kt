@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget
 
 import android.content.Context
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -19,6 +20,7 @@ import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
 import io.github.ifa.glancewidget.ui.theme.GlanceWidgetTheme
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
+import kotlinx.serialization.json.Json.Default.configuration
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,6 +45,15 @@ class MainActivity : ComponentActivity() {
                     ConfigApp(startDestination = mainScreenRoute)
                 }
             }
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val currentNightMode = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_NO -> {} // Night mode is not active, we're using the light theme
+            Configuration.UI_MODE_NIGHT_YES -> {} // Night mode is active, we're using dark theme
         }
     }
 

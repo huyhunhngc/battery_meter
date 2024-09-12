@@ -69,12 +69,14 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onApplySettings() {
+    fun onApplySettings(accept: Boolean) {
         viewModelScope.launch {
-            _newNotificationSettings.value?.let {
-                settingsRepository.saveNotificationSetting(it)
-                _newNotificationSettings.value = null
+            if (accept) {
+                _newNotificationSettings.value?.let {
+                    settingsRepository.saveNotificationSetting(it)
+                }
             }
+            _newNotificationSettings.value = null
         }
     }
 }

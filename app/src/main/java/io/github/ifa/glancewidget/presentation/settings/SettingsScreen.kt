@@ -20,10 +20,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -55,6 +54,7 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSettingItem
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
+import io.github.ifa.glancewidget.ui.component.CancellableFloatingActionButton
 import io.github.ifa.glancewidget.ui.component.DropdownTextField
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
@@ -95,7 +95,7 @@ internal fun SettingsScreen(
     onSelectLanguage: (AppSettings.Language) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
-    onApplySettings: () -> Unit
+    onApplySettings: (Boolean) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -112,11 +112,7 @@ internal fun SettingsScreen(
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
-                ExtendedFloatingActionButton(
-                    onClick = onApplySettings,
-                    icon = { Icon(Icons.Filled.Check, "Extended floating action button.") },
-                    text = { Text(text = stringResource(id = R.string.apply)) },
-                )
+                CancellableFloatingActionButton(onApply = onApplySettings)
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -136,7 +132,8 @@ internal fun SettingsScreen(
             }
             item {
                 JobSetting(
-                    uiState = uiState,
+                    notificationSetting = uiState.notificationSetting,
+                    newSettings = uiState.newNotificationSetting,
                     onSetNotificationEnabled = onSetNotificationEnabled,
                     onSetShowPairedDevice = onSetShowPairedDevice
                 )
@@ -178,20 +175,22 @@ fun ThemeSetting(
 
 @Composable
 fun JobSetting(
-    uiState: SettingsViewModel.SettingsScreenUiState,
+    notificationSetting: AppSettings.NotificationSetting,
+    newSettings: AppSettings.NotificationSetting?,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
-    var notificationEnabled by remember(uiState.notificationSetting.batteryAlert) {
-        mutableStateOf(
-            uiState.newNotificationSetting?.batteryAlert ?: uiState.notificationSetting.batteryAlert
-        )
+    var notificationEnabled by remember(
+        key1 = notificationSetting.batteryAlert,
+        key2 = newSettings?.batteryAlert
+    ) {
+        mutableStateOf(newSettings?.batteryAlert ?: notificationSetting.batteryAlert)
     }
-    var showPairedDevice by remember(uiState.notificationSetting.showPairedDevices) {
-        mutableStateOf(
-            uiState.newNotificationSetting?.showPairedDevices
-                ?: uiState.notificationSetting.showPairedDevices
-        )
+    var showPairedDevice by remember(
+        key1 = notificationSetting.showPairedDevices,
+        key2 = newSettings?.showPairedDevices
+    ) {
+        mutableStateOf(newSettings?.showPairedDevices ?: notificationSetting.showPairedDevices)
     }
     TextWithImage(
         text = stringResource(R.string.notification_settings),
@@ -274,7 +273,7 @@ fun LanguageSetting(
 @Composable
 fun OtherSession(onOpenAboutScreen: () -> Unit) {
     TextWithImage(
-        text = stringResource(R.string.about_tab),
+        text = stringResource(R.string.other),
         image = painterResource(id = R.drawable.ic_info),
         modifier = Modifier.padding(vertical = 16.dp)
     )
@@ -283,12 +282,20 @@ fun OtherSession(onOpenAboutScreen: () -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp),
+            .padding(horizontal = 16.dp),
     ) {
-        TextWithRightArrow(text = "About", onClick = onOpenAboutScreen)
+        TextWithRightArrow(
+            text = stringResource(id = R.string.about_tab),
+            onClick = onOpenAboutScreen
+        )
+        HorizontalDivider(thickness = 0.5.dp)
+        TextWithRightArrow(text = stringResource(id = R.string.license)) {
 
-        TextWithRightArrow(text = "License") {
+        }
+        HorizontalDivider(thickness = 0.5.dp)
+        TextWithRightArrow(text = stringResource(id = R.string.privacy_policy)) {
 
         }
     }
+    Spacer(modifier = Modifier.height(16.dp))
 }

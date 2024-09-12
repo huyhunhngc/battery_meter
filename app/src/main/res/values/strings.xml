@@ -48,4 +48,7 @@
     <string name="battery_alert">Battery Alert</string>
     <string name="battery_alert_desc">Send an alert in the form of a floating notification when the battery overheats.</string>
     <string name="apply">Apply</string>
+    <string name="other">Others</string>
+    <string name="license">License</string>
+    <string name="privacy_policy">Privacy Policy</string>
 </resources>

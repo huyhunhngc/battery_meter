@@ -3,11 +3,11 @@ package io.github.ifa.glancewidget
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,27 +28,31 @@ import io.github.ifa.glancewidget.model.ThemeType
 fun ConfigApp(
     modifier: Modifier = Modifier,
     startDestination: String,
-    isSystemInDarkTheme: Boolean = isSystemInDarkTheme(),
     appSettingsRepository: AppSettingsRepository = localAppSettingsRepository()
 ) {
     val settings by appSettingsRepository.get().collectAsStateWithLifecycle(AppSettings())
-    val darkTheme by remember(settings) {
-        derivedStateOf { isDarkTheme(settings.theme, isSystemInDarkTheme) }
+    val isDarkTheme = when (settings.theme) {
+        ThemeType.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+        ThemeType.DARK_THEME -> true
+        ThemeType.LIGHT_THEME -> false
     }
-    val colorScheme = rememberColorScheme(darkTheme)
+
+    val colorScheme = rememberColorScheme(isDarkTheme)
     val navController: NavHostController = rememberNavController()
     val systemUiController = rememberSystemUiController()
-    LaunchedEffect(darkTheme) {
-        systemUiController.statusBarDarkContentEnabled = !darkTheme
+    LaunchedEffect(isDarkTheme) {
+        systemUiController.statusBarDarkContentEnabled = !isDarkTheme
     }
     AppTheme(colorScheme = colorScheme) {
-        AppNavHost(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = modifier,
-            onBackClick = navController::popBackStack,
-            onBackClickBlockNavController = { popBackStack() },
-        )
+        Surface {
+            AppNavHost(
+                navController = navController,
+                startDestination = startDestination,
+                modifier = modifier,
+                onBackClick = navController::popBackStack,
+                onBackClickBlockNavController = { popBackStack() },
+            )
+        }
     }
 }
 
@@ -63,12 +67,4 @@ fun rememberColorScheme(
         if (isDarkTheme) DarkColorScheme else LightColorScheme
     }
     return remember(isDarkTheme) { colorScheme }
-}
-
-fun isDarkTheme(themeType: ThemeType, isSystemInDarkTheme: Boolean): Boolean {
-    return when (themeType) {
-        ThemeType.FOLLOW_SYSTEM -> isSystemInDarkTheme
-        ThemeType.DARK_THEME -> true
-        ThemeType.LIGHT_THEME -> false
-    }
 }

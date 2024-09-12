@@ -44,4 +44,7 @@
     <string name="battery_alert">Cảnh báo pin</string>
     <string name="battery_alert_desc">Gửi cảnh báo dưới dạng thông báo nổi khi pin quá nóng.</string>
     <string name="apply">Áp dụng</string>
+    <string name="other">Khác</string>
+    <string name="license">Giấy phép</string>
+    <string name="privacy_policy">Chính sách bảo mật</string>
 </resources>

@@ -44,4 +44,7 @@
     <string name="battery_alert">バッテリーアラート</string>
     <string name="battery_alert_desc">バッテリーが過熱したときに、フローティング通知の形式でアラートを送信します。</string>
     <string name="apply">適用する</string>
+    <string name="other">その他</string>
+    <string name="license">ライセンス</string>
+    <string name="privacy_policy">プライバシー ポリシー</string>
 </resources>
