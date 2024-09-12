@@ -24,6 +24,7 @@ navigationCompose = "2.7.7"
 media3Effect = "1.4.1"
 appcompat = "1.7.0"
 accompanist = "0.30.1"
+browser = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,6 +65,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 #Accompanist
 accompanist-permission = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 #MLKit
 
 [plugins]

@@ -11,6 +11,7 @@ data class ExtraBatteryInfo(
     val chargingTimeRemaining: Long = -1,
     val chargeCurrent: Int = -1,
 ) {
+    val chargeDisChargeCurrent: Int = abs(chargeCurrent) * -1
     val batteryTimeRemaining: Long =  if (chargeCurrent < 0.0) {
         ((chargeCounter.toFloat() / (chargeCurrent.toFloat()/-1)) * 3600000f).toLong().coerceAtLeast(0)
     } else 0

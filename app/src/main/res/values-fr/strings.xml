@@ -47,4 +47,8 @@
     <string name="other">Autres</string>
     <string name="license">Licence</string>
     <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="version">Version %s</string>
+    <string name="contact_us">Nous contacter</string>
+    <string name="support">Assistance</string>
+    <string name="website">Site Web</string>
 </resources>

@@ -47,4 +47,8 @@
     <string name="other">その他</string>
     <string name="license">ライセンス</string>
     <string name="privacy_policy">プライバシー ポリシー</string>
+    <string name="version">バージョン %s</string>
+    <string name="contact_us">お問い合わせ</string>
+    <string name="support">サポート</string>
+    <string name="website">ウェブサイト</string>
 </resources>

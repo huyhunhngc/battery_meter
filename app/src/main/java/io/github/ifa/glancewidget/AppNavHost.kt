@@ -21,12 +21,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.about.aboutScreen
 import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
 import io.github.ifa.glancewidget.presentation.main.mainTabScreens
 import io.github.ifa.glancewidget.presentation.settings.settingsScreen
 import io.github.ifa.glancewidget.presentation.widget.widgetScreen
+import io.github.ifa.glancewidget.utils.navigateUrl
 
 @Composable
 fun AppNavHost(
@@ -45,7 +45,10 @@ fun AppNavHost(
             widgetScreen()
             settingsScreen(onOpenAboutScreen = navController::navigateToAboutScreen)
         }
-        aboutScreen(onNavigationIconClick = navController::popBackStack)
+        aboutScreen(
+            onNavigationIconClick = navController::popBackStack,
+            onExternalUrlClick = { navigateUrl(it) }
+        )
     }
 }
 

@@ -1,6 +1,5 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:previewImage="@drawable/battery_widget"
     android:minWidth="180dp"
     android:minHeight="60dp"
     android:maxHeight="240dp"

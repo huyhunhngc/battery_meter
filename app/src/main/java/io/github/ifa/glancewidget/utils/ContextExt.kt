@@ -1,8 +1,11 @@
 package io.github.ifa.glancewidget.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.LocaleManager
+import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Context.BLUETOOTH_SERVICE
 import android.content.ContextWrapper
 import android.content.res.Resources
 import android.os.BatteryManager
@@ -12,16 +15,30 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import io.github.ifa.glancewidget.model.AppSettings
+import io.github.ifa.glancewidget.model.BonedDevice
+import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.utils.Constants.MAX_DESIGN_CAPACITY
 import io.github.ifa.glancewidget.utils.Constants.MIN_DESIGN_CAPACITY
 import java.util.Locale
 
-fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
+@SuppressLint("MissingPermission")
+fun Context.getPairedDevices(): List<BonedDevice> {
+    val pairedDevices = kotlin.runCatching {
+        val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
+        btManager.adapter.bondedDevices
+    }.getOrDefault(emptyList())
+
+    return pairedDevices.map {
+        BonedDevice(
+            name = it.name,
+            address = it.address,
+            batteryInPercentage = it.batteryLevel,
+            batteryInMinutes = 0,
+            deviceType = DeviceType.fromClass(it.bluetoothClass.deviceClass)
+        )
+    }.sortedBy { it.deviceType.ordinal }
 }
 
 fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
@@ -49,11 +66,12 @@ fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
         fullChargeCapacity = fullChargeCapacity.toInt(),
         chargeCounter = chargeCounter,
         chargingTimeRemaining = chargingTimeRemaining,
-        chargeCurrent = chargeCurrent / -1
+        chargeCurrent = chargeCurrent
     )
 }
 
-fun Context.getDesignCapacity(): Int {
+@SuppressLint("PrivateApi")
+private fun Context.getDesignCapacity(): Int {
     val powerProfileClass = "com.android.internal.os.PowerProfile"
     val mPowerProfile = Class.forName(powerProfileClass).getConstructor(
         Context::class.java
@@ -68,16 +86,16 @@ fun Context.getDesignCapacity(): Int {
     }
 }
 
-fun Context.getChargingTimeRemaining(
-    myDevice: MyDevice,
-    extraBatteryInfo: ExtraBatteryInfo
-): String {
-    var chargingTimeRemaining: Double
-    val batteryLevel = myDevice.level
-    val currentCapacity = extraBatteryInfo.chargeCounter
-    val residualCapacity = extraBatteryInfo.capacity
-    return "-"
-}
+//fun Context.getChargingTimeRemaining(
+//    myDevice: MyDevice,
+//    extraBatteryInfo: ExtraBatteryInfo
+//): String {
+//    var chargingTimeRemaining: Double
+//    val batteryLevel = myDevice.level
+//    val currentCapacity = extraBatteryInfo.chargeCounter
+//    val residualCapacity = extraBatteryInfo.capacity
+//    return "-"
+//}
 
 fun Context.setLocale(localeCode: String) {
     val code = if (localeCode == AppSettings.Language.DEFAULT.code) {
@@ -93,7 +111,7 @@ fun Context.setLocale(localeCode: String) {
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(code))
 }
 
-fun getSystemLocale(): String {
+private fun getSystemLocale(): String {
     val systemConfig = Resources.getSystem().configuration
     return systemConfig.locales[0].language
 }

@@ -2,10 +2,12 @@ package io.github.ifa.glancewidget.utils
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
+import android.content.ContextWrapper
 import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -65,21 +67,8 @@ val BluetoothDevice.batteryLevel
         method.invoke(device) as Int?
     } ?: -1
 
-
-@SuppressLint("MissingPermission")
-fun Context.getPairedDevices(): List<BonedDevice> {
-    val pairedDevices = kotlin.runCatching {
-        val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
-        btManager.adapter.bondedDevices
-    }.getOrDefault(emptyList())
-
-    return pairedDevices.map {
-        BonedDevice(
-            name = it.name,
-            address = it.address,
-            batteryInPercentage = it.batteryLevel,
-            batteryInMinutes = 0,
-            deviceType = DeviceType.fromClass(it.bluetoothClass.deviceClass)
-        )
-    }.sortedBy { it.deviceType.ordinal }
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

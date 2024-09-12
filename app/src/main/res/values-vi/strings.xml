@@ -47,4 +47,8 @@
     <string name="other">Khác</string>
     <string name="license">Giấy phép</string>
     <string name="privacy_policy">Chính sách bảo mật</string>
+    <string name="version">Phiên bản %s</string>
+    <string name="contact_us">Liên hệ với chúng tôi</string>
+    <string name="support">Hỗ trợ</string>
+    <string name="website">Trang web</string>
 </resources>

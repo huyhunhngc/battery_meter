@@ -51,4 +51,8 @@
     <string name="other">Others</string>
     <string name="license">License</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="version">Version %s</string>
+    <string name="contact_us">Contact us</string>
+    <string name="support">Support</string>
+    <string name="website">Website</string>
 </resources>
