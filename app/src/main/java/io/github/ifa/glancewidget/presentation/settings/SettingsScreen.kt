@@ -100,6 +100,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
         onSetShowPairedDevice = { accepted ->
             if (!context.checkPermissions(BluetoothPermissions) && accepted) {
+                viewModel.onShowPairedDeviceChanged(false)
                 if (requestPermission.shouldShowRationale) {
                     requestPermission.launchMultiplePermissionRequest()
                 } else {
@@ -195,11 +196,12 @@ fun JobSetting(
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
+    val bluetoothPermission = LocalContext.current.checkPermissions(BluetoothPermissions)
     var notificationEnabled by remember(notificationSetting.batteryAlert) {
         mutableStateOf(notificationSetting.batteryAlert)
     }
-    var showPairedDevice by remember(notificationSetting.showPairedDevices) {
-        mutableStateOf(notificationSetting.showPairedDevices)
+    var showPairedDevice by remember(notificationSetting.showPairedDevices, bluetoothPermission) {
+        mutableStateOf(notificationSetting.showPairedDevices && bluetoothPermission)
     }
     TextWithImage(
         text = stringResource(R.string.notification_settings),
