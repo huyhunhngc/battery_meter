@@ -196,12 +196,12 @@ fun JobSetting(
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
-    val bluetoothPermission = LocalContext.current.checkPermissions(BluetoothPermissions)
+    val context = LocalContext.current
     var notificationEnabled by remember(notificationSetting.batteryAlert) {
         mutableStateOf(notificationSetting.batteryAlert)
     }
-    var showPairedDevice by remember(notificationSetting.showPairedDevices, bluetoothPermission) {
-        mutableStateOf(notificationSetting.showPairedDevices && bluetoothPermission)
+    var showPairedDevice by remember(notificationSetting.showPairedDevices) {
+        mutableStateOf(notificationSetting.showPairedDevices)
     }
     TextWithImage(
         text = stringResource(R.string.notification_settings),
@@ -226,7 +226,7 @@ fun JobSetting(
         description = stringResource(id = R.string.show_paired_devices_desc),
         onCheckedChange = { checked ->
             onSetShowPairedDevice(checked)
-            showPairedDevice = checked
+            showPairedDevice = checked && context.checkPermissions(BluetoothPermissions)
         },
         checked = showPairedDevice
     )

@@ -66,10 +66,10 @@ class MainActivity : ComponentActivity() {
             val isGranted = permissions.entries.all { it.value }
             if (isGranted) {
                 registerReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
-                saveNotificationSetting(AppSettings.NotificationSetting(showPairedDevices = true))
+                saveNotificationSetting(showPairedDevices = true)
             } else {
                 registerReceiver(BATTERY_ACTIONS)
-                saveNotificationSetting(AppSettings.NotificationSetting(showPairedDevices = false))
+                saveNotificationSetting(showPairedDevices = false)
             }
         }
 
@@ -84,9 +84,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting) {
+    private fun saveNotificationSetting(showPairedDevices: Boolean) {
         lifecycleScope.launch {
-            appSettingsRepository.saveNotificationSetting(notificationSetting)
+            //appSettingsRepository.saveNotificationSetting(notificationSetting)
         }
     }
 
