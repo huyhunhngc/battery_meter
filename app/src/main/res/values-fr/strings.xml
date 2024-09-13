@@ -51,4 +51,6 @@
     <string name="contact_us">Nous contacter</string>
     <string name="support">Assistance</string>
     <string name="website">Site Web</string>
+    <string name="add_pinned_widget">Ajouter un widget épinglé</string>
+    <string name="pinned_widget_added">Un widget épinglé a été ajouté à l\'écran d\'accueil.</string>
 </resources>

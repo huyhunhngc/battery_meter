@@ -2,19 +2,17 @@ package io.github.ifa.glancewidget.utils
 
 import android.Manifest
 import android.app.Activity
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothDevice
 import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
 import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
+import io.github.ifa.glancewidget.model.AddWidgetParams
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
@@ -75,17 +73,11 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-fun Context.requestToPinWidget() {
+fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {
     val appWidgetManager = getSystemService(AppWidgetManager::class.java)
     val myProvider = ComponentName(applicationContext, BatteryWidgetReceiver::class.java)
     if (appWidgetManager.isRequestPinAppWidgetSupported) {
-        val successIntent = PendingIntent.getActivity(
-            applicationContext, 0,
-            Intent(applicationContext, MainActivity::class.java).apply {
-                action = BatteryWidgetReceiver.ACTION_NEW_WIDGET
-            },
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        appWidgetManager.requestPinAppWidget(myProvider, null, successIntent)
+        return appWidgetManager.requestPinAppWidget(myProvider, null, null)
     }
+    return false
 }

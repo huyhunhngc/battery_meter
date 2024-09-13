@@ -111,8 +111,7 @@ fun BatteryItem(
 
                 Spacer(modifier = Modifier.weight(1f))
             } else {
-                ItemText(text = deviceName, modifier = Modifier.fillMaxWidth(0.45f))
-                Spacer(modifier = Modifier.weight(1f))
+                ItemText(text = deviceName, modifier = Modifier.weight(1f))
                 ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
             }
 

@@ -51,4 +51,6 @@
     <string name="contact_us">お問い合わせ</string>
     <string name="support">サポート</string>
     <string name="website">ウェブサイト</string>
+    <string name="add_pinned_widget">固定ウィジェットを追加</string>
+    <string name="pinned_widget_added">固定ウィジェットがホーム画面に追加されました。</string>
 </resources>

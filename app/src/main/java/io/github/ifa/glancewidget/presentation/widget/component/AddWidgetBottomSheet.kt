@@ -5,6 +5,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.presentation.widget.WidgetViewModel
 import kotlinx.coroutines.launch
@@ -66,13 +68,14 @@ fun AddWidgetBottomSheet(
             modifier = Modifier.fillMaxWidth(),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.tertiary,
             textAlign = TextAlign.Center
         )
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             with(uiState.batteryData.myDevice) {
                 BatteryItem(
                     deviceType = deviceType,
@@ -81,41 +84,46 @@ fun AddWidgetBottomSheet(
                     deviceName = name,
                     isTransparent = isTransparentSelected,
                     modifier = Modifier
-                        .height(120.dp)
+                        .height(100.dp)
                         .fillMaxWidth(0.8f)
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(16.dp)
-                    .clickable { isTransparentSelected = !isTransparentSelected },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconToggleButton(
-                    checked = isTransparentSelected,
-                    onCheckedChange = { isTransparentSelected = !isTransparentSelected },
+            if (uiState.setupWidgetId != PINNED_WIDGET_DEFAULT_ID) {
+                Row(
                     modifier = Modifier
-                        .size(20.dp)
-                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                        .clip(CircleShape)
+                        .fillMaxWidth(0.8f)
+                        .padding(16.dp)
+                        .clickable { isTransparentSelected = !isTransparentSelected },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    AnimatedVisibility(
-                        visible = isTransparentSelected, enter = scaleIn(), exit = scaleOut()
+                    IconToggleButton(
+                        checked = isTransparentSelected,
+                        onCheckedChange = { isTransparentSelected = !isTransparentSelected },
+                        modifier = Modifier
+                            .size(20.dp)
+                            .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                            .clip(CircleShape)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.CheckCircle,
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+                        AnimatedVisibility(
+                            visible = isTransparentSelected, enter = scaleIn(), exit = scaleOut()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
                     }
+                    Text(
+                        text = stringResource(id = R.string.show_transparent),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
-                Text(
-                    text = stringResource(id = R.string.show_transparent),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
             }
-
+            Spacer(modifier = Modifier.height(32.dp))
             Button(
                 onClick = {
                     onClickAddWidget(AddWidgetParams(isTransparent = isTransparentSelected))

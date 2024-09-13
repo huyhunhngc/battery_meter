@@ -55,4 +55,6 @@
     <string name="contact_us">Contact us</string>
     <string name="support">Support</string>
     <string name="website">Website</string>
+    <string name="add_pinned_widget">Add pinned widget</string>
+    <string name="pinned_widget_added">A pinned widget has been added to the home screen.</string>
 </resources>

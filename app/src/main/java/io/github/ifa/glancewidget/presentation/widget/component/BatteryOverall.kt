@@ -2,6 +2,8 @@ package io.github.ifa.glancewidget.presentation.widget.component
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -160,6 +162,7 @@ private fun WattsMonitor(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CurrentAndChargingMonitor(
     modifier: Modifier,
@@ -167,7 +170,7 @@ private fun CurrentAndChargingMonitor(
     chargeType: MyDevice.ChargeType,
     chargeCurrent: Int,
 ) {
-    val chargeIcon = when(chargeType) {
+    val chargeIcon = when (chargeType) {
         MyDevice.ChargeType.AC -> R.drawable.ic_power
         MyDevice.ChargeType.USB -> R.drawable.ic_usb
         MyDevice.ChargeType.WIRELESS -> R.drawable.ic_lightning_stand
@@ -192,15 +195,21 @@ private fun CurrentAndChargingMonitor(
                 color = MaterialTheme.colorScheme.tertiary
             )
         }
-        Icon(
-            painter = painterResource(id = chargeIcon),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(24.dp)
-                .align(Alignment.BottomEnd)
-        )
+        AnimatedContent(
+            targetState = chargeIcon,
+            label = "",
+            modifier = Modifier.align(Alignment.BottomEnd),
+        ) { chargeIcon ->
+            Icon(
+                painter = painterResource(id = chargeIcon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp)
+
+            )
+        }
     }
 }
 

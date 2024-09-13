@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
@@ -90,8 +91,8 @@ class WidgetViewModel @Inject constructor(
         }
     }
 
-    fun createWidget() {
-        _setupWidgetId.value = 789
+    fun createPinnedWidget() {
+        _setupWidgetId.value = PINNED_WIDGET_DEFAULT_ID
     }
 
     fun saveTransparentSettings(isTransparent: Boolean, appWidgetId: Int) {

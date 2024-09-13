@@ -81,5 +81,6 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
             BluetoothDevice.ACTION_ACL_CONNECTED
         )
         const val ACTION_NEW_WIDGET = "action_new_widget"
+        const val PINNED_WIDGET_DEFAULT_ID = -11
     }
 }

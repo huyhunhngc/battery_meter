@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.presentation.widget
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
@@ -24,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -35,6 +37,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
@@ -49,6 +53,7 @@ import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.requestToPinWidget
+import kotlinx.coroutines.launch
 
 const val widgetScreenRoute = "widget_screen_route"
 
@@ -67,6 +72,8 @@ internal fun WidgetScreen(
     val context = LocalContext.current
     val activity = context.findActivity()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val addPinnedWidgetMessage = stringResource(id = R.string.pinned_widget_added)
     LaunchedEffect(Unit) {
         val intent = activity?.intent ?: return@LaunchedEffect
         viewModel.controlExtras(intent)
@@ -76,17 +83,30 @@ internal fun WidgetScreen(
         isShowBottomSheet = showBottomSheet,
         onDisMissBottomSheet = viewModel::hideBottomSheet,
         onClickAddWidget = { params ->
-            val resultValue = Intent().apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, uiState.setupWidgetId)
+            if (uiState.setupWidgetId == PINNED_WIDGET_DEFAULT_ID) {
+                val isSupported = activity?.requestToPinWidget(params)
+                if (isSupported == true) {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(addPinnedWidgetMessage)
+                    }
+                    viewModel.hideBottomSheet()
+                }
+            } else {
+                viewModel.saveTransparentSettings(params.isTransparent, uiState.setupWidgetId)
+                activity?.addWidget(uiState.setupWidgetId)
             }
-            viewModel.saveTransparentSettings(params.isTransparent, uiState.setupWidgetId)
-            activity?.setResult(RESULT_OK, resultValue)
-            activity?.finish()
         },
-        onRequestPiningWidget = viewModel::createWidget
+        onRequestPiningWidget = viewModel::createPinnedWidget
     )
 }
 
+fun Activity.addWidget(appWidgetId: Int) {
+    val resultValue = Intent().apply {
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+    }
+    setResult(RESULT_OK, resultValue)
+    finish()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

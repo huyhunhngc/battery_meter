@@ -51,4 +51,6 @@
     <string name="contact_us">Liên hệ với chúng tôi</string>
     <string name="support">Hỗ trợ</string>
     <string name="website">Trang web</string>
+    <string name="add_pinned_widget">Add pinned widget</string>
+    <string name="pinned_widget_added">A pinned widget has been added to the home screen.</string>
 </resources>
