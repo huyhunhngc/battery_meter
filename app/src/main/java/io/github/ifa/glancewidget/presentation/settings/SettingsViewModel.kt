@@ -23,25 +23,19 @@ class SettingsViewModel @Inject constructor(
         val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
         val language: AppSettings.Language? = null,
         val notificationSetting: AppSettings.NotificationSetting = AppSettings.NotificationSetting(),
-        val newNotificationSetting: AppSettings.NotificationSetting? = null
-    ) {
-        val showApplyButton =
-            newNotificationSetting != null && newNotificationSetting != notificationSetting
-    }
+    )
 
     private val _settings = settingsRepository.get().stateIn(
         viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         AppSettings()
     )
-    private val _newNotificationSettings = MutableStateFlow<AppSettings.NotificationSetting?>(null)
     val uiState: StateFlow<SettingsScreenUiState> =
-        buildUiState(_settings, _newNotificationSettings) { settings, newNotificationSetting ->
+        buildUiState(_settings) { settings ->
             SettingsScreenUiState(
                 theme = settings.theme,
                 language = settings.language,
                 notificationSetting = settings.notificationSetting,
-                newNotificationSetting = newNotificationSetting,
             )
         }
 
@@ -58,25 +52,22 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onBatteryAlertChanged(checked: Boolean) {
-        _newNotificationSettings.update { settings ->
-            (settings ?: _settings.value.notificationSetting).copy(batteryAlert = checked)
+        viewModelScope.launch {
+            settingsRepository.saveNotificationSetting(
+                _settings.value.notificationSetting.copy(
+                    batteryAlert = checked
+                )
+            )
         }
     }
 
     fun onShowPairedDeviceChanged(checked: Boolean) {
-        _newNotificationSettings.update { settings ->
-            (settings ?: _settings.value.notificationSetting).copy(showPairedDevices = checked)
-        }
-    }
-
-    fun onApplySettings(accept: Boolean) {
         viewModelScope.launch {
-            if (accept) {
-                _newNotificationSettings.value?.let {
-                    settingsRepository.saveNotificationSetting(it)
-                }
-            }
-            _newNotificationSettings.value = null
+            settingsRepository.saveNotificationSetting(
+                _settings.value.notificationSetting.copy(
+                    showPairedDevices = checked
+                )
+            )
         }
     }
 }

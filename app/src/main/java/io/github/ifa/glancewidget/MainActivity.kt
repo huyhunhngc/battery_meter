@@ -10,21 +10,28 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.di.RepositoryProvider
+import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.glance.MonitorReceiver
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
+import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
 import io.github.ifa.glancewidget.ui.theme.GlanceWidgetTheme
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
+
+    @Inject
+    lateinit var appSettingsRepository: AppSettingsRepository
 
     private val monitorReceiver by lazy { MonitorReceiver() }
 
@@ -59,8 +66,10 @@ class MainActivity : ComponentActivity() {
             val isGranted = permissions.entries.all { it.value }
             if (isGranted) {
                 registerReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
+                saveNotificationSetting(AppSettings.NotificationSetting(showPairedDevices = true))
             } else {
                 registerReceiver(BATTERY_ACTIONS)
+                saveNotificationSetting(AppSettings.NotificationSetting(showPairedDevices = false))
             }
         }
 
@@ -72,6 +81,12 @@ class MainActivity : ComponentActivity() {
             registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(monitorReceiver, filter)
+        }
+    }
+
+    private fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting) {
+        lifecycleScope.launch {
+            appSettingsRepository.saveNotificationSetting(notificationSetting)
         }
     }
 

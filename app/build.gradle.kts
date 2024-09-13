@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.permission)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.browser)
     kapt(libs.daggerHiltAndroidCompiler)

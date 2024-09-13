@@ -12,7 +12,7 @@ data class AppSettings(
     @Serializable
     data class NotificationSetting(
         val batteryAlert: Boolean = false,
-        val showPairedDevices: Boolean = true
+        val showPairedDevices: Boolean = false
     )
 
     enum class Language(val code: String) {

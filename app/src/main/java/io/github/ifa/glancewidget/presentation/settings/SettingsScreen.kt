@@ -1,8 +1,8 @@
 package io.github.ifa.glancewidget.presentation.settings
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,20 +48,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSettingItem
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
-import io.github.ifa.glancewidget.ui.component.CancellableFloatingActionButton
 import io.github.ifa.glancewidget.ui.component.DropdownTextField
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
 import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
 import io.github.ifa.glancewidget.ui.component.appPadding
+import io.github.ifa.glancewidget.utils.BluetoothPermissions
+import io.github.ifa.glancewidget.utils.checkPermissions
 
 const val settingsScreenRoute = "settings_screen_route"
+
+val ApplicationDetailsSettingsIntent by lazy {
+    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+    }
+}
 
 fun NavGraphBuilder.settingsScreen(onOpenAboutScreen: () -> Unit) {
     composable(settingsScreenRoute) {
@@ -69,10 +79,18 @@ fun NavGraphBuilder.settingsScreen(onOpenAboutScreen: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutScreen: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val requestPermission = rememberMultiplePermissionsState(BluetoothPermissions) { permissions ->
+        val isGranted = permissions.entries.all { it.value }
+        if (isGranted) {
+            viewModel.onShowPairedDeviceChanged(true)
+        }
+    }
+    val context = LocalContext.current
     SettingsScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
@@ -80,8 +98,17 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
         onSelectTheme = viewModel::setThemeType,
         onSelectLanguage = viewModel::setLanguage,
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
-        onSetShowPairedDevice = viewModel::onShowPairedDeviceChanged,
-        onApplySettings = viewModel::onApplySettings
+        onSetShowPairedDevice = { accepted ->
+            if (!context.checkPermissions(BluetoothPermissions) && accepted) {
+                if (requestPermission.shouldShowRationale) {
+                    requestPermission.launchMultiplePermissionRequest()
+                } else {
+                    context.startActivity(ApplicationDetailsSettingsIntent, null)
+                }
+            } else {
+                viewModel.onShowPairedDeviceChanged(accepted)
+            }
+        },
     )
 }
 
@@ -95,7 +122,6 @@ internal fun SettingsScreen(
     onSelectLanguage: (AppSettings.Language) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
-    onApplySettings: (Boolean) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -105,15 +131,6 @@ internal fun SettingsScreen(
                 title = stringResource(id = MainScreenTab.Settings.label),
                 scrollBehavior = scrollBehavior
             )
-        },
-        floatingActionButton = {
-            AnimatedVisibility(
-                visible = uiState.showApplyButton,
-                enter = scaleIn(),
-                exit = scaleOut()
-            ) {
-                CancellableFloatingActionButton(onApply = onApplySettings)
-            }
         },
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
@@ -133,7 +150,6 @@ internal fun SettingsScreen(
             item {
                 JobSetting(
                     notificationSetting = uiState.notificationSetting,
-                    newSettings = uiState.newNotificationSetting,
                     onSetNotificationEnabled = onSetNotificationEnabled,
                     onSetShowPairedDevice = onSetShowPairedDevice
                 )
@@ -176,21 +192,14 @@ fun ThemeSetting(
 @Composable
 fun JobSetting(
     notificationSetting: AppSettings.NotificationSetting,
-    newSettings: AppSettings.NotificationSetting?,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
-    var notificationEnabled by remember(
-        key1 = notificationSetting.batteryAlert,
-        key2 = newSettings?.batteryAlert
-    ) {
-        mutableStateOf(newSettings?.batteryAlert ?: notificationSetting.batteryAlert)
+    var notificationEnabled by remember(notificationSetting.batteryAlert) {
+        mutableStateOf(notificationSetting.batteryAlert)
     }
-    var showPairedDevice by remember(
-        key1 = notificationSetting.showPairedDevices,
-        key2 = newSettings?.showPairedDevices
-    ) {
-        mutableStateOf(newSettings?.showPairedDevices ?: notificationSetting.showPairedDevices)
+    var showPairedDevice by remember(notificationSetting.showPairedDevices) {
+        mutableStateOf(notificationSetting.showPairedDevices)
     }
     TextWithImage(
         text = stringResource(R.string.notification_settings),
