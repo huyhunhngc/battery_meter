@@ -5,10 +5,12 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,25 +42,26 @@ fun BatteryExtraInformation(
     ) {
         SessionText(
             text = stringResource(id = R.string.battery_information),
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp)
         )
-        Column {
-            InformationRow(
-                key = R.string.temperature, value = myDevice.temperature.formatTemperature()
-            )
+        Column(modifier = Modifier.padding(8.dp)) {
             InformationRow(key = R.string.technology, value = myDevice.technology)
+            HorizontalDivider()
             InformationRow(key = R.string.health, value = stringResource(id = batteryHealth.type))
-            InformationRow(key = R.string.voltage, value = "${myDevice.voltage} V")
+            HorizontalDivider()
             InformationRow(
                 key = R.string.design_capacity, value = "${extraBatteryInfo.capacity} $MAH_UNIT"
             )
+            HorizontalDivider()
             InformationRow(
                 key = R.string.full_charge_capacity,
                 value = "${extraBatteryInfo.fullChargeCapacity} $MAH_UNIT"
             )
+            HorizontalDivider()
             InformationRow(
                 key = R.string.charge_counter, value = "${extraBatteryInfo.chargeCounter} $MAH_UNIT"
             )
+            HorizontalDivider()
             InformationRow(key = R.string.cycle_count, value = "${myDevice.cycleCount}")
         }
     }
@@ -66,18 +69,17 @@ fun BatteryExtraInformation(
 
 @Composable
 private fun InformationRow(@StringRes key: Int, value: String) {
-    Row {
+    Row(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = stringResource(id = key),
-            modifier = Modifier
-                .width(190.dp)
-                .padding(8.dp),
+            modifier = Modifier.padding(vertical = 16.dp),
             color = MaterialTheme.colorScheme.tertiary,
             fontWeight = FontWeight.Bold
         )
+        Spacer(modifier = Modifier.weight(1f))
         Text(
             text = value,
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(vertical = 8.dp),
             color = MaterialTheme.colorScheme.tertiary
         )
     }

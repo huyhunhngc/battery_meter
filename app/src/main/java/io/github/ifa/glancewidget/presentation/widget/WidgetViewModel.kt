@@ -12,14 +12,12 @@ import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.buildUiState
-import io.github.ifa.glancewidget.utils.chunked
 import io.github.ifa.glancewidget.utils.toHHMMSS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +33,8 @@ class WidgetViewModel @Inject constructor(
         val extraBatteryInfo: ExtraBatteryInfo,
     ) {
         val batteryHealth = batteryData.myDevice.getBatteryHealth(extraBatteryInfo)
-        val remainBatteryTime = extraBatteryInfo.batteryTimeRemaining.toHHMMSS()
+        val remainBatteryTime =
+            extraBatteryInfo.getBatteryTimeRemaining(batteryData.myDevice.isCharging).toHHMMSS()
     }
 
     init {
@@ -89,6 +88,10 @@ class WidgetViewModel @Inject constructor(
             )
             _setupWidgetId.value = appWidgetId
         }
+    }
+
+    fun createWidget() {
+        _setupWidgetId.value = 789
     }
 
     fun saveTransparentSettings(isTransparent: Boolean, appWidgetId: Int) {

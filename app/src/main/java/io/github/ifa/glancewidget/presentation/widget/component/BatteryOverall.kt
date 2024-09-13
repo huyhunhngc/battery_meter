@@ -2,17 +2,18 @@ package io.github.ifa.glancewidget.presentation.widget.component
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,12 +36,11 @@ import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.ui.component.CircleProgressBar
 import io.github.ifa.glancewidget.ui.component.SessionText
-import io.github.ifa.glancewidget.utils.Constants.MAH_UNIT
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
 import io.github.ifa.glancewidget.utils.Constants.WATT_UNIT
 import io.github.ifa.glancewidget.utils.toHHMMSS
 
-@SuppressLint("DefaultLocale")
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BatteryOverall(
     myDevice: MyDevice,
@@ -48,109 +48,213 @@ fun BatteryOverall(
     remainBatteryTime: String,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val power = remember(extraBatteryInfo.chargeCurrent, myDevice.isCharging) {
         extraBatteryInfo.powerInWatt(myDevice.voltage, myDevice.isCharging)
     }
     val powerPercentage = remember(power) {
-        power.toFloat() / 67.0f
+        power.toFloat() / extraBatteryInfo.maxWattsChargeInput
     }
-    Column(
+    val remainTime = if (myDevice.isCharging) {
+        stringResource(
+            id = R.string.remain_time_charging,
+            extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
+        )
+    } else {
+        stringResource(
+            id = R.string.remain_time_battery,
+            remainBatteryTime
+        )
+    }
+
+    FlowRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {
-        Row(Modifier.fillMaxWidth()) {
-            SessionText(
-                text = stringResource(id = R.string.battery_status),
-                modifier = Modifier.padding(8.dp)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = {
-                startActivity(context, Intent(Intent.ACTION_POWER_USAGE_SUMMARY), null)
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_monitoring),
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = null
-                )
-            }
-        }
-        val remainTime = if (myDevice.isCharging) {
-            stringResource(
-                id = R.string.remain_time_charging,
-                extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
-            )
-        } else {
-            stringResource(
-                id = R.string.remain_time_battery,
-                remainBatteryTime
-            )
-        }
+        Header(Modifier.fillMaxWidth())
+        BatteryItem(
+            deviceType = myDevice.deviceType,
+            percent = myDevice.level,
+            isCharging = myDevice.isCharging,
+            deviceName = myDevice.name,
+            isShowLargeLevel = true,
+            description = remainTime,
+            isTransparent = true,
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth()
+        )
+        WattsMonitor(
+            modifier = Modifier.padding(8.dp),
+            power = power.toFloat(),
+            powerPercentage = powerPercentage
+        )
+        CurrentAndChargingMonitor(
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(1f),
+            isCharging = myDevice.isCharging,
+            chargeType = myDevice.chargeType,
+            chargeCurrent = extraBatteryInfo.getChargeDisChargeCurrent(myDevice.isCharging)
+        )
+        TemperatureMonitor(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(0.5f),
+            temperature = myDevice.temperature
+        )
+        VoltageMonitor(
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(1f),
+            voltage = myDevice.voltage
+        )
+    }
+}
 
-        with(myDevice) {
-            BatteryItem(
-                deviceType = deviceType,
-                percent = level,
-                isCharging = isCharging,
-                deviceName = name,
-                isShowLargeLevel = true,
-                description = remainTime,
-                isTransparent = true,
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
+@Composable
+private fun Header(
+    modifier: Modifier
+) {
+    val context = LocalContext.current
+    Row(modifier = modifier) {
+        SessionText(
+            text = stringResource(id = R.string.battery_status),
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(onClick = {
+            startActivity(context, Intent(Intent.ACTION_POWER_USAGE_SUMMARY), null)
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_monitoring),
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null
             )
         }
-        Row {
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
-                CircleProgressBar(
-                    modifier = Modifier.size(120.dp).padding(8.dp),
-                    value = String.format("%.1f", power),
-                    label = WATT_UNIT,
-                    progressPercentage = powerPercentage
-                )
-            }
+    }
+}
 
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .weight(1f)
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(if (myDevice.isCharging) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background)
-                    .padding(16.dp)
-            ) {
-                Column {
-                    ShortInformationRow(
-                        key = stringResource(id = if (myDevice.isCharging) R.string.charging else R.string.discharging),
-                        value = myDevice.chargeType.type
-                    )
-                    Text(
-                        text = "${extraBatteryInfo.chargeCurrent} $MA_UNIT",
-                        modifier = Modifier.padding(bottom = 4.dp),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
-                }
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_bolt),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .size(16.dp)
-                        .align(Alignment.BottomEnd)
-                )
-            }
+@SuppressLint("DefaultLocale")
+@Composable
+private fun WattsMonitor(
+    modifier: Modifier,
+    power: Float,
+    powerPercentage: Float
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        CircleProgressBar(
+            modifier = Modifier
+                .size(120.dp)
+                .padding(8.dp),
+            value = String.format("%.1f", power),
+            label = WATT_UNIT,
+            progressPercentage = powerPercentage
+        )
+    }
+}
+
+@Composable
+private fun CurrentAndChargingMonitor(
+    modifier: Modifier,
+    isCharging: Boolean,
+    chargeType: MyDevice.ChargeType,
+    chargeCurrent: Int,
+) {
+    val chargeIcon = when(chargeType) {
+        MyDevice.ChargeType.AC -> R.drawable.ic_power
+        MyDevice.ChargeType.USB -> R.drawable.ic_usb
+        MyDevice.ChargeType.WIRELESS -> R.drawable.ic_lightning_stand
+        else -> R.drawable.ic_power_off
+    }
+    Box(
+        modifier = modifier
+            .height(120.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (isCharging) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            ShortInformationRow(
+                key = stringResource(id = if (isCharging) R.string.charging else R.string.discharging),
+                value = chargeType.type
+            )
+            Text(
+                text = "$chargeCurrent $MA_UNIT",
+                modifier = Modifier.padding(bottom = 4.dp),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.tertiary
+            )
         }
+        Icon(
+            painter = painterResource(id = chargeIcon),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(8.dp)
+                .size(24.dp)
+                .align(Alignment.BottomEnd)
+        )
+    }
+}
+
+@Composable
+private fun TemperatureMonitor(modifier: Modifier, temperature: MyDevice.Temperature) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .heightIn(60.dp, 90.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Text(
+            text = temperature.formatTemperature(),
+            modifier = Modifier.padding(16.dp),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.tertiary
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.ic_device_thermostat),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(8.dp)
+                .size(24.dp)
+                .align(Alignment.BottomEnd)
+        )
+    }
+}
+
+@Composable
+private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .heightIn(60.dp, 90.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Text(
+            text = "$voltage V",
+            modifier = Modifier.padding(16.dp),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.tertiary
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.ic_bolt),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(8.dp)
+                .size(24.dp)
+                .align(Alignment.BottomEnd)
+        )
     }
 }
 

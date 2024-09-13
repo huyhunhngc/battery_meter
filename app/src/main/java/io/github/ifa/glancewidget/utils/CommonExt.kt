@@ -1,23 +1,25 @@
 package io.github.ifa.glancewidget.utils
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
+import android.content.ComponentName
 import android.content.Context
-import android.content.Context.BLUETOOTH_SERVICE
 import android.content.ContextWrapper
+import android.content.Intent
 import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import io.github.ifa.glancewidget.model.BonedDevice
-import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.MainActivity
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+
 
 inline fun <reified T> fromJson(jsonString: String?): T? {
     if (jsonString == null) return null
@@ -71,4 +73,19 @@ fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+fun Context.requestToPinWidget() {
+    val appWidgetManager = getSystemService(AppWidgetManager::class.java)
+    val myProvider = ComponentName(applicationContext, BatteryWidgetReceiver::class.java)
+    if (appWidgetManager.isRequestPinAppWidgetSupported) {
+        val successIntent = PendingIntent.getActivity(
+            applicationContext, 0,
+            Intent(applicationContext, MainActivity::class.java).apply {
+                action = BatteryWidgetReceiver.ACTION_NEW_WIDGET
+            },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        appWidgetManager.requestPinAppWidget(myProvider, null, successIntent)
+    }
 }
