@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -65,6 +66,7 @@ import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSettingItem
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
+import io.github.ifa.glancewidget.ui.component.AppAlertDialog
 import io.github.ifa.glancewidget.ui.component.DropdownTextField
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
@@ -87,18 +89,11 @@ fun NavGraphBuilder.settingsScreen(onOpenAboutScreen: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutScreen: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val requestPermission = rememberMultiplePermissionsState(BluetoothPermissions) { permissions ->
-        val isGranted = permissions.entries.all { it.value }
-        if (isGranted) {
-            viewModel.onShowPairedDeviceChanged(true)
-        }
-    }
-    val context = LocalContext.current
+
     SettingsScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
@@ -106,18 +101,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
         onSelectTheme = viewModel::setThemeType,
         onSelectLanguage = viewModel::setLanguage,
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
-        onSetShowPairedDevice = { accepted ->
-            if (!context.checkPermissions(BluetoothPermissions) && accepted) {
-                viewModel.onShowPairedDeviceChanged(false)
-                if (requestPermission.shouldShowRationale) {
-                    requestPermission.launchMultiplePermissionRequest()
-                } else {
-                    context.startActivity(ApplicationDetailsSettingsIntent, null)
-                }
-            } else {
-                viewModel.onShowPairedDeviceChanged(accepted)
-            }
-        },
+        onSetShowPairedDevice = viewModel::onShowPairedDeviceChanged,
     )
 }
 

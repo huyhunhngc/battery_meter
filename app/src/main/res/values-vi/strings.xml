@@ -53,4 +53,9 @@
     <string name="website">Trang web</string>
     <string name="add_pinned_widget">Add pinned widget</string>
     <string name="pinned_widget_added">A pinned widget has been added to the home screen.</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="dismiss">Bỏ qua</string>
+    <string name="go_to_app_settings">Đi tới cài đặt ứng dụng</string>
+    <string name="need_to_grant_permission">Cần cấp quyền</string>
+    <string name="grant_permission_bluetooth_guide"><b>Đi tới Thông tin ứng dụng > Quyền ứng dụng > Thiết bị lân cận > Cho phép </b>để tiếp tục</string>
 </resources>

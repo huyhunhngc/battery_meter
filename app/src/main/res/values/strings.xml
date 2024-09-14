@@ -57,4 +57,9 @@
     <string name="website">Website</string>
     <string name="add_pinned_widget">Add pinned widget</string>
     <string name="pinned_widget_added">A pinned widget has been added to the home screen.</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="go_to_app_settings">Go to App info</string>
+    <string name="need_to_grant_permission">Need to grant permission</string>
+    <string name="grant_permission_bluetooth_guide"><b>Go to App info > App permissions > Nearby devices > Allow </b>to continue</string>
 </resources>
