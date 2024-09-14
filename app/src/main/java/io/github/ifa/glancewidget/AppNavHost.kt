@@ -33,8 +33,6 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: String,
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
-    onBackClickBlockNavController: NavController.() -> Unit,
 ) {
     NavHostWithSharedAxisX(
         navController = navController,

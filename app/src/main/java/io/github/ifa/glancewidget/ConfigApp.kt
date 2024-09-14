@@ -48,9 +48,7 @@ fun ConfigApp(
             AppNavHost(
                 navController = navController,
                 startDestination = startDestination,
-                modifier = modifier,
-                onBackClick = navController::popBackStack,
-                onBackClickBlockNavController = { popBackStack() },
+                modifier = modifier
             )
         }
     }

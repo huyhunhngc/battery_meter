@@ -63,11 +63,15 @@ fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
 
     return ExtraBatteryInfo(
         capacity = getDesignCapacity(),
-        fullChargeCapacity = fullChargeCapacity.toInt(),
+        fullChargeCapacity = fullChargeCapacity.roundToNearestHundred(),
         chargeCounter = chargeCounter,
         chargingTimeRemaining = chargingTimeRemaining,
         chargeCurrent = chargeCurrent
     )
+}
+
+fun Float.roundToNearestHundred(): Int {
+    return (this.toInt() + 50) / 100 * 100
 }
 
 @SuppressLint("PrivateApi")

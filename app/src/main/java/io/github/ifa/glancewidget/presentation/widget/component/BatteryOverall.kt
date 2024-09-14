@@ -162,7 +162,6 @@ private fun WattsMonitor(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CurrentAndChargingMonitor(
     modifier: Modifier,
@@ -218,7 +217,7 @@ private fun TemperatureMonitor(modifier: Modifier, temperature: MyDevice.Tempera
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .heightIn(60.dp, 90.dp)
+            .height(90.dp)
             .background(MaterialTheme.colorScheme.background)
     ) {
         Text(
@@ -245,7 +244,7 @@ private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .heightIn(60.dp, 90.dp)
+            .height(90.dp)
             .background(MaterialTheme.colorScheme.background)
     ) {
         Text(

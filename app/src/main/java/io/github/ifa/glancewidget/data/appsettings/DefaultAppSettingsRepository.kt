@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 class DefaultAppSettingsRepository(
     private val appSettingDataStore: AppSettingDataStore,
     private val context: Context
-): AppSettingsRepository {
+) : AppSettingsRepository {
     override fun get(): Flow<AppSettings> {
         return appSettingDataStore.getSettingsFlow()
     }
@@ -24,6 +24,17 @@ class DefaultAppSettingsRepository(
     override suspend fun saveTheme(themeType: ThemeType) {
         val settings = appSettingDataStore.getSettings()
         appSettingDataStore.saveSettings(settings.copy(theme = themeType))
+    }
+
+    override suspend fun saveShowPairedDevicesSetting(showPairedDevices: Boolean) {
+        val settings = appSettingDataStore.getSettings()
+        appSettingDataStore.saveSettings(
+            settings.copy(
+                notificationSetting = settings.notificationSetting.copy(
+                    showPairedDevices = showPairedDevices
+                )
+            )
+        )
     }
 
     override suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting) {

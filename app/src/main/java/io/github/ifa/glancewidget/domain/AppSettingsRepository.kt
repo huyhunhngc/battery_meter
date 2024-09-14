@@ -11,6 +11,7 @@ interface AppSettingsRepository {
     suspend fun saveLocaleLanguage(language: AppSettings.Language)
     suspend fun saveTheme(themeType: ThemeType)
     suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting)
+    suspend fun saveShowPairedDevicesSetting(showPairedDevices: Boolean)
 }
 
 @Composable
