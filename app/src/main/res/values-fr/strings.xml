@@ -55,7 +55,10 @@
     <string name="pinned_widget_added">Un widget épinglé a été ajouté à l\'écran d\'accueil.</string>
     <string name="confirm">Confirmer</string>
     <string name="dismiss">Rejeter</string>
-    <string name="go_to_app_settings">Accéder aux paramètres de l\'application</string>
+    <string name="go_to_app_info">Accéder aux paramètres de l\'application</string>
     <string name="need_to_grant_permission">Doit accorder l\'autorisation</string>
     <string name="grant_permission_bluetooth_guide"><b>Accéder à Infos sur l\'application > Autorisations de l\'application > Appareils à proximité > Autoriser </b>pour continuer</string>
+    <string name="allow_notification">Autoriser %s à vous envoyer des notification ?</string>
+    <string name="need_to_allow_notification">Besoin d\'autoriser les notifications</string>
+    <string name="go_to_app_settings">Accéder aux paramètres de l\'application</string>
 </resources>

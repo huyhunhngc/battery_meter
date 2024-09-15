@@ -1,8 +1,9 @@
-package io.github.ifa.glancewidget.glance
+package io.github.ifa.glancewidget.broadcast
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
@@ -13,6 +14,7 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +47,9 @@ class MonitorReceiver : BroadcastReceiver() {
 
             Intent.ACTION_POWER_DISCONNECTED -> batteryData.setChargingStatus(false)
 
-            in BLUETOOTH_STATE_ACTIONS -> batteryData.setPairedDevices(context)
+            in BLUETOOTH_STATE_ACTIONS -> {
+                batteryData.setPairedDevices(context)
+            }
 
             else -> batteryData
         }
@@ -60,6 +64,12 @@ class MonitorReceiver : BroadcastReceiver() {
 
     private suspend fun updateBatteryWidget(context: Context) = coroutineScope {
         withContext(Dispatchers.IO) {
+            val savedBatteryData = context.batteryWidgetStore.getObject<BatteryData>(
+                BATTERY_PREFERENCES
+            )
+            if (savedBatteryData != null && batteryData == BatteryData.initial()) {
+                batteryData = savedBatteryData
+            }
             batteryStateRepository.saveExtraBatteryInformation()
             context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, batteryData)
         }

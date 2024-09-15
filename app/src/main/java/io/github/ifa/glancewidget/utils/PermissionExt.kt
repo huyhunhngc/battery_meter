@@ -1,7 +1,9 @@
 package io.github.ifa.glancewidget.utils
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.annotation.StringRes
 
 data class RuntimePermissionRequest(
@@ -22,3 +24,9 @@ fun Context.isPermissionGranted(permission: String): Boolean =
 
 fun Context.checkPermissions(permissions: List<String>): Boolean =
     permissions.all { isPermissionGranted(it) }
+
+fun Context.isNotificationPermissionGranted(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+} else {
+    true
+}

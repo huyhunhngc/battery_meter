@@ -14,10 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
-import io.github.ifa.glancewidget.glance.MonitorReceiver
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
-import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
 import io.github.ifa.glancewidget.ui.theme.GlanceWidgetTheme
 import io.github.ifa.glancewidget.utils.BluetoothPermissions

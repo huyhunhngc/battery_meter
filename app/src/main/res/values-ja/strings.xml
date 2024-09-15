@@ -55,7 +55,10 @@
     <string name="pinned_widget_added">固定ウィジェットがホーム画面に追加されました。</string>
     <string name="confirm">確認</string>
     <string name="dismiss">閉じる</string>
-    <string name="go_to_app_settings">アプリ設定に移動</string>
+    <string name="go_to_app_info">アプリ設定に移動</string>
     <string name="need_to_grant_permission">「許可を与える必要があります」</string>
     <string name="grant_permission_bluetooth_guide"><b>アプリ情報 > アプリの権限 > 近くのデバイス > 許可</b>に移動して続行</string>
+    <string name="allow_notification">%s に通知の送信を許可しますか?</string>
+    <string name="need_to_allow_notification">通知を許可する必要があります</string>
+    <string name="go_to_app_settings">アプリ設定に移動</string>
 </resources>

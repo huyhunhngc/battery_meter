@@ -12,14 +12,19 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.ifa.glancewidget.glance.MonitorReceiver
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver
+import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.model.WidgetSetting
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget get() = BatteryWidget()
+
+    @Inject
+    lateinit var appSettingsRepository: AppSettingsRepository
 
     private lateinit var monitorBroadcastReceiver: MonitorReceiver
 

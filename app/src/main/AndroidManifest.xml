@@ -47,7 +47,7 @@
         </receiver>
 
         <receiver
-            android:name=".glance.MonitorReceiver"
+            android:name=".broadcast.MonitorReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:exported="true">
             <intent-filter>

@@ -55,7 +55,10 @@
     <string name="pinned_widget_added">A pinned widget has been added to the home screen.</string>
     <string name="confirm">Xác nhận</string>
     <string name="dismiss">Bỏ qua</string>
-    <string name="go_to_app_settings">Đi tới cài đặt ứng dụng</string>
+    <string name="go_to_app_info">Đi đến Thông tin ứng dụng</string>
     <string name="need_to_grant_permission">Cần cấp quyền</string>
-    <string name="grant_permission_bluetooth_guide"><b>Đi tới Thông tin ứng dụng > Quyền ứng dụng > Thiết bị lân cận > Cho phép </b>để tiếp tục</string>
+    <string name="grant_permission_bluetooth_guide"><b>Đi tới Thông tin ứng dụng > Quyền ứng dụng > Thiết bị lân cận > Cho phép </b>để tiếp tục.</string>
+    <string name="allow_notification">Cho phép %s gửi thông báo cho bạn?</string>
+    <string name="need_to_allow_notification">Cần cho phép thông báo</string>
+    <string name="go_to_app_settings">Đi đến Cài đặt ứng dụng</string>
 </resources>

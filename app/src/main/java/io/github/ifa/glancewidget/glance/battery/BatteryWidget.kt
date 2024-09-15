@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -23,8 +24,8 @@ import androidx.glance.layout.padding
 import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
-import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
 import io.github.ifa.glancewidget.glance.battery.component.FullWidthItem
+import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.DeviceType
@@ -44,6 +45,7 @@ class BatteryWidget : GlanceAppWidget() {
             val data by batteryWidgetStore.data.collectAsState(initial)
             val widgetSettingsJson by rememberUpdatedState(data[WIDGET_PREFERENCES])
             val batteryJson by rememberUpdatedState(data[BATTERY_PREFERENCES])
+            val showPairedDevices by rememberUpdatedState(data[SHOW_PAIRED_DEVICES] ?: true)
             val battery = remember(batteryJson) {
                 fromJson<BatteryData>(batteryJson)
             }
@@ -52,7 +54,7 @@ class BatteryWidget : GlanceAppWidget() {
                 settings?.getSettingByGlance(context, id)
             }
             GlanceTheme {
-                Content(battery = battery, setting = setting)
+                Content(battery = battery, setting = setting, showPairedDevices = showPairedDevices)
             }
         }
     }
@@ -84,7 +86,7 @@ class BatteryWidget : GlanceAppWidget() {
 
     @Composable
     private fun Content(
-        battery: BatteryData?, setting: WidgetSetting?
+        battery: BatteryData?, setting: WidgetSetting?, showPairedDevices: Boolean = true
     ) {
         val percent = battery?.myDevice?.level ?: 100
         val isCharging = battery?.myDevice?.isCharging ?: false
@@ -93,8 +95,10 @@ class BatteryWidget : GlanceAppWidget() {
             setting?.getType() ?: WidgetSetting.Type.Small
         }
 
-        val connectedDevice = remember(typeWidget, battery) {
-            battery?.batteryConnectedDevices?.take(typeWidget.itemOnSize())
+        val connectedDevice = remember(typeWidget, battery, showPairedDevices) {
+            battery?.batteryConnectedDevices?.take(
+                if (showPairedDevices) typeWidget.itemOnSize() else 0
+            )
         }
 
         val isTransparent = remember(setting) {
@@ -142,6 +146,7 @@ class BatteryWidget : GlanceAppWidget() {
     companion object {
         val BATTERY_PREFERENCES = stringPreferencesKey("batteryData")
         val WIDGET_PREFERENCES = stringPreferencesKey("widgetSetting")
+        val SHOW_PAIRED_DEVICES = booleanPreferencesKey("showPairedDevices")
         val PADDING = 8.dp
     }
 }
