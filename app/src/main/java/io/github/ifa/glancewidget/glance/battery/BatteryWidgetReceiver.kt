@@ -13,6 +13,7 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SHOW_PAIRED_DEVICES_CHANGED
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.model.WidgetSetting
 import kotlinx.coroutines.MainScope
@@ -78,7 +79,8 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
             Intent.ACTION_BATTERY_LOW,
             Intent.ACTION_POWER_DISCONNECTED,
             Intent.ACTION_POWER_CONNECTED,
-            Intent.ACTION_BATTERY_OKAY
+            Intent.ACTION_BATTERY_OKAY,
+            ACTION_SHOW_PAIRED_DEVICES_CHANGED
         )
         val BLUETOOTH_STATE_ACTIONS = listOf(
             BluetoothAdapter.ACTION_STATE_CHANGED,

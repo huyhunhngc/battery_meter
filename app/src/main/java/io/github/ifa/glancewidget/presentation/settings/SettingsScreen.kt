@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.presentation.settings
 
+import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,11 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SHOW_PAIRED_DEVICES_CHANGED
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
@@ -28,6 +31,7 @@ import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
+import io.github.ifa.glancewidget.utils.findActivity
 
 const val settingsScreenRoute = "settings_screen_route"
 
@@ -65,6 +69,7 @@ internal fun SettingsScreen(
     onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val context = LocalContext.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -92,7 +97,15 @@ internal fun SettingsScreen(
                 NotificationSetting(
                     notificationSetting = uiState.notificationSetting,
                     onSetNotificationEnabled = onSetNotificationEnabled,
-                    onSetShowPairedDevice = onSetShowPairedDevice
+                    onSetShowPairedDevice = { enabled ->
+                        if (enabled) {
+                            context.findActivity()?.sendBroadcast(Intent().apply {
+                                `package` = context.packageName
+                                action = ACTION_SHOW_PAIRED_DEVICES_CHANGED
+                            })
+                        }
+                        onSetShowPairedDevice(enabled)
+                    }
                 )
             }
             item {

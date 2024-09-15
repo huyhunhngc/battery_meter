@@ -5,13 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -67,7 +68,8 @@ fun NotificationSetting(
     var showPairedDevice by remember(notificationSetting.showPairedDevices) {
         mutableStateOf(notificationSetting.showPairedDevices)
     }
-    LifecycleResumeEffect(Unit) {
+
+    LifecycleResumeEffect(notificationSetting) {
         showPairedDevice = showPairedDevice && context.checkPermissions(BluetoothPermissions)
         notificationEnabled = notificationEnabled && context.isNotificationPermissionGranted()
         onPauseOrDispose {}
@@ -82,18 +84,20 @@ fun NotificationSetting(
         }
 
     val notificationPermission = rememberNotificationPermissionState { isGranted ->
-        onSetNotificationEnabled(isGranted)
+        if (isGranted) {
+            onSetNotificationEnabled(true)
+        }
     }
 
     var dialogUiState by remember { mutableStateOf(SettingAlertDialogUiState()) }
     if (dialogUiState.isOpen) {
         AppAlertDialog(
             onDismissRequest = {
-                dialogUiState = dialogUiState.close()
+                dialogUiState = dialogUiState.close
                 dialogUiState.onDismissRequest()
             },
             onConfirmation = {
-                dialogUiState = dialogUiState.close()
+                dialogUiState = dialogUiState.close
                 dialogUiState.onConfirmation()
             },
             dialogTitle = stringResource(id = dialogUiState.title),
@@ -103,7 +107,8 @@ fun NotificationSetting(
             ),
             positiveButtonText = stringResource(id = dialogUiState.positiveButtonText),
             negativeButtonText = "",
-            icon = dialogUiState.icon
+            icon = dialogUiState.iconRes?.let { ImageVector.vectorResource(id = it) }
+                ?: dialogUiState.icon
         )
     }
 
@@ -122,6 +127,7 @@ fun NotificationSetting(
                 notificationEnabled = checked
                 return@scope
             }
+            notificationEnabled = checked
             if (!notificationPermission.status.isGranted && checked) {
                 if (notificationPermission.status.shouldShowRationale) {
                     notificationPermission.launchPermissionRequest()
@@ -134,6 +140,7 @@ fun NotificationSetting(
                         positiveButtonText = R.string.go_to_app_settings,
                         icon = Icons.Default.Notifications,
                         onConfirmation = {
+                            onSetNotificationEnabled(true)
                             context.startActivity(NotificationSettingsIntent, null)
                         }
                     )
@@ -141,7 +148,6 @@ fun NotificationSetting(
             } else {
                 onSetNotificationEnabled(checked)
             }
-            notificationEnabled = checked
         },
         checked = notificationEnabled
     )
@@ -152,8 +158,8 @@ fun NotificationSetting(
         label = stringResource(id = R.string.show_paired_devices),
         description = stringResource(id = R.string.show_paired_devices_desc),
         onCheckedChange = { checked ->
+            showPairedDevice = checked
             if (!context.checkPermissions(BluetoothPermissions) && checked) {
-                onSetShowPairedDevice(false)
                 if (bluetoothPermissions.shouldShowRationale) {
                     bluetoothPermissions.launchMultiplePermissionRequest()
                 } else {
@@ -162,8 +168,9 @@ fun NotificationSetting(
                         title = R.string.need_to_grant_permission,
                         text = R.string.grant_permission_bluetooth_guide,
                         onDismissRequest = { showPairedDevice = false },
-                        icon = Icons.Default.Settings,
+                        iconRes = R.drawable.ic_nearby_off,
                         onConfirmation = {
+                            onSetShowPairedDevice(true)
                             context.startActivity(ApplicationDetailsSettingsIntent, null)
                         }
                     )
@@ -171,7 +178,6 @@ fun NotificationSetting(
             } else {
                 onSetShowPairedDevice(checked)
             }
-            showPairedDevice = checked
         },
         checked = showPairedDevice
     )
@@ -196,8 +202,9 @@ data class SettingAlertDialogUiState(
     @StringRes val text: Int = R.string.grant_permission_bluetooth_guide,
     @StringRes val positiveButtonText: Int = R.string.go_to_app_info,
     val icon: ImageVector = Icons.Default.Warning,
+    @DrawableRes val iconRes: Int? = null,
     val onDismissRequest: () -> Unit = {},
     val onConfirmation: () -> Unit = {},
 ) {
-    fun close() = this.copy(isOpen = false)
+    val close: SettingAlertDialogUiState get() = this.copy(isOpen = false)
 }

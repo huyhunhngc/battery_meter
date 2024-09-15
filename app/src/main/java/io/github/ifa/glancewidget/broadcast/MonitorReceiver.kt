@@ -3,7 +3,6 @@ package io.github.ifa.glancewidget.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,7 +46,7 @@ class MonitorReceiver : BroadcastReceiver() {
 
             Intent.ACTION_POWER_DISCONNECTED -> batteryData.setChargingStatus(false)
 
-            in BLUETOOTH_STATE_ACTIONS -> {
+            in BLUETOOTH_STATE_ACTIONS, ACTION_SHOW_PAIRED_DEVICES_CHANGED -> {
                 batteryData.setPairedDevices(context)
             }
 
@@ -82,6 +81,10 @@ class MonitorReceiver : BroadcastReceiver() {
                 BatteryWidget().updateIfBatteryChanged(context, glanceId)
             }
         }
+    }
+
+    companion object {
+        const val ACTION_SHOW_PAIRED_DEVICES_CHANGED = "action_show_paired_devices_changed"
     }
 }
 
