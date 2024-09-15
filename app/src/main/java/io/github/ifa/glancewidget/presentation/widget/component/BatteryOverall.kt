@@ -255,7 +255,7 @@ private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
             color = MaterialTheme.colorScheme.tertiary
         )
         Icon(
-            painter = painterResource(id = R.drawable.ic_bolt),
+            painter = painterResource(id = R.drawable.ic_vital_signs),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier

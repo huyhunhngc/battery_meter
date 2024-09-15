@@ -10,8 +10,12 @@ import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.github.ifa.glancewidget.R
 
+fun Context.navigateLicencesScreen() {
+    startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+}
 
 fun Context.navigateUrl(url: String) {
     val uri: Uri = url.toUri()

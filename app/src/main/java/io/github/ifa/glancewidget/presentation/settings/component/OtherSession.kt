@@ -20,7 +20,7 @@ import io.github.ifa.glancewidget.ui.component.TextWithImage
 import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
 
 @Composable
-fun OtherSession(onOpenAboutScreen: () -> Unit) {
+fun OtherSession(onOpenAboutScreen: () -> Unit, onOpenLicenseScreen: () -> Unit) {
     TextWithImage(
         text = stringResource(R.string.other),
         image = painterResource(id = R.drawable.ic_info),
@@ -30,21 +30,21 @@ fun OtherSession(onOpenAboutScreen: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(horizontal = 16.dp),
+            .background(MaterialTheme.colorScheme.surfaceContainer),
     ) {
         TextWithRightArrow(
             text = stringResource(id = R.string.about_tab),
             onClick = onOpenAboutScreen
         )
-        HorizontalDivider(thickness = 0.5.dp)
-        TextWithRightArrow(text = stringResource(id = R.string.license)) {
-
-        }
-        HorizontalDivider(thickness = 0.5.dp)
-        TextWithRightArrow(text = stringResource(id = R.string.privacy_policy)) {
-
-        }
+        Divider()
+        TextWithRightArrow(text = stringResource(id = R.string.license), onClick = onOpenLicenseScreen)
+        Divider()
+        TextWithRightArrow(text = stringResource(id = R.string.privacy_policy)) {}
     }
     Spacer(modifier = Modifier.height(16.dp))
+}
+
+@Composable
+private fun Divider() {
+    HorizontalDivider(thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 16.dp))
 }

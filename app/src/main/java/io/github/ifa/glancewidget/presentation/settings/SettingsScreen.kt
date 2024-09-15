@@ -32,6 +32,7 @@ import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
+import io.github.ifa.glancewidget.utils.navigateLicencesScreen
 
 const val settingsScreenRoute = "settings_screen_route"
 
@@ -70,6 +71,9 @@ internal fun SettingsScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val context = LocalContext.current
+    val onOpenLicensesScreen = {
+        context.navigateLicencesScreen()
+    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -109,7 +113,7 @@ internal fun SettingsScreen(
                 )
             }
             item {
-                OtherSession(onOpenAboutScreen)
+                OtherSession(onOpenAboutScreen, onOpenLicensesScreen)
             }
         }
     }

@@ -26,10 +26,9 @@ fun TextWithRightArrow(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = 16.dp),
-
+            .fillMaxWidth()
+            .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
