@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
+import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 
 const val mainScreenRoute = "main_screen_route"
 
@@ -39,9 +41,13 @@ fun NavGraphBuilder.mainTabScreens(
     mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
 ) {
     composable(mainScreenRoute) {
-        MainScreen(
-            mainNavGraph = mainNavGraph,
-        )
+        CompositionLocalProvider(
+            LocalAnimatedVisibilityScope provides this@composable,
+        ) {
+            MainScreen(
+                mainNavGraph = mainNavGraph,
+            )
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
-import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,18 +35,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.model.ExtraBatteryInfo
-import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MAH_UNIT
 
 @Composable
 fun BatteryExtraInformation(
-    myDevice: MyDevice,
-    extraBatteryInfo: ExtraBatteryInfo,
-    batteryHealth: MyDevice.BatteryHealth,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    batteryDataWrapper: BatteryDataWrapper,
 ) {
+    val myDevice = batteryDataWrapper.batteryData.myDevice
+    val batteryHealth = batteryDataWrapper.batteryHealth
+    val extraBatteryInfo = batteryDataWrapper.extraBatteryInfo
     var expanded by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 90f else 0f, label = ""
@@ -134,8 +132,6 @@ private fun InformationRow(@StringRes key: Int, value: String) {
 @Composable
 fun BatteryExtraInformationPreview() {
     BatteryExtraInformation(
-        myDevice = MyDevice.fromIntent(Intent()),
-        extraBatteryInfo = ExtraBatteryInfo(4100, 100, 100, chargeCurrent = 1200),
-        batteryHealth = MyDevice.BatteryHealth.GOOD
+        batteryDataWrapper = BatteryDataWrapper()
     )
 }

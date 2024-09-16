@@ -10,6 +10,7 @@ interface BatteryStateRepository {
     @Composable
     fun battery(): BatteryData
     fun batteryFlow(): Flow<BatteryData>
+    fun extraBattery(): ExtraBatteryInfo
     fun extraBatteryFlow(): Flow<ExtraBatteryInfo>
     suspend fun saveExtraBatteryInformation()
     suspend fun saveWidgetTransparentSetting(isTransparent: Boolean, appWidgetId: Int)

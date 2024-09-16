@@ -61,4 +61,5 @@
     <string name="allow_notification">Autoriser %s à vous envoyer des notification ?</string>
     <string name="need_to_allow_notification">Besoin d\'autoriser les notifications</string>
     <string name="go_to_app_settings">Accéder aux paramètres de l\'application</string>
+    <string name="power_monitor">Moniteur de puissance</string>
 </resources>

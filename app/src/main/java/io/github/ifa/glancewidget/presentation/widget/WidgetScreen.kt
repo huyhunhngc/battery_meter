@@ -5,7 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,14 +40,14 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
-import io.github.ifa.glancewidget.model.ExtraBatteryInfo
-import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.widget.component.AddWidgetBottomSheet
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryExtraInformation
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
 import io.github.ifa.glancewidget.presentation.widget.component.ConnectedDevice
 import io.github.ifa.glancewidget.presentation.widget.component.DropdownMenu
+import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
@@ -57,15 +56,18 @@ import kotlinx.coroutines.launch
 
 const val widgetScreenRoute = "widget_screen_route"
 
-fun NavGraphBuilder.widgetScreen() {
+fun NavGraphBuilder.widgetScreen(
+    onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
+) {
     composable(widgetScreenRoute) {
-        WidgetScreen()
+        WidgetScreen(onOpenWattsDetailScreen = onOpenWattsDetailScreen)
     }
 }
 
 @Composable
 internal fun WidgetScreen(
-    viewModel: WidgetViewModel = hiltViewModel()
+    viewModel: WidgetViewModel = hiltViewModel(),
+    onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val showBottomSheet by rememberUpdatedState(uiState.setupWidgetId != INVALID_APPWIDGET_ID)
@@ -78,9 +80,11 @@ internal fun WidgetScreen(
         val intent = activity?.intent ?: return@LaunchedEffect
         viewModel.controlExtras(intent)
     }
-    WidgetScreen(uiState = uiState,
+    WidgetScreen(
+        uiState = uiState,
         snackbarHostState = snackbarHostState,
         isShowBottomSheet = showBottomSheet,
+        onOpenWattsDetailScreen = onOpenWattsDetailScreen,
         onDisMissBottomSheet = viewModel::hideBottomSheet,
         onClickAddWidget = { params ->
             if (uiState.setupWidgetId == PINNED_WIDGET_DEFAULT_ID) {
@@ -114,6 +118,7 @@ private fun WidgetScreen(
     uiState: WidgetViewModel.WidgetScreenUiState,
     snackbarHostState: SnackbarHostState,
     isShowBottomSheet: Boolean = false,
+    onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
     onClickAddWidget: (AddWidgetParams) -> Unit,
     onRequestPiningWidget: () -> Unit = {}
@@ -133,19 +138,16 @@ private fun WidgetScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             batteryOverall(
-                myDevice = uiState.batteryData.myDevice,
-                extraBatteryInfo = uiState.extraBatteryInfo,
-                remainBatteryTime = uiState.remainBatteryTime,
+                batteryDataWrapper = uiState.batteryOverall,
+                onOpenWattsDetailScreen = onOpenWattsDetailScreen,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             batteryExtraInformation(
-                myDevice = uiState.batteryData.myDevice,
-                extraBatteryInfo = uiState.extraBatteryInfo,
-                batteryHealth = uiState.batteryHealth,
+                batteryDataWrapper = uiState.batteryOverall,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             connectedDevices(
-                batteryConnectedDevices = uiState.batteryData.batteryConnectedDevices,
+                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
@@ -188,24 +190,25 @@ private fun Appbar(scrollBehavior: TopAppBarScrollBehavior, onClickAddWidget: ()
 
 
 private fun LazyListScope.batteryOverall(
-    myDevice: MyDevice,
-    extraBatteryInfo: ExtraBatteryInfo,
-    remainBatteryTime: String,
+    batteryDataWrapper: BatteryDataWrapper,
+    onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     modifier: Modifier = Modifier
 ) {
     item {
-        BatteryOverall(myDevice, extraBatteryInfo, remainBatteryTime, modifier)
+        BatteryOverall(
+            modifier = modifier,
+            batteryDataWrapper = batteryDataWrapper,
+            onOpenWattsDetailScreen = onOpenWattsDetailScreen
+        )
     }
 }
 
 private fun LazyListScope.batteryExtraInformation(
-    myDevice: MyDevice,
-    extraBatteryInfo: ExtraBatteryInfo,
-    batteryHealth: MyDevice.BatteryHealth,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    batteryDataWrapper: BatteryDataWrapper,
 ) {
     item {
-        BatteryExtraInformation(myDevice, extraBatteryInfo, batteryHealth, modifier)
+        BatteryExtraInformation(modifier, batteryDataWrapper)
     }
 }
 

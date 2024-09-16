@@ -11,7 +11,9 @@ import io.github.ifa.glancewidget.model.WidgetSettings
 import io.github.ifa.glancewidget.utils.fromJson
 import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setObject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class BatteryDataStore(
@@ -22,7 +24,7 @@ class BatteryDataStore(
             fromJson<BatteryData>(preferences[BATTERY_PREFERENCES])
         }.map {
             it ?: BatteryData.initial()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     fun getExtraBatteryInformation(): Flow<ExtraBatteryInfo> {
@@ -30,7 +32,7 @@ class BatteryDataStore(
             fromJson<ExtraBatteryInfo>(preferences[EXTRA_BATTERY_PREFERENCES])
         }.map {
             it ?: ExtraBatteryInfo()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     suspend fun saveExtraBatteryInformation(extraBatteryInfo: ExtraBatteryInfo) {

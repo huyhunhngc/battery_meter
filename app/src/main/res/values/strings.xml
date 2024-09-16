@@ -65,4 +65,5 @@
     <string name="allow_notification">Allow %s to send you notifications?</string>
     <string name="need_to_allow_notification">Need to allow notifications</string>
     <string name="go_to_app_settings">Go to App settings</string>
+    <string name="power_monitor">Power Monitor</string>
 </resources>

@@ -6,7 +6,7 @@ object Constants {
     const val MAH_UNIT = "mAh"
     const val UAH_UNIT = "μAh"
     const val MA_UNIT = "mA"
-    const val WATT_UNIT = "W"
+    const val WATT_UNIT = "watts"
     const val ANDROID_SETTING_PACKAGE = "com.android.settings"
     const val BLUETOOTH_SETTING_CLASS = "com.android.settings.bluetooth.BluetoothSettings"
     const val IFA_TEAM_URL = "https://ifa-ap-01.github.io/porfolio/"

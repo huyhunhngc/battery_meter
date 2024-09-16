@@ -2,6 +2,8 @@ package io.github.ifa.glancewidget
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -11,6 +13,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,28 +28,47 @@ import io.github.ifa.glancewidget.presentation.about.aboutScreen
 import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
 import io.github.ifa.glancewidget.presentation.main.mainTabScreens
 import io.github.ifa.glancewidget.presentation.settings.settingsScreen
+import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.navigateToWattsDetailScreen
+import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.wattsDetailScreen
 import io.github.ifa.glancewidget.presentation.widget.widgetScreen
+import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope
 import io.github.ifa.glancewidget.utils.navigateUrl
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     startDestination: String,
     modifier: Modifier = Modifier,
 ) {
-    NavHostWithSharedAxisX(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier,
-    ) {
-        mainTabScreens { navMainController, paddingValues ->
-            widgetScreen()
-            settingsScreen(onOpenAboutScreen = navController::navigateToAboutScreen)
+    SharedTransitionLayout {
+        CompositionLocalProvider(
+            LocalSharedTransitionScope provides this,
+        ) {
+            NavHostWithSharedAxisX(
+                navController = navController,
+                startDestination = startDestination,
+                modifier = modifier,
+            ) {
+                mainScreen(navController)
+                aboutScreen(
+                    onNavigationIconClick = navController::popBackStack,
+                    onExternalUrlClick = { navigateUrl(it) }
+                )
+                wattsDetailScreen(
+                    onNavigationIconClick = navController::popBackStack
+                )
+            }
         }
-        aboutScreen(
-            onNavigationIconClick = navController::popBackStack,
-            onExternalUrlClick = { navigateUrl(it) }
-        )
+    }
+}
+
+private fun NavGraphBuilder.mainScreen(
+    navController: NavHostController,
+) {
+    mainTabScreens { navMainController, paddingValues ->
+        widgetScreen(onOpenWattsDetailScreen = navController::navigateToWattsDetailScreen)
+        settingsScreen(onOpenAboutScreen = navController::navigateToAboutScreen)
     }
 }
 

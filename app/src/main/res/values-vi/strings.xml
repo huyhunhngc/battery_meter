@@ -61,4 +61,5 @@
     <string name="allow_notification">Cho phép %s gửi thông báo cho bạn?</string>
     <string name="need_to_allow_notification">Cần cho phép thông báo</string>
     <string name="go_to_app_settings">Đi đến Cài đặt ứng dụng</string>
+    <string name="power_monitor">Trình giám sát nguồn điện</string>
 </resources>

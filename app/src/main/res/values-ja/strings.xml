@@ -61,4 +61,5 @@
     <string name="allow_notification">%s に通知の送信を許可しますか?</string>
     <string name="need_to_allow_notification">通知を許可する必要があります</string>
     <string name="go_to_app_settings">アプリ設定に移動</string>
+    <string name="power_monitor">電源モニター</string>
 </resources>

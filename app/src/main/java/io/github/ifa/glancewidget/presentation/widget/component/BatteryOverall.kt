@@ -1,10 +1,9 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,20 +34,21 @@ import androidx.core.content.ContextCompat.startActivity
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
-import io.github.ifa.glancewidget.ui.component.CircleProgressBar
+import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
+import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
-import io.github.ifa.glancewidget.utils.Constants.WATT_UNIT
 import io.github.ifa.glancewidget.utils.toHHMMSS
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BatteryOverall(
-    myDevice: MyDevice,
-    extraBatteryInfo: ExtraBatteryInfo,
-    remainBatteryTime: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    batteryDataWrapper: BatteryDataWrapper,
+    onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit = {}
 ) {
+    val myDevice = batteryDataWrapper.batteryData.myDevice
+    val extraBatteryInfo = batteryDataWrapper.extraBatteryInfo
     val power = remember(extraBatteryInfo.chargeCurrent, myDevice.isCharging) {
         extraBatteryInfo.powerInWatt(myDevice.voltage, myDevice.isCharging)
     }
@@ -64,7 +63,7 @@ fun BatteryOverall(
     } else {
         stringResource(
             id = R.string.remain_time_battery,
-            remainBatteryTime
+            batteryDataWrapper.remainBatteryTime
         )
     }
 
@@ -89,7 +88,17 @@ fun BatteryOverall(
                 .fillMaxWidth()
         )
         WattsMonitor(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .size(120.dp)
+                .clickable {
+                    onOpenWattsDetailScreen(
+                        WattsDetailDestination(
+                            power = power.toFloat(),
+                            powerPercentage = powerPercentage
+                        )
+                    )
+                },
             power = power.toFloat(),
             powerPercentage = powerPercentage
         )
@@ -136,29 +145,6 @@ private fun Header(
                 contentDescription = null
             )
         }
-    }
-}
-
-@SuppressLint("DefaultLocale")
-@Composable
-private fun WattsMonitor(
-    modifier: Modifier,
-    power: Float,
-    powerPercentage: Float
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        CircleProgressBar(
-            modifier = Modifier
-                .size(120.dp)
-                .padding(8.dp),
-            value = String.format("%.1f", power),
-            label = WATT_UNIT,
-            progressPercentage = powerPercentage
-        )
     }
 }
 
@@ -270,8 +256,6 @@ private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
 @Composable
 fun BatteryOverallPreview() {
     BatteryOverall(
-        myDevice = MyDevice.fromIntent(Intent()).copy(isCharging = true, voltage = 4.5f),
-        extraBatteryInfo = ExtraBatteryInfo(4100, 100, 100, chargeCurrent = 1200),
-        remainBatteryTime = "00:00:00",
+        batteryDataWrapper = BatteryDataWrapper()
     )
 }

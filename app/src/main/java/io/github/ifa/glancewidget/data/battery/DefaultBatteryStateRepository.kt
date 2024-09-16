@@ -11,8 +11,11 @@ import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.utils.chunked
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class DefaultBatteryStateRepository(
@@ -30,11 +33,19 @@ class DefaultBatteryStateRepository(
         return batteryDataStore.get()
     }
 
+    override fun extraBattery(): ExtraBatteryInfo {
+        return context.getExtraBatteryInformation()
+    }
+
     override fun extraBatteryFlow(): Flow<ExtraBatteryInfo> {
-        return batteryDataStore.getExtraBatteryInformation()
-            .chunked(4)
-            .conflate()
-            .map { it.average() }
+        return flow {
+            emit(extraBattery())
+            batteryDataStore.getExtraBatteryInformation()
+                .chunked(3)
+                .conflate()
+                .map { it.average() }
+                .collect { chunk -> emit(chunk) }
+        }
     }
 
     override suspend fun saveExtraBatteryInformation() {

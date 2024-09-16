@@ -76,7 +76,7 @@ fun AddWidgetBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(32.dp))
-            with(uiState.batteryData.myDevice) {
+            with(uiState.batteryOverall.batteryData.myDevice) {
                 BatteryItem(
                     deviceType = deviceType,
                     percent = level,
