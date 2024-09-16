@@ -8,6 +8,11 @@ easy / still possible it is to write appwidgets that are updated frequently enou
 
 I will be documenting some of my learnings in this README.
 
+
+https://github.com/user-attachments/assets/fb24c9b7-7632-44ca-91ab-74ad3ab31354
+
+
+
 ## Update intervals
 
 ### `android:updatePeriodMillis` ([UPDATE_PERIOD_MILLIS](https://github.com/tkuenneth/battery_meter/releases/tag/UPDATE_PERIOD_MILLIS))
