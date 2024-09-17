@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.data.battery
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -112,6 +113,7 @@ class DefaultBatteryStateRepository(
                 )
             }
         }
+        Log.d("!@#", "saveChargeCurrent: $newChargeDisChargeCurrent")
         batteryDataStore.saveChargeCurrent(newChargeDisChargeCurrent)
     }
 }

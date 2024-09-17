@@ -12,8 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.ui.component.TextWithImage
@@ -29,15 +31,17 @@ fun OtherSession(onOpenAboutScreen: () -> Unit, onOpenLicenseScreen: () -> Unit)
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer),
+            .clip(RoundedCornerShape(16.dp)),
     ) {
         TextWithRightArrow(
             text = stringResource(id = R.string.about_tab),
             onClick = onOpenAboutScreen
         )
         Divider()
-        TextWithRightArrow(text = stringResource(id = R.string.license), onClick = onOpenLicenseScreen)
+        TextWithRightArrow(
+            text = stringResource(id = R.string.license),
+            onClick = onOpenLicenseScreen
+        )
         Divider()
         TextWithRightArrow(text = stringResource(id = R.string.privacy_policy)) {}
     }
@@ -46,5 +50,11 @@ fun OtherSession(onOpenAboutScreen: () -> Unit, onOpenLicenseScreen: () -> Unit)
 
 @Composable
 private fun Divider() {
-    HorizontalDivider(thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 16.dp))
+    Spacer(modifier = Modifier.fillMaxWidth().height(2.0.dp))
+}
+
+@Preview
+@Composable
+fun OtherSessionPreview() {
+    OtherSession({}, {})
 }

@@ -12,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.ifa.glancewidget.background.cancelBatteryMonitorRequest
+import io.github.ifa.glancewidget.background.enqueueBatteryMonitorRequest
 import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver
@@ -37,12 +39,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-        requestBluetooth()
+        requestPermissions()
+        enqueueBatteryMonitorRequest()
         enableEdgeToEdge()
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
         }
-
         setContent {
             repositoryProvider.Provide {
                 GlanceWidgetTheme {
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun requestBluetooth() {
+    private fun requestPermissions() {
         if (!applicationContext.checkPermissions(BluetoothPermissions)) {
             requestMultiplePermissions.launch(BluetoothPermissions.toTypedArray())
         } else {
@@ -90,6 +92,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
+        cancelBatteryMonitorRequest()
         unregisterReceiver(monitorReceiver)
         super.onDestroy()
     }

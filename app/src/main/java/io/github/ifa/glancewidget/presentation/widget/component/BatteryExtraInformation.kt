@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.presentation.widget.component
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +59,12 @@ fun BatteryExtraInformation(
         R.string.charge_counter to "${extraBatteryInfo.chargeCounter} $MAH_UNIT",
         R.string.cycle_count to myDevice.cycleCount.toString()
     )
+    val cornerRadius by animateDpAsState(
+        targetValue = if (expanded) 4.dp else 16.dp, label = "", animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
     Column(
         modifier = modifier
             .animateContentSize(
@@ -70,21 +76,20 @@ fun BatteryExtraInformation(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { expanded = !expanded }
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(start = 8.dp, top = 8.dp)
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
         ) {
             SessionText(
                 text = stringResource(id = R.string.battery_information),
                 modifier = Modifier.weight(1f)
             )
             IconButton(
-                modifier = Modifier
-                    .rotate(rotationState),
+                modifier = Modifier.rotate(rotationState),
                 onClick = { expanded = !expanded }
             ) {
                 Icon(
@@ -94,35 +99,44 @@ fun BatteryExtraInformation(
                 )
             }
         }
-
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(2.dp))
         if (expanded) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column {
                 contents.forEachIndexed { index, (session, value) ->
                     InformationRow(key = session, value = value)
                     if (index != contents.lastIndex) {
-                        HorizontalDivider(thickness = 0.5.dp)
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(2.dp))
                     }
                 }
             }
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
 private fun InformationRow(@StringRes key: Int, value: String) {
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             text = stringResource(id = key),
-            modifier = Modifier.padding(vertical = 16.dp),
-            color = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.padding(16.dp),
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = value,
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(16.dp),
             color = MaterialTheme.colorScheme.tertiary
         )
     }

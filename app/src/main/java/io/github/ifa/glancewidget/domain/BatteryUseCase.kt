@@ -17,29 +17,6 @@ class BatteryUseCase @Inject constructor(
     private val batteryStateRepository: BatteryStateRepository,
     private val appSettingsRepository: AppSettingsRepository,
 ) {
-    suspend fun startRecording() = coroutineScope {
-        launch {
-            combine(
-                batteryStateRepository.batteryFlow(),
-                batteryStateRepository.extraBatteryFlow()
-            ) { batteryData, extraBatteryInfo ->
-                Pair(batteryData.myDevice.isCharging, extraBatteryInfo)
-            }.onEach { delay(1000) }.collect { (isCharging, extraBatteryInfo) ->
-                batteryStateRepository.saveChargeCurrent(
-                    extraBatteryInfo.getChargeDisChargeCurrent(
-                        isCharging
-                    )
-                )
-            }
-        }
-        launch {
-            while (true) {
-                batteryStateRepository.saveExtraBatteryInformation()
-                delay(1000)
-            }
-        }
-    }
-
     fun getBatteryWrapper(): Flow<BatteryDataWrapper> {
         return combine(
             batteryStateRepository.batteryFlow(),
