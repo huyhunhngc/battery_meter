@@ -3,7 +3,7 @@ package io.github.ifa.glancewidget.model.wrapper
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
-import io.github.ifa.glancewidget.utils.toHHMMSS
+import io.github.ifa.glancewidget.utils.toHHMM
 
 data class BatteryDataWrapper(
     val batteryData: BatteryData = BatteryData.initial(),
@@ -14,12 +14,12 @@ data class BatteryDataWrapper(
     val batteryHealth = batteryData.myDevice.getBatteryHealth(extraBatteryInfo)
     val remainBatteryTime =
         extraBatteryInfo.getBatteryTimeRemaining(
-            batteryData.myDevice.isCharging,
+            batteryData.myDevice.isCharging && batteryData.myDevice.level < 100,
             chargeDisChargeCurrent
-        ).toHHMMSS()
+        ).toHHMM()
     val remainChargeTime =
         extraBatteryInfo.getChargeTimeRemaining(
             batteryData.myDevice.isCharging,
             chargeDisChargeCurrent
-        ).toHHMMSS()
+        ).toHHMM()
 }

@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,13 +34,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
-import io.github.ifa.glancewidget.utils.toHHMMSS
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -55,7 +55,7 @@ fun BatteryOverall(
     val powerPercentage = remember(power) {
         power.toFloat() / extraBatteryInfo.maxWattsChargeInput
     }
-    val remainTime = if (myDevice.isCharging) {
+    val remainTime = if (myDevice.isCharging && myDevice.level < 100) {
         stringResource(
             id = R.string.remain_time_charging,
             batteryDataWrapper.remainChargeTime
@@ -173,9 +173,15 @@ private fun CurrentAndChargingMonitor(
                 value = chargeType.type
             )
             Text(
-                text = "$chargeCurrent $MA_UNIT",
-                modifier = Modifier.padding(bottom = 4.dp),
+                text = chargeCurrent.toString(),
+                modifier = Modifier.padding(bottom = 4.dp).width(40.dp),
                 fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+            Text(
+                text = MA_UNIT,
+                modifier = Modifier.padding(bottom = 4.dp),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.tertiary
             )
@@ -225,6 +231,7 @@ private fun TemperatureMonitor(modifier: Modifier, temperature: MyDevice.Tempera
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
     Box(
@@ -234,7 +241,7 @@ private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
             .background(MaterialTheme.colorScheme.background)
     ) {
         Text(
-            text = "$voltage V",
+            text = String.format("%.2f", voltage) + " V",
             modifier = Modifier.padding(16.dp),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.bodyLarge,

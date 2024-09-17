@@ -30,12 +30,6 @@ class WidgetViewModel @Inject constructor(
         val batteryOverall: BatteryDataWrapper
     )
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            batteryUseCase.startRecording()
-        }
-    }
-
     private val _setupWidgetId = MutableStateFlow(INVALID_APPWIDGET_ID)
     private val _batteryDataWrapper = batteryUseCase.getBatteryWrapper().stateIn(
         scope = viewModelScope,
