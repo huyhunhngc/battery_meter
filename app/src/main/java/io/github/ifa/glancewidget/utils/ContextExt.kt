@@ -1,24 +1,20 @@
 package io.github.ifa.glancewidget.utils
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.LocaleManager
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
-import android.content.ContextWrapper
 import android.content.res.Resources
 import android.os.BatteryManager
 import android.os.Build
 import android.os.LocaleList
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
-import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.utils.Constants.MAX_DESIGN_CAPACITY
 import io.github.ifa.glancewidget.utils.Constants.MIN_DESIGN_CAPACITY
 import java.util.Locale
@@ -43,8 +39,14 @@ fun Context.getPairedDevices(): List<BonedDevice> {
 
 fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
     val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-    val chargeCounter =
+    val propertyChargeCounter =
         batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+    // this value is current charge counter in micro amp hours. But some device return in millis
+    val chargeCounter = if (propertyChargeCounter / 1000 < MAX_DESIGN_CAPACITY / 1000) {
+        propertyChargeCounter
+    } else {
+        propertyChargeCounter / 1000
+    }
     val capacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     val fullChargeCapacity = chargeCounter.toFloat() / capacity.toFloat() * 100f
     val chargingTimeRemaining = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -56,10 +58,6 @@ fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
     val chargeCurrent = batteryManager.getIntProperty(
         BatteryManager.BATTERY_PROPERTY_CURRENT_NOW
     ) / 1_000 // micro to millis
-
-    val remainedCapacity = batteryManager.getIntProperty(
-        BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER
-    ) / 1_000_000
 
     return ExtraBatteryInfo(
         capacity = getDesignCapacity(),
@@ -89,17 +87,6 @@ private fun Context.getDesignCapacity(): Int {
         else -> designCapacity
     }
 }
-
-//fun Context.getChargingTimeRemaining(
-//    myDevice: MyDevice,
-//    extraBatteryInfo: ExtraBatteryInfo
-//): String {
-//    var chargingTimeRemaining: Double
-//    val batteryLevel = myDevice.level
-//    val currentCapacity = extraBatteryInfo.chargeCounter
-//    val residualCapacity = extraBatteryInfo.capacity
-//    return "-"
-//}
 
 fun Context.setLocale(localeCode: String) {
     val code = if (localeCode == AppSettings.Language.DEFAULT.code) {

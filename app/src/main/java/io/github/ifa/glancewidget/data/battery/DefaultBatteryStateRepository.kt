@@ -7,14 +7,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.model.BatteryData
+import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.WidgetSetting
+import io.github.ifa.glancewidget.utils.Constants.DEFAULT_MAX_COLLECT_CURRENT
 import io.github.ifa.glancewidget.utils.chunked
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
-import kotlinx.coroutines.delay
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
@@ -48,6 +49,10 @@ class DefaultBatteryStateRepository(
         }
     }
 
+    override fun chargeCurrentFlow(): Flow<ChargeDisChargeCurrent> {
+        return batteryDataStore.getChargeCurrentFlow()
+    }
+
     override suspend fun saveExtraBatteryInformation() {
         val extraBatteryInfo = context.getExtraBatteryInformation()
         batteryDataStore.saveExtraBatteryInformation(extraBatteryInfo)
@@ -65,6 +70,50 @@ class DefaultBatteryStateRepository(
             })
         batteryDataStore.saveWidgetSettings(newSettings)
     }
+
+
+    override suspend fun saveChargeCurrent(chargeCurrent: Int) {
+        val chargeDisChargeCurrent = batteryDataStore.getChargeCurrent()
+        val chargeSpeed = ChargeDisChargeCurrent.getChargeSpeed(chargeCurrent)
+        val newChargeDisChargeCurrent = when (chargeSpeed) {
+            ChargeDisChargeCurrent.ChargeSpeed.FAST -> {
+                chargeDisChargeCurrent.copy(
+                    fastChargeCurrents = chargeDisChargeCurrent.fastChargeCurrents.addUpTo(
+                        DEFAULT_MAX_COLLECT_CURRENT,
+                        chargeCurrent
+                    )
+                )
+            }
+
+            ChargeDisChargeCurrent.ChargeSpeed.TURBO -> {
+                chargeDisChargeCurrent.copy(
+                    turboChargeCurrents = chargeDisChargeCurrent.turboChargeCurrents.addUpTo(
+                        DEFAULT_MAX_COLLECT_CURRENT,
+                        chargeCurrent
+                    )
+                )
+            }
+
+            ChargeDisChargeCurrent.ChargeSpeed.NORMAL -> {
+                chargeDisChargeCurrent.copy(
+                    chargeCurrents = chargeDisChargeCurrent.chargeCurrents.addUpTo(
+                        DEFAULT_MAX_COLLECT_CURRENT,
+                        chargeCurrent
+                    )
+                )
+            }
+
+            ChargeDisChargeCurrent.ChargeSpeed.DISCHARGING -> {
+                chargeDisChargeCurrent.copy(
+                    dischargeCurrents = chargeDisChargeCurrent.dischargeCurrents.addUpTo(
+                        DEFAULT_MAX_COLLECT_CURRENT,
+                        chargeCurrent
+                    )
+                )
+            }
+        }
+        batteryDataStore.saveChargeCurrent(newChargeDisChargeCurrent)
+    }
 }
 
 fun List<ExtraBatteryInfo>.average(): ExtraBatteryInfo {
@@ -75,4 +124,8 @@ fun List<ExtraBatteryInfo>.average(): ExtraBatteryInfo {
         chargingTimeRemaining = this.map { it.chargingTimeRemaining }.average().toLong(),
         chargeCurrent = this.map { it.chargeCurrent }.average().toInt(),
     )
+}
+
+fun List<Int>.addUpTo(limit: Int, value: Int): List<Int> {
+    return this.toPersistentList().add(value).takeLast(limit)
 }
