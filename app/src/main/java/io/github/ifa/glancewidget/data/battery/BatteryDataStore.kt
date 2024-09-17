@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY_PREFERENCES
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.WIDGET_PREFERENCES
 import io.github.ifa.glancewidget.model.BatteryData
+import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.WidgetSettings
 import io.github.ifa.glancewidget.utils.fromJson
@@ -47,7 +48,25 @@ class BatteryDataStore(
         dataStore.setObject(WIDGET_PREFERENCES, widgetSettings)
     }
 
+    fun getChargeCurrentFlow(): Flow<ChargeDisChargeCurrent> {
+        return dataStore.data.map { preferences ->
+            fromJson<ChargeDisChargeCurrent>(preferences[CHARGE_CURRENT_PREFERENCES])
+        }.map {
+            it ?: ChargeDisChargeCurrent()
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getChargeCurrent(): ChargeDisChargeCurrent {
+        return dataStore.getObject<ChargeDisChargeCurrent>(CHARGE_CURRENT_PREFERENCES)
+            ?: ChargeDisChargeCurrent()
+    }
+
+    suspend fun saveChargeCurrent(chargeDisChargeCurrent: ChargeDisChargeCurrent) {
+        dataStore.setObject(CHARGE_CURRENT_PREFERENCES, chargeDisChargeCurrent)
+    }
+
     companion object {
         val EXTRA_BATTERY_PREFERENCES = stringPreferencesKey("extraBatteryData")
+        val CHARGE_CURRENT_PREFERENCES = stringPreferencesKey("chargeCurrentData")
     }
 }

@@ -13,9 +13,18 @@ data class ExtraBatteryInfo(
     val chargeCurrent: Int = -1,
     val maxWattsChargeInput: Float = DEFAULT_MAX_WATTS_CHARGE
 ) {
-    fun getBatteryTimeRemaining(isCharging: Boolean): Long {
+    fun getBatteryTimeRemaining(isCharging: Boolean, current: ChargeDisChargeCurrent): Long {
         val chargeDischargeCurrent = getChargeDisChargeCurrent(isCharging)
-        return ((chargeCounter.toFloat() / (chargeDischargeCurrent.toFloat()/-1)) * 3600000f).toLong()
+        val disChargeCurrent = current.getChargeCurrent(chargeDischargeCurrent)
+        return ((chargeCounter.toFloat() / (disChargeCurrent.toFloat()/-1)) * 3600000f).toLong()
+            .coerceAtLeast(0)
+    }
+
+    fun getChargeTimeRemaining(isCharging: Boolean, current: ChargeDisChargeCurrent): Long {
+        val chargeDischargeCurrent = getChargeDisChargeCurrent(isCharging)
+        val chargeCurrent = current.getChargeCurrent(chargeDischargeCurrent)
+        val chargeRemain = fullChargeCapacity - chargeCounter
+        return ((chargeRemain.toFloat() / (chargeCurrent.toFloat())) * 3600000f).toLong()
             .coerceAtLeast(0)
     }
 

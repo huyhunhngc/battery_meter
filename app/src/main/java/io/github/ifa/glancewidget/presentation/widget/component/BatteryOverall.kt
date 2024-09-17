@@ -58,7 +58,7 @@ fun BatteryOverall(
     val remainTime = if (myDevice.isCharging) {
         stringResource(
             id = R.string.remain_time_charging,
-            extraBatteryInfo.chargingTimeRemaining.toHHMMSS()
+            batteryDataWrapper.remainChargeTime
         )
     } else {
         stringResource(

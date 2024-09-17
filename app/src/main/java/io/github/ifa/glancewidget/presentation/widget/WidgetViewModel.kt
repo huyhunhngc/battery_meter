@@ -32,10 +32,7 @@ class WidgetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            while (true) {
-                batteryStateRepository.saveExtraBatteryInformation()
-                delay(1000)
-            }
+            batteryUseCase.startRecording()
         }
     }
 
