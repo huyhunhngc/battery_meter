@@ -8,20 +8,6 @@ easy / still possible it is to write appwidgets that are updated frequently enou
 
 I will be documenting some of my learnings in this README.
 
-
-https://github.com/user-attachments/assets/fb24c9b7-7632-44ca-91ab-74ad3ab31354
-
-
+<video src="https://github-production-user-asset-6210df.s3.amazonaws.com/46745326/368035607-3bea29fe-c25a-40fb-9bb5-9d6f16aebbb7.mp4"/>
 
 ## Update intervals
-
-### `android:updatePeriodMillis` ([UPDATE_PERIOD_MILLIS](https://github.com/tkuenneth/battery_meter/releases/tag/UPDATE_PERIOD_MILLIS))
-
-The intrinsic method of requesting appwidget updates is to set
-`android:updatePeriodMillis` inside the `<appwidget-provider>` tag. The documentation notes that
-
-> Updates requested with updatePeriodMillis will not be delivered more than once every 30 minutes.
-
-While 30 minutes are likely too much to be of use, the first version will be implemented exactly 
-like this. That's because I want to find out if battery optimization features influence (block) 
-such updates.
