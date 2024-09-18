@@ -1,7 +1,6 @@
 package io.github.ifa.glancewidget.data.battery
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +47,10 @@ class DefaultBatteryStateRepository(
                 .map { it.average() }
                 .collect { chunk -> emit(chunk) }
         }
+    }
+
+    override suspend fun chargeCurrent(): ChargeDisChargeCurrent {
+        return batteryDataStore.getChargeCurrent()
     }
 
     override fun chargeCurrentFlow(): Flow<ChargeDisChargeCurrent> {
@@ -107,13 +110,12 @@ class DefaultBatteryStateRepository(
             ChargeDisChargeCurrent.ChargeSpeed.DISCHARGING -> {
                 chargeDisChargeCurrent.copy(
                     dischargeCurrents = chargeDisChargeCurrent.dischargeCurrents.addUpTo(
-                        DEFAULT_MAX_COLLECT_CURRENT,
+                        DEFAULT_MAX_COLLECT_CURRENT * 4,
                         chargeCurrent
                     )
                 )
             }
         }
-        Log.d("!@#", "saveChargeCurrent: $newChargeDisChargeCurrent")
         batteryDataStore.saveChargeCurrent(newChargeDisChargeCurrent)
     }
 }
