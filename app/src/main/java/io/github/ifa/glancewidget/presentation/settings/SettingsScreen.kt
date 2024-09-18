@@ -29,6 +29,7 @@ import io.github.ifa.glancewidget.presentation.settings.component.LanguageSettin
 import io.github.ifa.glancewidget.presentation.settings.component.NotificationSetting
 import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
+import io.github.ifa.glancewidget.service.BatteryAlertService
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
@@ -100,7 +101,14 @@ internal fun SettingsScreen(
             item {
                 NotificationSetting(
                     notificationSetting = uiState.notificationSetting,
-                    onSetNotificationEnabled = onSetNotificationEnabled,
+                    onSetNotificationEnabled = { enable ->
+                        if (enable) {
+                            context.startForegroundService(Intent(context, BatteryAlertService::class.java))
+                        } else {
+                            context.stopService(Intent(context, BatteryAlertService::class.java))
+                        }
+                        onSetNotificationEnabled(enable)
+                    },
                     onSetShowPairedDevice = { enabled ->
                         if (enabled) {
                             context.findActivity()?.sendBroadcast(Intent().apply {
