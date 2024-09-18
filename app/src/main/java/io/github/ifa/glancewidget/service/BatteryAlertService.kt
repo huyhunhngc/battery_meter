@@ -1,50 +1,82 @@
 package io.github.ifa.glancewidget.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.annotation.SuppressLint
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.content.IntentFilter
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
+import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.domain.BatteryUseCase
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
+import io.github.ifa.glancewidget.model.MyDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class BatteryAlertService: Service() {
+class BatteryAlertService : Service() {
     @Inject
-    lateinit var batteryStateRepository: BatteryStateRepository
+    lateinit var batteryUseCase: BatteryUseCase
 
+    private val notificationHandler: NotificationHandler by lazy {
+        NotificationHandler(this)
+    }
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private val monitorReceiver by lazy { MonitorReceiver() }
+
+    @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            createNotificationChannel()
-            startForeground(
-                SERVICE_ID,
-                NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setOngoing(true)
-                    .build()
-            )
+        startForeground(
+            SERVICE_ID,
+            notificationHandler.createStartMonitorNotification()
+        )
+        registerReceiver(BATTERY_ACTIONS)
+        scope.launch {
+            batteryUseCase.getBatteryWrapper().collect {
+                notificationHandler.createBatteryMonitorNotification(it)
+            }
         }
+
         return START_STICKY
     }
 
-    private fun createNotificationChannel() {
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNEL_ID, "Running App", importance)
-        val notificationManager: NotificationManager =
-            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+    private fun registerReceiver(actions: List<String>) {
+        val filter = IntentFilter().apply {
+            actions.forEach { addAction(it) }
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(monitorReceiver, filter)
+        }
     }
+
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
+    override fun onDestroy() {
+        Log.d("!@#", "onDestroy: onDestroy")
+        //scope.cancel()
+        super.onDestroy()
+    }
+
     companion object {
-        private const val CHANNEL_ID = "on_foreground"
-        private const val SERVICE_ID = 1234
+        const val SERVICE_ID = 1234
     }
 }

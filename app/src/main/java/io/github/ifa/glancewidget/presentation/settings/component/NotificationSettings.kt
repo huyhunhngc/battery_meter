@@ -35,6 +35,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.AppSettings
+import io.github.ifa.glancewidget.service.BatteryAlertService
 import io.github.ifa.glancewidget.ui.component.AppAlertDialog
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
