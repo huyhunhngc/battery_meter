@@ -130,14 +130,13 @@ private fun InformationRow(@StringRes key: Int, value: String) {
         Text(
             text = stringResource(id = key),
             modifier = Modifier.padding(16.dp),
-            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = value,
             modifier = Modifier.padding(16.dp),
-            color = MaterialTheme.colorScheme.tertiary
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

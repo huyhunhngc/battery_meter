@@ -15,7 +15,6 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
-import androidx.glance.background
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
@@ -26,6 +25,7 @@ import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
 import io.github.ifa.glancewidget.glance.battery.component.FullWidthItem
 import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
+import io.github.ifa.glancewidget.glance.battery.utils.cornerRadiusCompat
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.DeviceType
@@ -106,13 +106,16 @@ class BatteryWidget : GlanceAppWidget() {
         }
 
         Box(
-            modifier = GlanceModifier.fillMaxSize().padding(PADDING).background(
-                if (isTransparent) {
-                    ColorProvider(Color.Transparent)
-                } else {
-                    GlanceTheme.colors.widgetBackground
-                }
-            ),
+            modifier = GlanceModifier.fillMaxSize()
+                .padding(PADDING)
+                .cornerRadiusCompat(
+                    24,
+                    if (isTransparent) {
+                        ColorProvider(Color.Transparent)
+                    } else {
+                        GlanceTheme.colors.background
+                    }
+                ),
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 BatteryItem(

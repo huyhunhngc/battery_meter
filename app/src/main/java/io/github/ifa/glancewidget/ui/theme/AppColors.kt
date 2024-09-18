@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.glance.ui.theme
+package io.github.ifa.glancewidget.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

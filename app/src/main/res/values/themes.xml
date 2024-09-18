@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.GlanceWidget" parent="Theme.Material3.DayNight" />
+    <style name="Theme.GlanceWidget" parent="Theme.Material3.DayNight">
+        <item name="android:fontFamily">@font/googlesansregular</item>
+    </style>
 </resources>
