@@ -13,6 +13,7 @@ interface BatteryStateRepository {
     fun batteryFlow(): Flow<BatteryData>
     fun extraBattery(): ExtraBatteryInfo
     fun extraBatteryFlow(): Flow<ExtraBatteryInfo>
+    suspend fun chargeCurrent(): ChargeDisChargeCurrent
     fun chargeCurrentFlow(): Flow<ChargeDisChargeCurrent>
     suspend fun saveExtraBatteryInformation()
     suspend fun saveChargeCurrent(chargeCurrent: Int)

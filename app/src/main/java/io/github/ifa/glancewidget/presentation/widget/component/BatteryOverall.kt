@@ -174,7 +174,6 @@ private fun CurrentAndChargingMonitor(
             )
             Text(
                 text = chargeCurrent.toString(),
-                modifier = Modifier.padding(bottom = 4.dp).width(40.dp),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.tertiary

@@ -9,6 +9,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,14 +22,13 @@ class BatteryUseCase @Inject constructor(
         return combine(
             batteryStateRepository.batteryFlow(),
             batteryStateRepository.extraBatteryFlow(),
-            batteryStateRepository.chargeCurrentFlow(),
             appSettingsRepository.get()
-        ) { batteryData, extraBatteryInfo, chargeCurrent, appSettings ->
+        ) { batteryData, extraBatteryInfo, appSettings ->
             BatteryDataWrapper(
                 batteryData = batteryData.applySetting(appSettings),
                 extraBatteryInfo = extraBatteryInfo,
                 powerDetails = extractPower(batteryData, extraBatteryInfo),
-                chargeDisChargeCurrent = chargeCurrent
+                chargeDisChargeCurrent = batteryStateRepository.chargeCurrentFlow().first()
             )
         }
     }

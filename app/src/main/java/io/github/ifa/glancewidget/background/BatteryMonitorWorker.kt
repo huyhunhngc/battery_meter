@@ -1,7 +1,6 @@
 package io.github.ifa.glancewidget.background
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
@@ -9,18 +8,15 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import io.github.ifa.glancewidget.data.battery.BatteryDataStore
-import io.github.ifa.glancewidget.data.battery.DefaultBatteryStateRepository
-import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val WORK_NAME = "update-battery-meter-widget"
 
@@ -39,11 +35,14 @@ class BatteryMonitorWorker @AssistedInject constructor(
     private suspend fun startRecording() = coroutineScope {
         launch {
             combine(
-                batteryStateRepository.batteryFlow().map { it.myDevice.isCharging },
-                batteryStateRepository.extraBatteryFlow()
+                batteryStateRepository.batteryFlow().map { it.myDevice.isCharging }
+                    .distinctUntilChanged(),
+                batteryStateRepository.extraBatteryFlow().distinctUntilChanged { old, new ->
+                    old.chargeCurrent == new.chargeCurrent
+                }
             ) { isCharging, extraBatteryInfo ->
                 Pair(isCharging, extraBatteryInfo)
-            }.onEach { delay(2000) }.collect { (isCharging, extraBatteryInfo) ->
+            }.conflate().onEach { delay(5000) }.collect { (isCharging, extraBatteryInfo) ->
                 batteryStateRepository.saveChargeCurrent(
                     extraBatteryInfo.getChargeDisChargeCurrent(isCharging)
                 )
@@ -63,13 +62,9 @@ fun Context.enqueueBatteryMonitorRequest() {
         .addTag(WORK_NAME)
         .build()
 
-    WorkManager
-        .getInstance(this)
-        .enqueue(request)
+    WorkManager.getInstance(this).enqueue(request)
 }
 
 fun Context.cancelBatteryMonitorRequest() {
-    WorkManager
-        .getInstance(this)
-        .cancelAllWorkByTag(WORK_NAME)
+    WorkManager.getInstance(this).cancelAllWorkByTag(WORK_NAME)
 }

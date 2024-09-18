@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         requestPermissions()
-        enqueueBatteryMonitorRequest()
         enableEdgeToEdge()
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
@@ -91,8 +90,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
+    override fun onStart() {
+        super.onStart()
+        enqueueBatteryMonitorRequest()
+    }
+
+    override fun onStop() {
+        super.onStop()
         cancelBatteryMonitorRequest()
+    }
+
+    override fun onDestroy() {
         unregisterReceiver(monitorReceiver)
         super.onDestroy()
     }
