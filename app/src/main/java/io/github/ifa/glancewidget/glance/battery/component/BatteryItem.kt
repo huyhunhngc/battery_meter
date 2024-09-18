@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.glance.battery.component
 
 import android.content.ComponentName
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
@@ -12,7 +13,6 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -23,12 +23,12 @@ import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.glance.battery.utils.cornerRadiusCompat
 import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.utils.Constants.ANDROID_SETTING_PACKAGE
 import io.github.ifa.glancewidget.utils.Constants.BLUETOOTH_SETTING_CLASS
@@ -54,15 +54,17 @@ fun BatteryItem(
 
     Box(
         modifier = modifier
-            .cornerRadius(16.dp)
-            .background(GlanceTheme.colors.primaryContainer)
+            .cornerRadiusCompat(20, GlanceTheme.colors.secondaryContainer)
             .clickable(action)
     ) {
         Row(
             modifier = GlanceModifier.fillMaxSize()
+                .cornerRadiusCompat(20, GlanceTheme.colors.secondaryContainer)
         ) {
-            for (i in 0..90 step SUPPORTED_ROW_ELEMENTS) {
-                Segment(currentSegment = i, percent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                for (i in 0..90 step SUPPORTED_ROW_ELEMENTS) {
+                    Segment(currentSegment = i, percent)
+                }
             }
         }
         Row(
@@ -78,7 +80,10 @@ fun BatteryItem(
             )
             Text(
                 text = deviceName,
-                style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = fontSizeScale.sp),
+                style = TextStyle(
+                    color = GlanceTheme.colors.onSurface,
+                    fontSize = fontSizeScale.sp
+                ),
                 fontWeight = FontWeight.Bold,
                 modifier = GlanceModifier.defaultWeight()
             )
@@ -86,7 +91,10 @@ fun BatteryItem(
             if (percent > 0) {
                 Text(
                     text = "$percent%",
-                    style = TextStyle(color = GlanceTheme.colors.primary, fontSize = fontSizeScale.sp),
+                    style = TextStyle(
+                        color = GlanceTheme.colors.primary,
+                        fontSize = fontSizeScale.sp
+                    ),
                     fontWeight = FontWeight.Bold,
                     modifier = GlanceModifier.padding(end = 4.dp)
                 )
@@ -102,8 +110,9 @@ fun BatteryItem(
 
             if (isCharging) {
                 Box(
-                    modifier = GlanceModifier.size(16.dp).background(GlanceTheme.colors.primary)
-                        .cornerRadius(8.dp), contentAlignment = Alignment.Center
+                    modifier = GlanceModifier.size(16.dp)
+                        .cornerRadiusCompat(8, GlanceTheme.colors.primary),
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         modifier = GlanceModifier.size(12.dp),

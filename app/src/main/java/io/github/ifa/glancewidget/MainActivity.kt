@@ -20,7 +20,6 @@ import io.github.ifa.glancewidget.broadcast.MonitorReceiver
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
-import io.github.ifa.glancewidget.ui.theme.GlanceWidgetTheme
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
 import kotlinx.coroutines.launch
@@ -46,9 +45,7 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             repositoryProvider.Provide {
-                GlanceWidgetTheme {
-                    ConfigApp(startDestination = mainScreenRoute)
-                }
+                ConfigApp(startDestination = mainScreenRoute)
             }
         }
     }

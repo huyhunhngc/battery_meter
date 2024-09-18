@@ -18,9 +18,10 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.localAppSettingsRepository
-import io.github.ifa.glancewidget.glance.ui.theme.AppTheme
-import io.github.ifa.glancewidget.glance.ui.theme.DarkColorScheme
-import io.github.ifa.glancewidget.glance.ui.theme.LightColorScheme
+import io.github.ifa.glancewidget.ui.theme.AppTheme
+import io.github.ifa.glancewidget.ui.theme.DarkColorScheme
+import io.github.ifa.glancewidget.ui.theme.LightColorScheme
+import io.github.ifa.glancewidget.ui.theme.Type
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 
@@ -43,7 +44,7 @@ fun ConfigApp(
     LaunchedEffect(isDarkTheme) {
         systemUiController.statusBarDarkContentEnabled = !isDarkTheme
     }
-    AppTheme(colorScheme = colorScheme) {
+    AppTheme(colorScheme = colorScheme, typography = Type.typography) {
         Surface {
             AppNavHost(
                 navController = navController,
