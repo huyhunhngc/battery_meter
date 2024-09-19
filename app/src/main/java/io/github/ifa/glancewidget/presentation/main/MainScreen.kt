@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.presentation.main
 
+import android.content.Intent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -10,29 +11,25 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
+import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 
 const val mainScreenRoute = "main_screen_route"
@@ -53,10 +50,19 @@ fun NavGraphBuilder.mainTabScreens(
 
 @Composable
 fun MainScreen(
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    viewModel: MainViewModel = hiltViewModel(),
     mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
 ) {
     val mainTabNavController = rememberNavController()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    LaunchedEffect(uiState.shouldStartNotification) {
+        if (uiState.shouldStartNotification) {
+            context.startForegroundService(Intent(context, BatteryStatusService::class.java))
+        } else {
+            context.stopService(Intent(context, BatteryStatusService::class.java))
+        }
+    }
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = mainTabNavController)
@@ -66,7 +72,9 @@ fun MainScreen(
         NavHost(
             navController = mainTabNavController,
             startDestination = widgetScreenRoute,
-            modifier = Modifier.padding(bottom = 80.dp).fillMaxSize(),
+            modifier = Modifier
+                .padding(bottom = 80.dp)
+                .fillMaxSize(),
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },
         ) {

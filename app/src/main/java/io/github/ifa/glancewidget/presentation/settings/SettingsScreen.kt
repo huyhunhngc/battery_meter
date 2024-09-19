@@ -101,14 +101,7 @@ internal fun SettingsScreen(
             item {
                 NotificationSetting(
                     notificationSetting = uiState.notificationSetting,
-                    onSetNotificationEnabled = { enable ->
-                        if (enable) {
-                            context.startForegroundService(Intent(context, BatteryStatusService::class.java))
-                        } else {
-                            context.stopService(Intent(context, BatteryStatusService::class.java))
-                        }
-                        onSetNotificationEnabled(enable)
-                    },
+                    onSetNotificationEnabled = onSetNotificationEnabled,
                     onSetShowPairedDevice = { enabled ->
                         if (enabled) {
                             context.findActivity()?.sendBroadcast(Intent().apply {
