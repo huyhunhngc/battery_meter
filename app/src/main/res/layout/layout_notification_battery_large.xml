@@ -6,16 +6,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
@@ -23,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@{null}"
-                android:padding="4dp"
+                android:paddingVertical="4dp"
                 android:src="@drawable/ic_battery_level"
                 app:tint="?attr/colorPrimary" />
 
@@ -40,7 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
@@ -48,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@{null}"
-                android:padding="4dp"
+                android:paddingVertical="4dp"
                 android:src="@drawable/ic_device_thermostat"
                 app:tint="?attr/colorPrimary" />
 
@@ -65,7 +70,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
@@ -73,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@{null}"
-                android:padding="4dp"
+                android:paddingVertical="4dp"
                 android:src="@drawable/ic_power"
                 app:tint="?attr/colorPrimary" />
 
@@ -90,10 +94,11 @@
 
     <TextView
         android:id="@+id/remain_time"
-        style="@style/TextAppearance.Compat.Notification.Time"
+        style="@style/TextAppearance.Compat.Notification.Info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:textStyle="normal"
+        android:textSize="14sp"
         tools:text=" 10 hrs 32 mins" />
 </LinearLayout>

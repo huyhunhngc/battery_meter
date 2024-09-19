@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     tools:ignore="UseCompoundDrawables">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_weight="1">
 
         <ImageView
             android:id="@+id/battery_icon"
@@ -23,18 +23,18 @@
 
         <TextView
             android:id="@+id/battery_level"
-            style="@style/TextAppearance.Compat.Notification.Title"
+            style="@style/TextAppearance.Compat.Notification.Info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="5 %" />
+            android:textSize="14sp"
+            tools:text="5 %" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_weight="1">
 
         <ImageView
             android:id="@+id/temperature_icon"
@@ -47,18 +47,18 @@
 
         <TextView
             android:id="@+id/temperature"
-            style="@style/TextAppearance.Compat.Notification.Title"
+            style="@style/TextAppearance.Compat.Notification.Info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="38 C" />
+            android:textSize="14sp"
+            tools:text="38 C" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_weight="1">
 
         <ImageView
             android:id="@+id/charge_icon"
@@ -71,11 +71,12 @@
 
         <TextView
             android:id="@+id/charge_status"
-            style="@style/TextAppearance.Compat.Notification.Title"
+            style="@style/TextAppearance.Compat.Notification.Info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Charging" />
+            android:textSize="14sp"
+            tools:text="Charging" />
     </LinearLayout>
 
 </LinearLayout>
