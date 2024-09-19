@@ -1,0 +1,28 @@
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fromDegrees="90"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toDegrees="90">
+    <vector
+        android:width="500dp"
+        android:height="500dp"
+        android:viewportWidth="60"
+        android:viewportHeight="60"
+        tools:ignore="VectorRaster">
+        <group
+            android:pivotX="30"
+            android:pivotY="30"
+            android:scaleX="1.1"
+            android:scaleY="0.9">
+            <path
+                android:fillColor="#000000"
+                android:pathData="M42.536,4H36V0H24v4h-6.536C15.554,4 14,5.554 14,7.464v49.072C14,58.446 15.554,60 17.464,60h25.071C44.446,60 46,58.446 46,56.536V7.464C46,5.554 44.446,4 42.536,4zM44,56.536C44,57.344 43.343,58 42.536,58H17.464C16.657,58 16,57.344 16,56.536V7.464C16,6.656 16.657,6 17.464,6H24h12h6.536C43.343,6 44,6.656 44,7.464V56.536z" />
+            <path
+                android:fillColor="#000000"
+                android:pathData="M37,29h-3V17.108c0.013,-0.26 -0.069,-0.515 -0.236,-0.72c-0.381,-0.467 -1.264,-0.463 -1.642,0.004c-0.026,0.032 -0.05,0.066 -0.072,0.103L22.15,32.474c-0.191,0.309 -0.2,0.696 -0.023,1.013C22.303,33.804 22.637,34 23,34h4l0.002,12.929h0.001c0.001,0.235 0.077,0.479 0.215,0.657C27.407,47.833 27.747,48 28.058,48c0.305,0 0.636,-0.16 0.825,-0.398c0.04,-0.05 0.074,-0.103 0.104,-0.159l8.899,-16.979c0.163,-0.31 0.151,-0.682 -0.03,-0.981S37.35,29 37,29z" />
+
+        </group>
+    </vector>
+</rotate>
+

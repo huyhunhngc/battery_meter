@@ -15,6 +15,10 @@ class DefaultAppSettingsRepository(
         return appSettingDataStore.getSettingsFlow()
     }
 
+    override suspend fun getAppSettings(): AppSettings {
+        return appSettingDataStore.getSettings()
+    }
+
     override suspend fun saveLocaleLanguage(language: AppSettings.Language) {
         val settings = appSettingDataStore.getSettings()
         appSettingDataStore.saveSettings(settings.copy(language = language))

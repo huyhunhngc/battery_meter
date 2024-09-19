@@ -69,7 +69,7 @@
             tools:node="remove" />
 
         <service
-            android:name=".service.BatteryAlertService"
+            android:name=".service.BatteryStatusService"
             android:foregroundServiceType="connectedDevice" />
 
     </application>

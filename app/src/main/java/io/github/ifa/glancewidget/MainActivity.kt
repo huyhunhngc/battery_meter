@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -20,8 +21,9 @@ import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
+import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
-import io.github.ifa.glancewidget.service.BatteryAlertService
+import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.utils.AppPermissions
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.NotificationPermissions
@@ -58,8 +60,8 @@ class MainActivity : ComponentActivity() {
         if (!applicationContext.checkPermissions(AppPermissions)) {
             requestMultiplePermissions.launch(AppPermissions.toTypedArray())
         } else {
-            registerReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
-            startForegroundService(Intent(this, BatteryAlertService::class.java))
+            registerMonitorReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
+            startBatteryStatusService()
         }
     }
 
@@ -68,20 +70,24 @@ class MainActivity : ComponentActivity() {
             val isGrantedBluetooth =
                 permissions.entries.filter { it.key in BluetoothPermissions }.all { it.value }
             if (isGrantedBluetooth) {
-                registerReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
-                saveShowPairedDevicesSetting(showPairedDevices = true)
+                registerMonitorReceiver(BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS)
             } else {
-                registerReceiver(BATTERY_ACTIONS)
-                saveShowPairedDevicesSetting(showPairedDevices = false)
+                registerMonitorReceiver(BATTERY_ACTIONS)
             }
             val isGrantedNotification =
                 permissions.entries.filter { it.key in NotificationPermissions }.all { it.value }
             if (isGrantedNotification) {
-                startForegroundService(Intent(this, BatteryAlertService::class.java))
+                startBatteryStatusService()
             }
+            saveNotificationSetting(
+                AppSettings.NotificationSetting(
+                    showPairedDevices = isGrantedBluetooth,
+                    batteryAlert = isGrantedNotification
+                )
+            )
         }
 
-    private fun registerReceiver(actions: List<String>) {
+    private fun registerMonitorReceiver(actions: List<String>) {
         val filter = IntentFilter().apply {
             actions.forEach { addAction(it) }
         }
@@ -92,9 +98,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun saveShowPairedDevicesSetting(showPairedDevices: Boolean) {
+    private fun startBatteryStatusService() {
+        startForegroundService(Intent(this, BatteryStatusService::class.java))
+    }
+
+    private fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting) {
         lifecycleScope.launch {
-            appSettingsRepository.saveShowPairedDevicesSetting(showPairedDevices)
+            appSettingsRepository.saveNotificationSetting(notificationSetting)
         }
     }
 

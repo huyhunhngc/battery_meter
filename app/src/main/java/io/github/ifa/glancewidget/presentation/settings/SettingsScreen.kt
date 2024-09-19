@@ -29,7 +29,7 @@ import io.github.ifa.glancewidget.presentation.settings.component.LanguageSettin
 import io.github.ifa.glancewidget.presentation.settings.component.NotificationSetting
 import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
-import io.github.ifa.glancewidget.service.BatteryAlertService
+import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
@@ -103,9 +103,9 @@ internal fun SettingsScreen(
                     notificationSetting = uiState.notificationSetting,
                     onSetNotificationEnabled = { enable ->
                         if (enable) {
-                            context.startForegroundService(Intent(context, BatteryAlertService::class.java))
+                            context.startForegroundService(Intent(context, BatteryStatusService::class.java))
                         } else {
-                            context.stopService(Intent(context, BatteryAlertService::class.java))
+                            context.stopService(Intent(context, BatteryStatusService::class.java))
                         }
                         onSetNotificationEnabled(enable)
                     },
