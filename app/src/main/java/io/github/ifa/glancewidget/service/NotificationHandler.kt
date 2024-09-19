@@ -38,7 +38,7 @@ class NotificationHandler @Inject constructor(
                 isCharging = myDevice?.isCharging ?: false,
                 temperature = myDevice?.temperature
             ),
-            importance = NotificationCompat.PRIORITY_HIGH
+            priority = NotificationCompat.PRIORITY_HIGH
         )
     }
 
@@ -77,7 +77,7 @@ class NotificationHandler @Inject constructor(
     @SuppressLint("RemoteViewLayout")
     private fun createBatteryMonitorNotification(
         batteryNotificationData: BatteryNotificationData,
-        importance: Int = NotificationCompat.PRIORITY_MIN
+        priority: Int = NotificationCompat.PRIORITY_MIN
     ): Notification {
         val packageName = context.packageName
         val notificationLayout =
@@ -86,13 +86,20 @@ class NotificationHandler @Inject constructor(
             RemoteViews(packageName, R.layout.layout_notification_battery_large)
         notificationLayout.applyData(batteryNotificationData)
         notificationLayoutExpanded.applyData(batteryNotificationData)
-        return NotificationCompat.Builder(context, batteryNotificationData.channelId)
+        val channelId = batteryNotificationData.channelId
+        val action = NotificationCompat.Action(
+            R.drawable.ic_settings,
+            context.getString(R.string.settings),
+            BatteryStatusService.createOpenBatteryStatusSettingsIntent(context, channelId)
+        )
+        return NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_launcher)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
             .setCustomBigContentView(notificationLayoutExpanded)
-            .setPriority(importance)
+            .addAction(action)
+            .setPriority(priority)
             .setSound(null)
             .setOngoing(true)
             .build()
@@ -100,7 +107,8 @@ class NotificationHandler @Inject constructor(
 
     private fun RemoteViews.applyData(batteryNotificationData: BatteryNotificationData) {
         this.apply {
-            setTextViewText(R.id.battery_level, "${batteryNotificationData.level} %")
+            setTextViewText(R.id.title, context.getString(R.string.battery_status))
+            setTextViewText(R.id.battery_level, "${batteryNotificationData.level}%")
             setTextViewText(R.id.temperature, batteryNotificationData.temperatureDisplay)
             setTextViewText(
                 R.id.charge_status,
@@ -151,5 +159,5 @@ object NotificationChannels {
     val BatteryStatus = NotificationChannelCompat.Builder(
         "battery-status-notification-channel-id",
         NotificationManagerCompat.IMPORTANCE_LOW
-    ).setName("Battery background status").setShowBadge(false).build()
+    ).setName("Battery status").setShowBadge(true).build()
 }
