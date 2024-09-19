@@ -3,15 +3,10 @@ package io.github.ifa.glancewidget.service
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.LevelListDrawable
-import android.util.Log
-import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.graphics.drawable.toBitmap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.BatteryData
@@ -42,7 +37,8 @@ class NotificationHandler @Inject constructor(
                 level = myDevice?.level ?: 0,
                 isCharging = myDevice?.isCharging ?: false,
                 temperature = myDevice?.temperature
-            )
+            ),
+            importance = NotificationCompat.PRIORITY_HIGH
         )
     }
 
@@ -80,7 +76,8 @@ class NotificationHandler @Inject constructor(
 
     @SuppressLint("RemoteViewLayout")
     private fun createBatteryMonitorNotification(
-        batteryNotificationData: BatteryNotificationData
+        batteryNotificationData: BatteryNotificationData,
+        importance: Int = NotificationCompat.PRIORITY_MIN
     ): Notification {
         val packageName = context.packageName
         val notificationLayout =
@@ -95,7 +92,8 @@ class NotificationHandler @Inject constructor(
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
             .setCustomBigContentView(notificationLayoutExpanded)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setPriority(importance)
+            .setSound(null)
             .setOngoing(true)
             .build()
     }
@@ -109,9 +107,15 @@ class NotificationHandler @Inject constructor(
                 context.getString(batteryNotificationData.chargeDisplay)
             )
             val remainTime = if (batteryNotificationData.isCharging == true) {
-                context.getString(R.string.remain_time_charging, batteryNotificationData.remainChargeTime)
+                context.getString(
+                    R.string.remain_time_charging,
+                    batteryNotificationData.remainChargeTime
+                )
             } else {
-                context.getString(R.string.remain_time_battery, batteryNotificationData.remainBatteryTime)
+                context.getString(
+                    R.string.remain_time_battery,
+                    batteryNotificationData.remainBatteryTime
+                )
             }
             setTextViewText(R.id.remain_time, remainTime)
             setImageViewResource(R.id.battery_icon, batteryNotificationData.levelIcon)
@@ -128,7 +132,7 @@ class NotificationHandler @Inject constructor(
     ) {
         val temperatureDisplay = temperature?.formatTemperature() ?: "--"
         val chargeDisplay = if (isCharging == true) R.string.charging else R.string.discharging
-        val levelIcon = when ((level ?: 0) * 7 /100) {
+        val levelIcon = when ((level ?: 0) * 7 / 100) {
             0 -> R.drawable.ic_battery_0_bar
             1 -> R.drawable.ic_battery_1_bar
             2 -> R.drawable.ic_battery_2_bar
