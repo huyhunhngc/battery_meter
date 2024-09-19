@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AppSettingsRepository {
     fun get(): Flow<AppSettings>
+    suspend fun getAppSettings():AppSettings
     suspend fun saveLocaleLanguage(language: AppSettings.Language)
     suspend fun saveTheme(themeType: ThemeType)
     suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting)

@@ -2,7 +2,6 @@ package io.github.ifa.glancewidget.service
 
 import android.annotation.SuppressLint
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -12,7 +11,6 @@ import android.os.IBinder
 import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver
-import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.domain.BatteryUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.model.MyDevice
@@ -20,45 +18,33 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class BatteryAlertService : Service() {
+class BatteryStatusService : Service() {
     @Inject
-    lateinit var batteryUseCase: BatteryUseCase
-
-    private val notificationHandler: NotificationHandler by lazy {
-        NotificationHandler(this)
-    }
-
+    lateinit var notificationHandler: NotificationHandler
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     private val monitorReceiver by lazy { MonitorReceiver() }
 
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val myDevice = registerReceiver(BATTERY_ACTIONS + BATTERY_STATUS_ACTION)?.let {
+            MyDevice.fromIntent(it)
+        }
         startForeground(
             SERVICE_ID,
-            notificationHandler.createStartMonitorNotification()
+            notificationHandler.createStartMonitorNotification(myDevice)
         )
-        registerReceiver(BATTERY_ACTIONS)
-        scope.launch {
-            batteryUseCase.getBatteryWrapper().collect {
-                notificationHandler.createBatteryMonitorNotification(it)
-            }
-        }
 
         return START_STICKY
     }
 
-    private fun registerReceiver(actions: List<String>) {
+    private fun registerReceiver(actions: List<String>): Intent? {
         val filter = IntentFilter().apply {
             actions.forEach { addAction(it) }
         }
-        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+        return if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
             registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(monitorReceiver, filter)
@@ -71,12 +57,12 @@ class BatteryAlertService : Service() {
     }
 
     override fun onDestroy() {
-        Log.d("!@#", "onDestroy: onDestroy")
-        //scope.cancel()
+        scope.cancel()
         super.onDestroy()
     }
 
     companion object {
-        const val SERVICE_ID = 1234
+        const val SERVICE_ID = 1000
+        const val BATTERY_STATUS_ACTION = "battery_status_action"
     }
 }

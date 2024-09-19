@@ -3,22 +3,27 @@ package io.github.ifa.glancewidget.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.data.batteryWidgetStore
+import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.domain.BatteryUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY_PREFERENCES
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.service.NotificationHandler
 import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,6 +32,12 @@ import javax.inject.Inject
 class MonitorReceiver : BroadcastReceiver() {
     @Inject
     lateinit var batteryStateRepository: BatteryStateRepository
+    @Inject
+    lateinit var batteryUseCase: BatteryUseCase
+    @Inject
+    lateinit var notificationHandler: NotificationHandler
+    @Inject
+    lateinit var appSettingsRepository: AppSettingsRepository
 
     private val lock = Object()
     private var batteryData: BatteryData = BatteryData.initial()
@@ -56,7 +67,7 @@ class MonitorReceiver : BroadcastReceiver() {
             if (updatedBatteryData != batteryData) {
                 batteryData = updatedBatteryData
                 updateBatteryWidget(context)
-
+                handleNotification()
             }
         }
     }
@@ -82,6 +93,15 @@ class MonitorReceiver : BroadcastReceiver() {
             }
         }
     }
+
+    private suspend fun handleNotification() {
+        if (!appSettingsRepository.getAppSettings().notificationSetting.batteryAlert) return
+        batteryUseCase.getBatteryWrapper().firstOrNull()
+            ?.let { notificationHandler.notifyBatteryMonitorNotification(it) } ?: {
+            notificationHandler.notifyBatteryMonitorNotification(batteryData)
+        }
+    }
+
 
     companion object {
         const val ACTION_SHOW_PAIRED_DEVICES_CHANGED = "action_show_paired_devices_changed"
