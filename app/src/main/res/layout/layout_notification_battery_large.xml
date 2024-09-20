@@ -9,6 +9,7 @@
     <TextView
         android:id="@+id/title"
         style="@style/TextAppearance.Compat.Notification.Title"
+        android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
