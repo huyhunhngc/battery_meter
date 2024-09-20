@@ -157,12 +157,16 @@ fun NotificationSetting(
     SwitchWithDescription(
         label = stringResource(id = R.string.show_paired_devices),
         description = stringResource(id = R.string.show_paired_devices_desc),
-        onCheckedChange = { checked ->
+        onCheckedChange = checkedChange@{ checked ->
             showPairedDevice = checked
             if (!context.checkPermissions(BluetoothPermissions) && checked) {
                 if (bluetoothPermissions.shouldShowRationale) {
                     bluetoothPermissions.launchMultiplePermissionRequest()
                 } else {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                        onSetNotificationEnabled(true)
+                        return@checkedChange
+                    }
                     dialogUiState = SettingAlertDialogUiState(
                         isOpen = true,
                         title = R.string.need_to_grant_permission,
