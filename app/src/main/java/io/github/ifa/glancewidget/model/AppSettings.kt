@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.model
 
 import io.github.ifa.glancewidget.R
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -33,12 +34,22 @@ data class AppSettings(
         }
 
         companion object {
+            fun region(code: String): String {
+                return when (code) {
+                    VIETNAMESE.code -> "VN"
+                    JAPANESE.code -> "JP"
+                    FRENCH.code -> "FR"
+                    ENGLISH.code -> "US"
+                    else -> ""
+                }
+            }
             fun fromCode(code: String): Language {
                 return entries.find { it.code == code } ?: DEFAULT
             }
 
             fun options(): List<String> {
                 return entries.filter { it != DEFAULT }.map { it.code }.sortedBy { it }
+                    .toPersistentList().add(0, DEFAULT.code)
             }
         }
     }

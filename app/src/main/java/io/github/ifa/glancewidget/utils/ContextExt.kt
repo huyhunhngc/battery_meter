@@ -5,10 +5,12 @@ import android.app.LocaleManager
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
-import android.content.res.Resources
+import android.content.res.Configuration
 import android.os.BatteryManager
 import android.os.Build
 import android.os.LocaleList
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import io.github.ifa.glancewidget.model.AppSettings
@@ -90,7 +92,7 @@ private fun Context.getDesignCapacity(): Int {
 
 fun Context.setLocale(localeCode: String) {
     val code = if (localeCode == AppSettings.Language.DEFAULT.code) {
-        getSystemLocale()
+        ""
     } else {
         localeCode
     }
@@ -99,26 +101,14 @@ fun Context.setLocale(localeCode: String) {
     } else {
         setLocaleForDevicesLowerApi33(code)
     }
-    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(code))
 }
 
-private fun getSystemLocale(): String {
-    val systemConfig = Resources.getSystem().configuration
-    return systemConfig.locales[0].language
-}
-
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun Context.setLocaleForDevicesHigherApi33(localeCode: String) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        getSystemService(LocaleManager::class.java).applicationLocales =
-            LocaleList.forLanguageTags(localeCode)
-    }
+    getSystemService(LocaleManager::class.java).applicationLocales =
+        LocaleList.forLanguageTags(localeCode)
 }
 
 private fun Context.setLocaleForDevicesLowerApi33(localeTag: String) {
-    val locale = Locale(localeTag)
-    Locale.setDefault(locale)
-    val configuration = resources.configuration
-    configuration.setLocale(locale)
-    createConfigurationContext(configuration)
-    resources.updateConfiguration(configuration, resources.displayMetrics)
+    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
 }

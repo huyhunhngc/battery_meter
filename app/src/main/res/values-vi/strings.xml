@@ -41,8 +41,8 @@
     <string name="notification_settings">Thông báo &amp; Cài đặt tiện ích</string>
     <string name="show_paired_devices">Hiển thị các thiết bị được ghép nối</string>
     <string name="show_paired_devices_desc">Hiển thị các thiết bị được ghép nối trong tiện ích (theo dõi thiết bị này và tất cả các thiết bị được ghép nối).</string>
-    <string name="battery_alert">Cảnh báo pin</string>
-    <string name="battery_alert_desc">Gửi cảnh báo dưới dạng thông báo nổi khi pin quá nóng.</string>
+    <string name="battery_alert">Trạng thái pin</string>
+    <string name="battery_alert_desc">Hiển thị thông báo về trạng thái pin.</string>
     <string name="apply">Áp dụng</string>
     <string name="other">Khác</string>
     <string name="license">Giấy phép</string>

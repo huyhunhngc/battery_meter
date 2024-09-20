@@ -2,10 +2,16 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
     id("kotlinx-serialization")
-    alias(libs.plugins.dagger.hilt.android)
+    id("com.google.android.gms.oss-licenses-plugin")
 }
+
+val versionMajor = 1
+val versionMinor = 0
+val versionPatch = 0
+val versionIncrement = 1
 
 android {
     namespace = "io.github.ifa.glancewidget"
@@ -15,13 +21,14 @@ android {
         applicationId = "io.github.ifa.glancewidget"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionMajor * 100000 + versionMinor * 1000 + versionPatch * 10 + versionIncrement
+        versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+        resConfigs("en", "vi", "fr", "ja")
     }
 
     buildTypes {

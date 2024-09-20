@@ -41,8 +41,8 @@
     <string name="notification_settings">Notification et Paramètres du widget</string>
     <string name="show_paired_devices">Afficher les appareils appairés</string>
     <string name="show_paired_devices_desc">Afficher les appareils appairés dans le widget (suivi de cet appareil et de tous les appareils appairés).</string>
-    <string name="battery_alert">Alerte de batterie</string>
-    <string name="battery_alert_desc">Envoyer une alerte sous la forme d\'une notification flottante lorsque la batterie surchauffe.</string>
+    <string name="battery_alert">État de la batterie</string>
+    <string name="battery_alert_desc">Afficher la notification de l\'état de la batterie.</string>
     <string name="apply">Appliquer</string>
     <string name="other">Autres</string>
     <string name="license">Licence</string>
