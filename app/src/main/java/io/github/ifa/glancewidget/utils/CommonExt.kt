@@ -89,3 +89,7 @@ fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {
     }
     return false
 }
+
+fun isSupportedDynamicColor(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+}

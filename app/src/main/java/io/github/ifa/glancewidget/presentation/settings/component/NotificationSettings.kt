@@ -38,6 +38,7 @@ import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.ui.component.AppAlertDialog
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
 import io.github.ifa.glancewidget.ui.component.TextWithImage
+import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
 import io.github.ifa.glancewidget.utils.isNotificationPermissionGranted
@@ -115,7 +116,7 @@ fun NotificationSetting(
     TextWithImage(
         text = stringResource(R.string.notification_settings),
         image = painterResource(id = R.drawable.ic_notifications),
-        modifier = Modifier.padding(vertical = 16.dp)
+        modifier = Modifier.appPadding().padding(vertical = 16.dp)
     )
 
     SwitchWithDescription(
@@ -149,7 +150,8 @@ fun NotificationSetting(
                 onSetNotificationEnabled(checked)
             }
         },
-        checked = notificationEnabled
+        checked = notificationEnabled,
+        modifier = Modifier.appPadding()
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -183,7 +185,8 @@ fun NotificationSetting(
                 onSetShowPairedDevice(checked)
             }
         },
-        checked = showPairedDevice
+        checked = showPairedDevice,
+        modifier = Modifier.appPadding()
     )
 }
 

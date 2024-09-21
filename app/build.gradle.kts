@@ -2,9 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
     id("kotlinx-serialization")
+    alias(libs.plugins.dagger.hilt.android)
     id("com.google.android.gms.oss-licenses-plugin")
 }
 
@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material3)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.daggerHiltAndroid)
     implementation(libs.kotlinSerializationJson)
