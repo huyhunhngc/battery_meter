@@ -1,18 +1,14 @@
 package io.github.ifa.glancewidget.presentation.settings.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +18,11 @@ import io.github.ifa.glancewidget.ui.component.TextWithImage
 import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
 
 @Composable
-fun OtherSession(onOpenAboutScreen: () -> Unit, onOpenLicenseScreen: () -> Unit) {
+fun OtherSession(
+    onOpenAboutScreen: () -> Unit,
+    onOpenLicenseScreen: () -> Unit,
+    onOpenPrivacyPolicy: () -> Unit
+) {
     TextWithImage(
         text = stringResource(R.string.other),
         image = painterResource(id = R.drawable.ic_info),
@@ -43,18 +43,23 @@ fun OtherSession(onOpenAboutScreen: () -> Unit, onOpenLicenseScreen: () -> Unit)
             onClick = onOpenLicenseScreen
         )
         Divider()
-        TextWithRightArrow(text = stringResource(id = R.string.privacy_policy)) {}
+        TextWithRightArrow(
+            text = stringResource(id = R.string.privacy_policy),
+            onClick = onOpenPrivacyPolicy
+        )
     }
     Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
 private fun Divider() {
-    Spacer(modifier = Modifier.fillMaxWidth().height(2.0.dp))
+    Spacer(modifier = Modifier
+        .fillMaxWidth()
+        .height(2.0.dp))
 }
 
 @Preview
 @Composable
 fun OtherSessionPreview() {
-    OtherSession({}, {})
+    OtherSession({}, {}, {})
 }

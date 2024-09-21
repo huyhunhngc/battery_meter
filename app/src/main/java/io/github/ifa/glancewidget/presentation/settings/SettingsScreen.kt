@@ -34,6 +34,7 @@ import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
+import io.github.ifa.glancewidget.utils.navigateUrl
 
 const val settingsScreenRoute = "settings_screen_route"
 
@@ -75,6 +76,9 @@ internal fun SettingsScreen(
     val onOpenLicensesScreen = {
         context.navigateLicencesScreen()
     }
+    val onOpenPrivacyPolicy = {
+        context.navigateUrl("https://www.termsfeed.com/live/82a28b83-ca15-4847-a3f4-6b85508f6060")
+    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -114,7 +118,7 @@ internal fun SettingsScreen(
                 )
             }
             item {
-                OtherSession(onOpenAboutScreen, onOpenLicensesScreen)
+                OtherSession(onOpenAboutScreen, onOpenLicensesScreen, onOpenPrivacyPolicy)
             }
         }
     }

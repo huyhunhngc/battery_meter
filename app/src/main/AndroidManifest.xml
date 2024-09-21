@@ -4,9 +4,8 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:name=".App"
@@ -70,7 +69,7 @@
 
         <service
             android:name=".service.BatteryStatusService"
-            android:foregroundServiceType="connectedDevice" />
+            android:foregroundServiceType="specialUse" />
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

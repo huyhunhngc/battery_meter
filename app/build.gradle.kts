@@ -11,7 +11,7 @@ plugins {
 val versionMajor = 1
 val versionMinor = 0
 val versionPatch = 0
-val versionIncrement = 1
+val versionIncrement = 5
 
 android {
     namespace = "io.github.ifa.glancewidget"
@@ -28,7 +28,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        resConfigs("en", "vi", "fr", "ja")
     }
 
     buildTypes {
@@ -62,6 +61,11 @@ android {
     packaging {
         resources {
             excludes += "META-INF/gradle/incremental.annotation.processors"
+        }
+    }
+    bundle {
+        language {
+            enableSplit = false
         }
     }
 }
