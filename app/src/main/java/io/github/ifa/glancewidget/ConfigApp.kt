@@ -1,6 +1,5 @@
 package io.github.ifa.glancewidget
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Surface
@@ -18,12 +17,14 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.localAppSettingsRepository
-import io.github.ifa.glancewidget.ui.theme.AppTheme
-import io.github.ifa.glancewidget.ui.theme.DarkColorScheme
-import io.github.ifa.glancewidget.ui.theme.LightColorScheme
-import io.github.ifa.glancewidget.ui.theme.Type
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
+import io.github.ifa.glancewidget.ui.theme.AppTheme
+import io.github.ifa.glancewidget.ui.theme.Type
+import io.github.ifa.glancewidget.ui.theme.getDarkScheme
+import io.github.ifa.glancewidget.ui.theme.getLightScheme
+import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
 
 @Composable
 fun ConfigApp(
@@ -38,7 +39,7 @@ fun ConfigApp(
         ThemeType.LIGHT_THEME -> false
     }
 
-    val colorScheme = rememberColorScheme(isDarkTheme)
+    val colorScheme = rememberColorScheme(isDarkTheme, settings.themeColor)
     val navController: NavHostController = rememberNavController()
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(isDarkTheme) {
@@ -58,12 +59,14 @@ fun ConfigApp(
 @Composable
 fun rememberColorScheme(
     isDarkTheme: Boolean,
+    themeColor: ThemeTypeColor,
 ): ColorScheme {
     val context = LocalContext.current
-    val colorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    val colorScheme = if (themeColor == ThemeTypeColor.System && isSupportedDynamicColor()) {
         if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     } else {
-        if (isDarkTheme) DarkColorScheme else LightColorScheme
+        if (isDarkTheme) getDarkScheme(themeColor.code) else getLightScheme(themeColor.code)
     }
-    return remember(isDarkTheme) { colorScheme }
+
+    return remember(isDarkTheme, themeColor) { colorScheme }
 }

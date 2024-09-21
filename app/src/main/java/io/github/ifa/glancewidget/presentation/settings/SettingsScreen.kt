@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.presentation.settings
 
 import android.content.Intent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,12 +25,12 @@ import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SHOW_PAIRED_DEVICES_CHANGED
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.LanguageSetting
 import io.github.ifa.glancewidget.presentation.settings.component.NotificationSetting
 import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
-import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
@@ -54,6 +55,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
         snackbarHostState = snackbarHostState,
         onOpenAboutScreen = onOpenAboutScreen,
         onSelectTheme = viewModel::setThemeType,
+        onSelectThemeColor = viewModel::setThemeTypeColor,
         onSelectLanguage = viewModel::setLanguage,
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
         onSetShowPairedDevice = viewModel::onShowPairedDeviceChanged,
@@ -67,6 +69,7 @@ internal fun SettingsScreen(
     snackbarHostState: SnackbarHostState,
     onOpenAboutScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
+    onSelectThemeColor: (ThemeTypeColor) -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
@@ -91,16 +94,21 @@ internal fun SettingsScreen(
     ) { padding ->
         LazyColumn(
             modifier = Modifier
-                .appPadding()
                 .fillMaxSize()
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             item {
-                ThemeSetting(onSelectTheme = onSelectTheme, uiState = uiState)
+                ThemeSetting(
+                    onSelectTheme = onSelectTheme,
+                    onSelectThemeColor = onSelectThemeColor,
+                    uiState = uiState
+                )
             }
             item {
-                LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                Box(modifier = Modifier.appPadding()) {
+                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                }
             }
             item {
                 NotificationSetting(

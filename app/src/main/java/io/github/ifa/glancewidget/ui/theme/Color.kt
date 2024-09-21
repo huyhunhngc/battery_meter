@@ -1,62 +1,13 @@
 package io.github.ifa.glancewidget.ui.theme
 
+import android.annotation.SuppressLint
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-
-val app_light_primary = Color(0xFF65558f)
-val app_light_onPrimary = Color(0xFFFFFFFF)
-val app_light_primaryContainer = Color(0xFFeaddff)
-val app_light_onPrimaryContainer = Color(0xFF21005d)
-val app_light_secondary = Color(0xFF625b71)
-val app_light_onSecondary = Color(0xFFFFFFFF)
-val app_light_secondaryContainer = Color(0xFFe8def8)
-val app_light_onSecondaryContainer = Color(0xFFe8def8)
-val app_light_tertiary = Color(0xFF7d5260)
-val app_light_onTertiary = Color(0xFFFFFFFF)
-val app_light_tertiaryContainer = Color(0xFFffd8e4)
-val app_light_onTertiaryContainer = Color(0xFF31111d)
-val app_light_error = Color(0xFFb3261e)
-val app_light_errorContainer = Color(0xFFFFDAD6)
-val app_light_onError = Color(0xFFFFFFFF)
-val app_light_onErrorContainer = Color(0xFF410002)
-val app_light_background = Color(0xFFFEFBFF)
-val app_light_onBackground = Color(0xFF171B23)
-val app_light_surface = Color(0xFFfef7ff)
-val app_light_onSurface = Color(0xFF171B23)
-val app_light_surfaceVariant = Color(0xFFE1E2EC)
-val app_light_onSurfaceVariant = Color(0xFF44474F)
-val app_light_outline = Color(0x1F000000)
-val app_light_inverseOnSurface = Color(0xFFF2F0F4)
-val app_light_inverseSurface = Color(0xFF303033)
-val app_light_inversePrimary = Color(0xFFd0bcff)
-val app_light_surfaceTint = Color(0xFF6750a4)
-
-val app_dark_primary = Color(0xFFd0bcff)
-val app_dark_onPrimary = Color(0xFF381e72)
-val app_dark_primaryContainer = Color(0xFF4f378b)
-val app_dark_onPrimaryContainer = Color(0xFFeaddff)
-val app_dark_secondary = Color(0xFFccc2dc)
-val app_dark_onSecondary = Color(0xFF332d41)
-val app_dark_secondaryContainer = Color(0xFF4a4458)
-val app_dark_onSecondaryContainer = Color(0xFFe8def8)
-val app_dark_tertiary = Color(0xFFFFB59D)
-val app_dark_onTertiary = Color(0xFF5D1800)
-val app_dark_tertiaryContainer = Color(0xFF842600)
-val app_dark_onTertiaryContainer = Color(0xFFFFDBD0)
-val app_dark_error = Color(0xFFFFB4AB)
-val app_dark_errorContainer = Color(0xFF93000A)
-val app_dark_onError = Color(0xFF690005)
-val app_dark_onErrorContainer = Color(0xFFFFDAD6)
-val app_dark_background = Color(0xFF1d1b20)
-val app_dark_onBackground = Color(0xFFE3E2E6)
-val app_dark_surface = Color(0xFF1d1b20)
-val app_dark_onSurface = Color(0xFFE3E2E6)
-val app_dark_surfaceVariant = Color(0xFF44474F)
-val app_dark_onSurfaceVariant = Color(0xFFC4C6D0)
-val app_dark_outline = Color(0x1FFFFFFF)
-val app_dark_inverseOnSurface = Color(0xFF1d1b20)
-val app_dark_inverseSurface = Color(0xFFe6e0e9)
-val app_dark_inversePrimary = Color(0xFF6750a4)
-val app_dark_surfaceTint = Color(0xFFd0bcff)
+import com.google.android.material.color.utilities.CorePalette
+import com.google.android.material.color.utilities.Scheme
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 
 val routine_secondary50 = Color(0xFF00894B)
 val routine_secondary80 = Color(0xFF43E188)
@@ -96,3 +47,78 @@ val brownDark = Color(0xFFbcaaa4)
 
 val grayLight = Color(0xFF616161)
 val grayDark = Color(0xFFEEEEEE)
+
+
+@SuppressLint("RestrictedApi")
+fun getLightScheme(argb: Int = ThemeTypeColor.entries.first().code): ColorScheme {
+    val scheme = Scheme.light(argb)
+    val core = CorePalette.of(argb)
+    return lightColorScheme(
+        primary = Color(scheme.primary),
+        onPrimary = Color(scheme.onPrimary),
+        primaryContainer = Color(scheme.primaryContainer),
+        onPrimaryContainer = Color(scheme.onPrimaryContainer),
+        secondary = Color(scheme.secondary),
+        onSecondary = Color(scheme.onSecondary),
+        secondaryContainer = Color(scheme.secondaryContainer),
+        tertiary = Color(scheme.tertiary),
+        onTertiary = Color(scheme.onTertiary),
+        tertiaryContainer = Color(scheme.tertiaryContainer),
+        onTertiaryContainer = Color(scheme.onTertiaryContainer),
+        error = Color(scheme.error),
+        errorContainer = Color(scheme.errorContainer),
+        onErrorContainer = Color(scheme.onErrorContainer),
+        background = Color(scheme.background),
+        onBackground = Color(scheme.onBackground),
+        surface = Color(scheme.surface),
+        onSurface = Color(scheme.onSurface),
+        surfaceContainer = Color(core.n2.tone(94)),
+        surfaceContainerLow = Color(core.n2.tone(96)),
+        surfaceVariant = Color(scheme.surfaceVariant),
+        onSurfaceVariant = Color(scheme.onSurfaceVariant),
+        outline = Color(scheme.outline),
+        outlineVariant = Color(scheme.outlineVariant),
+        scrim = Color(scheme.scrim),
+        inversePrimary = Color(scheme.inversePrimary),
+        inverseSurface = Color(scheme.inverseSurface),
+        inverseOnSurface = Color(scheme.inverseOnSurface),
+        surfaceTint = Color(scheme.primary),
+    )
+}
+
+@SuppressLint("RestrictedApi")
+fun getDarkScheme(argb: Int = ThemeTypeColor.entries.first().code): ColorScheme {
+    val scheme = Scheme.dark(argb)
+    val core = CorePalette.of(argb)
+    return darkColorScheme(
+        primary = Color(scheme.primary),
+        onPrimary = Color(scheme.onPrimary),
+        primaryContainer = Color(scheme.primaryContainer),
+        onPrimaryContainer = Color(scheme.onPrimaryContainer),
+        secondary = Color(scheme.secondary),
+        onSecondary = Color(scheme.onSecondary),
+        secondaryContainer = Color(scheme.secondaryContainer),
+        tertiary = Color(scheme.tertiary),
+        onTertiary = Color(scheme.onTertiary),
+        tertiaryContainer = Color(scheme.tertiaryContainer),
+        onTertiaryContainer = Color(scheme.onTertiaryContainer),
+        error = Color(scheme.error),
+        errorContainer = Color(scheme.errorContainer),
+        onErrorContainer = Color(scheme.onErrorContainer),
+        background = Color(scheme.background),
+        onBackground = Color(scheme.onBackground),
+        surface = Color(scheme.surface),
+        onSurface = Color(scheme.onSurface),
+        surfaceContainer = Color(core.n2.tone(12)),
+        surfaceContainerLow = Color(core.n2.tone(8)),
+        surfaceVariant = Color(scheme.surfaceVariant),
+        onSurfaceVariant = Color(scheme.onSurfaceVariant),
+        outline = Color(scheme.outline),
+        outlineVariant = Color(scheme.outlineVariant),
+        scrim = Color(scheme.scrim),
+        inversePrimary = Color(scheme.inversePrimary),
+        inverseSurface = Color(scheme.inverseSurface),
+        inverseOnSurface = Color(scheme.inverseOnSurface),
+        surfaceTint = Color(scheme.primary),
+    )
+}

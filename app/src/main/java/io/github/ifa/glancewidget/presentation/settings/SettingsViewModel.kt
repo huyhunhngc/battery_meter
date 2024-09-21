@@ -6,7 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.utils.buildUiState
+import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,9 +21,16 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
     data class SettingsScreenUiState(
         val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
+        val themeColor: ThemeTypeColor = ThemeTypeColor.System,
         val language: AppSettings.Language? = null,
         val notificationSetting: AppSettings.NotificationSetting = AppSettings.NotificationSetting(),
-    )
+    ) {
+        val colorScheme = if (!isSupportedDynamicColor() && themeColor == ThemeTypeColor.System) {
+            ThemeTypeColor.entries.first()
+        } else {
+            themeColor
+        }
+    }
 
     private val _settings = settingsRepository.get().stateIn(
         viewModelScope,
@@ -32,6 +41,7 @@ class SettingsViewModel @Inject constructor(
         buildUiState(_settings) { settings ->
             SettingsScreenUiState(
                 theme = settings.theme,
+                themeColor = settings.themeColor,
                 language = settings.language,
                 notificationSetting = settings.notificationSetting,
             )
@@ -40,6 +50,12 @@ class SettingsViewModel @Inject constructor(
     fun setThemeType(themeType: ThemeType) {
         viewModelScope.launch {
             settingsRepository.saveTheme(themeType)
+        }
+    }
+
+    fun setThemeTypeColor(themeTypeColor: ThemeTypeColor) {
+        viewModelScope.launch {
+            settingsRepository.saveThemeColor(themeTypeColor)
         }
     }
 
