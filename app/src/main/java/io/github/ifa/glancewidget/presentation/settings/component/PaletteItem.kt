@@ -50,7 +50,7 @@ fun SelectablePaletteItem(
         PaletteItem(
             modifier
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .clickable { onClick(themeTypeColor) }
                 .padding(12.dp),
             getLightScheme(themeTypeColor.code),
@@ -76,7 +76,7 @@ private fun DefaultPaletteItem(
     Box(
         modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .clickable { onClick(themeTypeColor) }
             .padding(16.dp),
         contentAlignment = Alignment.Center
