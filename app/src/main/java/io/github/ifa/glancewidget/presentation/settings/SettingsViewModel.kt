@@ -9,6 +9,7 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.utils.buildUiState
 import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -48,25 +49,25 @@ class SettingsViewModel @Inject constructor(
         }
 
     fun setThemeType(themeType: ThemeType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveTheme(themeType)
         }
     }
 
     fun setThemeTypeColor(themeTypeColor: ThemeTypeColor) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveThemeColor(themeTypeColor)
         }
     }
 
     fun setLanguage(language: AppSettings.Language) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveLocaleLanguage(language)
         }
     }
 
     fun onBatteryAlertChanged(checked: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveNotificationSetting(
                 _settings.value.notificationSetting.copy(
                     batteryAlert = checked
@@ -76,7 +77,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onShowPairedDeviceChanged(checked: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveNotificationSetting(
                 _settings.value.notificationSetting.copy(
                     showPairedDevices = checked

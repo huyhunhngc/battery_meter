@@ -68,7 +68,7 @@ private fun DefaultPaletteItem(
     onClick: (ThemeTypeColor) -> Unit = {}
 ) {
     val selectedShape by animateFloatAsState(
-        targetValue = if (isSelected) 1.0f else 0.5f, label = "", animationSpec = spring(
+        targetValue = if (isSelected) 0.5f else 1.0f, label = "", animationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -84,7 +84,7 @@ private fun DefaultPaletteItem(
         Icon(
             modifier = Modifier.fillMaxSize(selectedShape),
             painter = painterResource(id = R.drawable.ic_block),
-            contentDescription = "Check",
+            contentDescription = "Decline",
             tint = MaterialTheme.colorScheme.primary.copy(alpha = selectedShape)
         )
     }

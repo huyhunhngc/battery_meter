@@ -27,7 +27,9 @@ fun OtherSession(
     TextWithImage(
         text = stringResource(R.string.other),
         image = painterResource(id = R.drawable.ic_info),
-        modifier = Modifier.appPadding().padding(vertical = 16.dp)
+        modifier = Modifier
+            .appPadding()
+            .padding(bottom = 16.dp)
     )
     Column(
         modifier = Modifier
@@ -37,16 +39,19 @@ fun OtherSession(
     ) {
         TextWithRightArrow(
             text = stringResource(id = R.string.about_tab),
+            icon = painterResource(id = R.drawable.ic_groups),
             onClick = onOpenAboutScreen
         )
         Divider()
         TextWithRightArrow(
             text = stringResource(id = R.string.license),
+            icon = painterResource(id = R.drawable.ic_license),
             onClick = onOpenLicenseScreen
         )
         Divider()
         TextWithRightArrow(
             text = stringResource(id = R.string.privacy_policy),
+            icon = painterResource(id = R.drawable.ic_policy),
             onClick = onOpenPrivacyPolicy
         )
     }
