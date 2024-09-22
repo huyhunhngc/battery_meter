@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.presentation.settings
 
 import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -34,6 +36,7 @@ import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
+import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
 import io.github.ifa.glancewidget.utils.navigateUrl
 
@@ -97,19 +100,9 @@ internal fun SettingsScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
+            ,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                ThemeSetting(
-                    onSelectTheme = onSelectTheme,
-                    onSelectThemeColor = onSelectThemeColor,
-                    uiState = uiState
-                )
-            }
-            item {
-                Box(modifier = Modifier.appPadding()) {
-                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-                }
-            }
             item {
                 NotificationSetting(
                     notificationSetting = uiState.notificationSetting,
@@ -123,6 +116,18 @@ internal fun SettingsScreen(
                         }
                         onSetShowPairedDevice(enabled)
                     }
+                )
+            }
+            if (!isAppCompatLocaleDeprecated()) {
+                item {
+                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                }
+            }
+            item {
+                ThemeSetting(
+                    onSelectTheme = onSelectTheme,
+                    onSelectThemeColor = onSelectThemeColor,
+                    uiState = uiState
                 )
             }
             item {

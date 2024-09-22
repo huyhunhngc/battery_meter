@@ -93,3 +93,7 @@ fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {
 fun isSupportedDynamicColor(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
+
+fun isAppCompatLocaleDeprecated(): Boolean {
+    return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+}

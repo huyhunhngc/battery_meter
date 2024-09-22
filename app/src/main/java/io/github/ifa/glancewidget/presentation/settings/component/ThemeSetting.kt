@@ -56,12 +56,11 @@ fun ThemeSetting(
     LazyRow(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 16.dp)) {
         items(ThemeTypeColor.entries()) { item ->
             SelectablePaletteItem(
-                modifier = Modifier.padding(4.dp).size(72.dp),
+                modifier = Modifier.padding(2.dp).size(64.dp),
                 themeTypeColor = item,
                 onClick = onSelectThemeColor,
                 isSelected = item == uiState.colorScheme,
             )
         }
     }
-    Spacer(modifier = Modifier.height(16.dp))
 }

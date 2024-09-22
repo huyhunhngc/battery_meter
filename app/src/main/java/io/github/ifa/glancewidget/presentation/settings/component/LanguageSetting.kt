@@ -23,6 +23,7 @@ import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.presentation.settings.SettingsViewModel
 import io.github.ifa.glancewidget.ui.component.DropdownTextField
 import io.github.ifa.glancewidget.ui.component.TextWithImage
+import io.github.ifa.glancewidget.ui.component.appPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +34,7 @@ fun LanguageSetting(
     val context = LocalContext.current
     val deviceLocale = context.resources.configuration.locales.get(0)
     val selectedLanguage = uiState.language ?: AppSettings.Language.fromCode(deviceLocale.language)
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.appPadding()) {
         TextWithImage(
             text = stringResource(R.string.language),
             image = painterResource(id = R.drawable.ic_language),

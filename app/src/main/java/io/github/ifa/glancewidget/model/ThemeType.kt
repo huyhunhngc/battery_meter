@@ -9,13 +9,15 @@ enum class ThemeType {
 }
 
 enum class ThemeTypeColor(val code: Int) {
-    System(0xFF004418.toInt()),
-    Spotify(0xFF004418.toInt()),
+    System(0xFF386239.toInt()),
+    Spotify(0xFF386239.toInt()),
     FlowerBlue(0xFF769CDF.toInt()),
     MidnightPurple(0xFF220050.toInt()),
     FireRed(0xFFB33B15.toInt()),
+    Brown(0xFF965141.toInt()),
+    AutumnYellow(0xFFFFDE3F.toInt()),
     OliverGreen(0xFF63A002.toInt()),
-    MintyOrange(0xFFF8B23E.toInt());
+    MintyOrange(0xFFFF9800.toInt());
 
     companion object {
         fun entries(): List<ThemeTypeColor> {

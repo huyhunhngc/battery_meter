@@ -165,7 +165,7 @@ private fun CurrentAndChargingMonitor(
         modifier = modifier
             .height(120.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(if (isCharging) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background)
+            .background(if (isCharging) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             ShortInformationRow(
@@ -209,7 +209,7 @@ private fun TemperatureMonitor(modifier: Modifier, temperature: MyDevice.Tempera
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .height(90.dp)
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Text(
             text = temperature.formatTemperature(),
@@ -237,7 +237,7 @@ private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .height(90.dp)
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Text(
             text = String.format("%.2f", voltage) + " V",

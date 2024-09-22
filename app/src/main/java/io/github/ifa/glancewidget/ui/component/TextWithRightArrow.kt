@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -17,14 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.ifa.glancewidget.R
 
 @Composable
 fun TextWithRightArrow(
     modifier: Modifier = Modifier,
     text: String,
     color: Color = MaterialTheme.colorScheme.primary,
+    icon: Painter? = null,
     onClick: () -> Unit
 ) {
     Row(
@@ -34,14 +39,22 @@ fun TextWithRightArrow(
             .clip(RoundedCornerShape(4.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (icon != null) {
+            Icon(
+                painter = icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(20.dp)
+            )
+        }
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
             color = color,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -54,5 +67,5 @@ fun TextWithRightArrow(
 @Preview
 @Composable
 fun TextWithRightArrowPreview() {
-    TextWithRightArrow(text = "Notification") {}
+    TextWithRightArrow(text = "Notification", icon = painterResource(id = R.drawable.ic_license)) {}
 }
