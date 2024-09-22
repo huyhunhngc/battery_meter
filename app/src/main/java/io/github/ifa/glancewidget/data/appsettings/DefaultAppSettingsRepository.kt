@@ -4,6 +4,7 @@ import android.content.Context
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.utils.setLocale
 import kotlinx.coroutines.flow.Flow
 
@@ -28,6 +29,11 @@ class DefaultAppSettingsRepository(
     override suspend fun saveTheme(themeType: ThemeType) {
         val settings = appSettingDataStore.getSettings()
         appSettingDataStore.saveSettings(settings.copy(theme = themeType))
+    }
+
+    override suspend fun saveThemeColor(themeTypeColor: ThemeTypeColor) {
+        val settings = appSettingDataStore.getSettings()
+        appSettingDataStore.saveSettings(settings.copy(themeColor = themeTypeColor))
     }
 
     override suspend fun saveShowPairedDevicesSetting(showPairedDevices: Boolean) {

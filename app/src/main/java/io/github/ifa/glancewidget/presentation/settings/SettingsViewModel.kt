@@ -6,7 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.utils.buildUiState
+import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,9 +22,16 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
     data class SettingsScreenUiState(
         val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
+        val themeColor: ThemeTypeColor = ThemeTypeColor.System,
         val language: AppSettings.Language? = null,
         val notificationSetting: AppSettings.NotificationSetting = AppSettings.NotificationSetting(),
-    )
+    ) {
+        val colorScheme = if (!isSupportedDynamicColor() && themeColor == ThemeTypeColor.System) {
+            ThemeTypeColor.entries.first()
+        } else {
+            themeColor
+        }
+    }
 
     private val _settings = settingsRepository.get().stateIn(
         viewModelScope,
@@ -32,25 +42,32 @@ class SettingsViewModel @Inject constructor(
         buildUiState(_settings) { settings ->
             SettingsScreenUiState(
                 theme = settings.theme,
+                themeColor = settings.themeColor,
                 language = settings.language,
                 notificationSetting = settings.notificationSetting,
             )
         }
 
     fun setThemeType(themeType: ThemeType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveTheme(themeType)
         }
     }
 
+    fun setThemeTypeColor(themeTypeColor: ThemeTypeColor) {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsRepository.saveThemeColor(themeTypeColor)
+        }
+    }
+
     fun setLanguage(language: AppSettings.Language) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveLocaleLanguage(language)
         }
     }
 
     fun onBatteryAlertChanged(checked: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveNotificationSetting(
                 _settings.value.notificationSetting.copy(
                     batteryAlert = checked
@@ -60,7 +77,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onShowPairedDeviceChanged(checked: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveNotificationSetting(
                 _settings.value.notificationSetting.copy(
                     showPairedDevices = checked

@@ -9,7 +9,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 
-internal val LocalAppColors = staticCompositionLocalOf { lightColors() }
+internal val LocalAppColors = staticCompositionLocalOf { AppColor.LightColors }
 
 object AppTheme {
     val appColors: AppColors

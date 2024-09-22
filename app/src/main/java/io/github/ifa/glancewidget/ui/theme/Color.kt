@@ -2,61 +2,117 @@ package io.github.ifa.glancewidget.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val app_light_primary = Color(0xFF65558f)
-val app_light_onPrimary = Color(0xFFFFFFFF)
-val app_light_primaryContainer = Color(0xFFeaddff)
-val app_light_onPrimaryContainer = Color(0xFF21005d)
-val app_light_secondary = Color(0xFF625b71)
-val app_light_onSecondary = Color(0xFFFFFFFF)
-val app_light_secondaryContainer = Color(0xFFe8def8)
-val app_light_onSecondaryContainer = Color(0xFFe8def8)
-val app_light_tertiary = Color(0xFF7d5260)
-val app_light_onTertiary = Color(0xFFFFFFFF)
-val app_light_tertiaryContainer = Color(0xFFffd8e4)
-val app_light_onTertiaryContainer = Color(0xFF31111d)
-val app_light_error = Color(0xFFb3261e)
-val app_light_errorContainer = Color(0xFFFFDAD6)
-val app_light_onError = Color(0xFFFFFFFF)
-val app_light_onErrorContainer = Color(0xFF410002)
-val app_light_background = Color(0xFFFEFBFF)
-val app_light_onBackground = Color(0xFF171B23)
-val app_light_surface = Color(0xFFfef7ff)
-val app_light_onSurface = Color(0xFF171B23)
-val app_light_surfaceVariant = Color(0xFFE1E2EC)
-val app_light_onSurfaceVariant = Color(0xFF44474F)
-val app_light_outline = Color(0x1F000000)
-val app_light_inverseOnSurface = Color(0xFFF2F0F4)
-val app_light_inverseSurface = Color(0xFF303033)
-val app_light_inversePrimary = Color(0xFFd0bcff)
-val app_light_surfaceTint = Color(0xFF6750a4)
+object AppColor {
+    val LightColors = lightColors(
+        check = routine_secondary50,
+        amber = amberLight,
+        blue = blueLight,
+        brown = brownLight,
+        gray = grayLight,
+        green = greenLight,
+        indigo = indigoLight,
+        lime = limeLight,
+        orange = orangeLight,
+        red = redLight,
+        pink = pinkLight,
+        teal = tealLight,
+        yellow = yellowLight
+    )
 
-val app_dark_primary = Color(0xFFd0bcff)
-val app_dark_onPrimary = Color(0xFF381e72)
-val app_dark_primaryContainer = Color(0xFF4f378b)
-val app_dark_onPrimaryContainer = Color(0xFFeaddff)
-val app_dark_secondary = Color(0xFFccc2dc)
-val app_dark_onSecondary = Color(0xFF332d41)
-val app_dark_secondaryContainer = Color(0xFF4a4458)
-val app_dark_onSecondaryContainer = Color(0xFFe8def8)
-val app_dark_tertiary = Color(0xFFFFB59D)
-val app_dark_onTertiary = Color(0xFF5D1800)
-val app_dark_tertiaryContainer = Color(0xFF842600)
-val app_dark_onTertiaryContainer = Color(0xFFFFDBD0)
-val app_dark_error = Color(0xFFFFB4AB)
-val app_dark_errorContainer = Color(0xFF93000A)
-val app_dark_onError = Color(0xFF690005)
-val app_dark_onErrorContainer = Color(0xFFFFDAD6)
-val app_dark_background = Color(0xFF1d1b20)
-val app_dark_onBackground = Color(0xFFE3E2E6)
-val app_dark_surface = Color(0xFF1d1b20)
-val app_dark_onSurface = Color(0xFFE3E2E6)
-val app_dark_surfaceVariant = Color(0xFF44474F)
-val app_dark_onSurfaceVariant = Color(0xFFC4C6D0)
-val app_dark_outline = Color(0x1FFFFFFF)
-val app_dark_inverseOnSurface = Color(0xFF1d1b20)
-val app_dark_inverseSurface = Color(0xFFe6e0e9)
-val app_dark_inversePrimary = Color(0xFF6750a4)
-val app_dark_surfaceTint = Color(0xFFd0bcff)
+    val DarkColors = darkColors(
+        check = routine_secondary80,
+        amber = amberDark,
+        blue = blueDark,
+        brown = brownDark,
+        gray = grayDark,
+        green = greenDark,
+        indigo = indigoDark,
+        lime = limeDark,
+        orange = orangeDark,
+        red = redDark,
+        pink = pinkDark,
+        teal = tealDark,
+        yellow = yellowDark
+    )
+}
+
+class AppColors(
+    val check: Color,
+    val amber: Color,
+    val blue: Color,
+    val brown: Color,
+    val gray: Color,
+    val green: Color,
+    val indigo: Color,
+    val lime: Color,
+    val orange: Color,
+    val red: Color,
+    val pink: Color,
+    val teal: Color,
+    val yellow: Color
+)
+
+fun lightColors(
+    check: Color = Color.Unspecified,
+    amber: Color = Color.Unspecified,
+    blue: Color = Color.Unspecified,
+    brown: Color = Color.Unspecified,
+    gray: Color = Color.Unspecified,
+    green: Color = Color.Unspecified,
+    indigo: Color = Color.Unspecified,
+    lime: Color = Color.Unspecified,
+    orange: Color = Color.Unspecified,
+    red: Color = Color.Unspecified,
+    pink: Color = Color.Unspecified,
+    teal: Color = Color.Unspecified,
+    yellow: Color = Color.Unspecified
+): AppColors =
+    AppColors(
+        check = check,
+        amber = amber,
+        blue = blue,
+        brown = brown,
+        gray = gray,
+        green = green,
+        indigo = indigo,
+        lime = lime,
+        orange = orange,
+        red = red,
+        pink = pink,
+        teal = teal,
+        yellow = yellow
+    )
+
+fun darkColors(
+    check: Color = Color.Unspecified,
+    amber: Color = Color.Unspecified,
+    blue: Color = Color.Unspecified,
+    brown: Color = Color.Unspecified,
+    gray: Color = Color.Unspecified,
+    green: Color = Color.Unspecified,
+    indigo: Color = Color.Unspecified,
+    lime: Color = Color.Unspecified,
+    orange: Color = Color.Unspecified,
+    red: Color = Color.Unspecified,
+    pink: Color = Color.Unspecified,
+    teal: Color = Color.Unspecified,
+    yellow: Color = Color.Unspecified
+): AppColors =
+    AppColors(
+        check = check,
+        amber = amber,
+        blue = blue,
+        brown = brown,
+        gray = gray,
+        green = green,
+        indigo = indigo,
+        lime = lime,
+        orange = orange,
+        red = red,
+        pink = pink,
+        teal = teal,
+        yellow = yellow
+    )
 
 val routine_secondary50 = Color(0xFF00894B)
 val routine_secondary80 = Color(0xFF43E188)

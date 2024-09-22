@@ -1,6 +1,8 @@
 package io.github.ifa.glancewidget.presentation.settings
 
 import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -24,15 +27,16 @@ import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SHOW_PAIRED_DEVICES_CHANGED
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.LanguageSetting
 import io.github.ifa.glancewidget.presentation.settings.component.NotificationSetting
 import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
-import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.findActivity
+import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
 import io.github.ifa.glancewidget.utils.navigateUrl
 
@@ -54,6 +58,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
         snackbarHostState = snackbarHostState,
         onOpenAboutScreen = onOpenAboutScreen,
         onSelectTheme = viewModel::setThemeType,
+        onSelectThemeColor = viewModel::setThemeTypeColor,
         onSelectLanguage = viewModel::setLanguage,
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
         onSetShowPairedDevice = viewModel::onShowPairedDeviceChanged,
@@ -67,6 +72,7 @@ internal fun SettingsScreen(
     snackbarHostState: SnackbarHostState,
     onOpenAboutScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
+    onSelectThemeColor: (ThemeTypeColor) -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
@@ -91,17 +97,12 @@ internal fun SettingsScreen(
     ) { padding ->
         LazyColumn(
             modifier = Modifier
-                .appPadding()
                 .fillMaxSize()
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
+            ,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                ThemeSetting(onSelectTheme = onSelectTheme, uiState = uiState)
-            }
-            item {
-                LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-            }
             item {
                 NotificationSetting(
                     notificationSetting = uiState.notificationSetting,
@@ -115,6 +116,18 @@ internal fun SettingsScreen(
                         }
                         onSetShowPairedDevice(enabled)
                     }
+                )
+            }
+            if (!isAppCompatLocaleDeprecated()) {
+                item {
+                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                }
+            }
+            item {
+                ThemeSetting(
+                    onSelectTheme = onSelectTheme,
+                    onSelectThemeColor = onSelectThemeColor,
+                    uiState = uiState
                 )
             }
             item {

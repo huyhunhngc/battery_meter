@@ -109,6 +109,6 @@ private fun Context.setLocaleForDevicesHigherApi33(localeCode: String) {
         LocaleList.forLanguageTags(localeCode)
 }
 
-private fun Context.setLocaleForDevicesLowerApi33(localeTag: String) {
+private fun setLocaleForDevicesLowerApi33(localeTag: String) {
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
 }

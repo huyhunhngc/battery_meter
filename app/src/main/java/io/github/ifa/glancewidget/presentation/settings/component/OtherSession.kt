@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.ui.component.TextWithImage
 import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
+import io.github.ifa.glancewidget.ui.component.appPadding
 
 @Composable
 fun OtherSession(
@@ -26,25 +27,31 @@ fun OtherSession(
     TextWithImage(
         text = stringResource(R.string.other),
         image = painterResource(id = R.drawable.ic_info),
-        modifier = Modifier.padding(vertical = 16.dp)
+        modifier = Modifier
+            .appPadding()
+            .padding(bottom = 16.dp)
     )
     Column(
         modifier = Modifier
+            .appPadding()
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp)),
     ) {
         TextWithRightArrow(
             text = stringResource(id = R.string.about_tab),
+            icon = painterResource(id = R.drawable.ic_groups),
             onClick = onOpenAboutScreen
         )
         Divider()
         TextWithRightArrow(
             text = stringResource(id = R.string.license),
+            icon = painterResource(id = R.drawable.ic_license),
             onClick = onOpenLicenseScreen
         )
         Divider()
         TextWithRightArrow(
             text = stringResource(id = R.string.privacy_policy),
+            icon = painterResource(id = R.drawable.ic_policy),
             onClick = onOpenPrivacyPolicy
         )
     }
