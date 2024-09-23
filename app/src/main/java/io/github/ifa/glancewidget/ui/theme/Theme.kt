@@ -6,28 +6,26 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.compositionLocalOf
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 
-internal val LocalAppColors = staticCompositionLocalOf { AppColor.LightColors }
+data class AppColorScheme(
+    val themeTypeColor: ThemeTypeColor,
+    val colorScheme: ColorScheme
+)
 
-object AppTheme {
-    val appColors: AppColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalAppColors.current
-}
+internal val LocalAppColorSchemes = compositionLocalOf<List<AppColorScheme>> { listOf() }
 
 @Composable
 fun AppTheme(
-    appColors: AppColors = AppTheme.appColors,
     colorScheme: ColorScheme = MaterialTheme.colorScheme,
+    appColorScheme: List<AppColorScheme> = listOf(),
     shapes: Shapes = MaterialTheme.shapes,
     typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
-        LocalAppColors provides appColors
+        LocalAppColorSchemes provides appColorScheme
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

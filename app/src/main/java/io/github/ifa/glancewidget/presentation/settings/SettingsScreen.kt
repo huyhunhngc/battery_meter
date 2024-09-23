@@ -2,7 +2,6 @@ package io.github.ifa.glancewidget.presentation.settings
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,11 +29,12 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.LanguageSetting
+import io.github.ifa.glancewidget.presentation.settings.component.LaunchPremiumSession
 import io.github.ifa.glancewidget.presentation.settings.component.NotificationSetting
 import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
-import io.github.ifa.glancewidget.ui.component.appPadding
+import io.github.ifa.glancewidget.utils.Constants.IFA_LICENSES_URL
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
@@ -42,14 +42,17 @@ import io.github.ifa.glancewidget.utils.navigateUrl
 
 const val settingsScreenRoute = "settings_screen_route"
 
-fun NavGraphBuilder.settingsScreen(onOpenAboutScreen: () -> Unit) {
+fun NavGraphBuilder.settingsScreen(
+    onOpenAboutScreen: () -> Unit,
+    onOpenGoPremiumScreen: () -> Unit
+) {
     composable(settingsScreenRoute) {
-        SettingsScreen(onOpenAboutScreen = onOpenAboutScreen)
+        SettingsScreen(onOpenAboutScreen = onOpenAboutScreen, onOpenGoPremiumScreen = onOpenGoPremiumScreen)
     }
 }
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutScreen: () -> Unit) {
+fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutScreen: () -> Unit, onOpenGoPremiumScreen: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -57,6 +60,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         onOpenAboutScreen = onOpenAboutScreen,
+        onOpenGoPremiumScreen = onOpenGoPremiumScreen,
         onSelectTheme = viewModel::setThemeType,
         onSelectThemeColor = viewModel::setThemeTypeColor,
         onSelectLanguage = viewModel::setLanguage,
@@ -71,6 +75,7 @@ internal fun SettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
     onOpenAboutScreen: () -> Unit,
+    onOpenGoPremiumScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
     onSelectThemeColor: (ThemeTypeColor) -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
@@ -83,7 +88,7 @@ internal fun SettingsScreen(
         context.navigateLicencesScreen()
     }
     val onOpenPrivacyPolicy = {
-        context.navigateUrl("https://www.termsfeed.com/live/82a28b83-ca15-4847-a3f4-6b85508f6060")
+        context.navigateUrl(IFA_LICENSES_URL)
     }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -99,10 +104,12 @@ internal fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-            ,
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item {
+                LaunchPremiumSession(onOpenGoPremiumScreen = onOpenGoPremiumScreen)
+            }
             item {
                 NotificationSetting(
                     notificationSetting = uiState.notificationSetting,

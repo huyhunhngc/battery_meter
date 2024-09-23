@@ -62,4 +62,21 @@
     <string name="need_to_allow_notification">通知を許可する必要があります</string>
     <string name="go_to_app_settings">アプリ設定に移動</string>
     <string name="power_monitor">電源モニター</string>
+    <string name="premium">プレミアム</string>
+    <string name="standard">スタンダード</string>
+    <string name="lifetime_plan">生涯プラン</string>
+    <string name="lifetime_plan_price">%s/1回</string>
+    <string name="yearly_plan">年間プラン</string>
+    <string name="yearly_plan_price">%s/年</string>
+    <string name="monthly_plan_price">%s/年</string>
+    <string name="choose_your_plan">プランを選択</string>
+    <string name="free_trial_description">新規加入者向けの3日間無料トライアル。\nいつでもキャンセルできます。</string>
+    <string name="change_your_theme">希望する色のアプリテーマスタイルを選択します。</string>
+    <string name="change_your_theme_sync_widget">アプリの色をウィジェットと同期します。</string>
+    <string name="floating_battery_monitor">フローティングバッテリーモニター。</string>
+    <string name="history_stats_monitor">履歴統計モニター。</string>
+    <string name="more_widget_style">その他のウィジェットスタイル。</string>
+    <string name="subscription_terms">サブスクリプションは1年または3か月ごとに自動的に更新されます。Googleアカウント設定 > お支払いとサブスクリプションでいつでもサブスクリプションを管理またはキャンセルできます。</string>
+    <string name="upgrade_to_pro">Pro および Premium にアップグレード</string>
+    <string name="get_access_to_all_features">すべての機能にアクセス</string>
 </resources>
