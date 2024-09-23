@@ -4,6 +4,6 @@
         <item name="android:fontFamily">@font/googlesansregular</item>
         <item name="android:windowSplashScreenBackground">@color/launcher_icon_background_color</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="android:windowSplashScreenAnimationDuration">800</item>
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
 </resources>

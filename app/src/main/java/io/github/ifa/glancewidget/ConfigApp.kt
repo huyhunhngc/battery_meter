@@ -20,6 +20,7 @@ import io.github.ifa.glancewidget.domain.localAppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
+import io.github.ifa.glancewidget.ui.theme.AppColorScheme
 import io.github.ifa.glancewidget.ui.theme.AppTheme
 import io.github.ifa.glancewidget.ui.theme.Type
 import io.github.ifa.glancewidget.ui.theme.getDarkScheme
@@ -45,7 +46,12 @@ fun ConfigApp(
     LaunchedEffect(isDarkTheme) {
         systemUiController.statusBarDarkContentEnabled = !isDarkTheme
     }
-    AppTheme(colorScheme = colorScheme, typography = Type.typography) {
+    val appColorScheme = rememberAppColorScheme(isDarkTheme, colorScheme)
+    AppTheme(
+        colorScheme = colorScheme,
+        typography = Type.typography,
+        appColorScheme = appColorScheme
+    ) {
         Surface {
             AppNavHost(
                 navController = navController,
@@ -69,4 +75,34 @@ fun rememberColorScheme(
     }
 
     return remember(isDarkTheme, themeColor) { colorScheme }
+}
+
+@Composable
+fun rememberAppColorScheme(isDarkTheme: Boolean, colorScheme: ColorScheme): List<AppColorScheme> {
+    val appColorSchemeMap = rememberAppColorSchemeMap(isDarkTheme)
+    return remember(colorScheme) {
+        ThemeTypeColor.entries.map {
+            if (it == ThemeTypeColor.System) {
+                AppColorScheme(it, colorScheme)
+            } else {
+                appColorSchemeMap[it] ?: AppColorScheme(it, colorScheme)
+            }
+        }
+    }
+}
+
+@Composable
+fun rememberAppColorSchemeMap(
+    isDarkTheme: Boolean
+): Map<ThemeTypeColor, AppColorScheme> {
+    return remember(isDarkTheme) {
+        ThemeTypeColor.entries.associateWith { themeTypeColor ->
+            AppColorScheme(
+                themeTypeColor,
+                if (isDarkTheme) getDarkScheme(themeTypeColor.code) else getLightScheme(
+                    themeTypeColor.code
+                )
+            )
+        }
+    }
 }

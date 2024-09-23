@@ -62,4 +62,21 @@
     <string name="need_to_allow_notification">Cần cho phép thông báo</string>
     <string name="go_to_app_settings">Đi đến Cài đặt ứng dụng</string>
     <string name="power_monitor">Trình giám sát nguồn điện</string>
+    <string name="premium">Cao cấp</string>
+    <string name="standard">Tiêu chuẩn</string>
+    <string name="lifetime_plan">Gói trọn đời</string>
+    <string name="lifetime_plan_price">%s/once</string>
+    <string name="yearly_plan">Gói hàng năm</string>
+    <string name="yearly_plan_price">%s/year</string>
+    <string name="monthly_plan_price">%s/year</string>
+    <string name="choose_your_plan">Chọn gói của bạn</string>
+    <string name="free_trial_description">Dùng thử miễn phí 3 ngày cho người đăng ký mới. \nHủy bất cứ lúc nào.</string>
+    <string name="change_your_theme">Chọn kiểu chủ đề ứng dụng có màu bạn muốn.</string>
+    <string name="change_your_theme_sync_widget">Đồng bộ màu ứng dụng với tiện ích.</string>
+    <string name="floating_battery_monitor">Màn hình pin nổi.</string>
+    <string name="history_stats_monitor">Màn hình thống kê lịch sử.</string>
+    <string name="more_widget_style">Nhiều kiểu tiện ích hơn.</string>
+    <string name="subscription_terms">Đăng ký sẽ tự động gia hạn mỗi năm hoặc 3 tháng. Bạn có thể quản lý đăng ký của mình hoặc hủy bất cứ lúc nào trong cài đặt tài khoản Google > Thanh toán &amp; đăng ký</string>
+    <string name="upgrade_to_pro">Nâng cấp lên Pro &amp; Premium</string>
+    <string name="get_access_to_all_features">Truy cập tất cả các tính năng</string>
 </resources>

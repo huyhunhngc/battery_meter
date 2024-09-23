@@ -62,4 +62,21 @@
     <string name="need_to_allow_notification">Besoin d\'autoriser les notifications</string>
     <string name="go_to_app_settings">Accéder aux paramètres de l\'application</string>
     <string name="power_monitor">Moniteur de puissance</string>
+    <string name="premium">Premium</string>
+    <string name="standard">Standard</string>
+    <string name="lifetime_plan">Forfait à vie</string>
+    <string name="lifetime_plan_price">%s/once</string>
+    <string name="yearly_plan">Forfait annuel</string>
+    <string name="yearly_plan_price">%s/year</string>
+    <string name="monthly_plan_price">%s/year</string>
+    <string name="choose_your_plan">Choisissez votre forfait</string>
+    <string name="free_trial_description">Essai gratuit de 3 jours pour les nouveaux abonnés. \nAnnulez à tout moment.</string>
+    <string name="change_your_theme">Choisissez le style du thème de l\'application avec la couleur souhaitée.</string>
+    <string name="change_your_theme_sync_widget">Synchronisez les couleurs de l\'application avec le widget.</string>
+    <string name="floating_battery_monitor">Moniteurs de batterie flottants.</string>
+    <string name="history_stats_monitor">Moniteur de statistiques d\'historique.</string>
+    <string name="more_widget_style">Plus de style de widget.</string>
+    <string name="subscription_terms">L\'abonnement sera renouvelé automatiquement tous les ans ou tous les 3 mois. Vous pouvez gérer votre abonnement ou l\'annuler à tout moment dans les paramètres de compte Google > Paiements et abonnements</string>
+    <string name="upgrade_to_pro">Passer à Pro et Premium</string>
+    <string name="get_access_to_all_features">Accéder à toutes les fonctionnalités</string>
 </resources>
