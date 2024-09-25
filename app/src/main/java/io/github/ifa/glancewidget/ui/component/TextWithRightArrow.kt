@@ -53,7 +53,7 @@ fun TextWithRightArrow(
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
-            color = color,
+            color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.weight(1f)
         )
         Icon(
