@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
 import io.github.ifa.glancewidget.presentation.settings.settingsScreenRoute
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
 
@@ -55,7 +54,7 @@ fun BottomNavigationBar(
                 label = {
                     Text(
                         text = stringResource(id = tab.label),
-                        color = colorScheme.surfaceTint,
+                        color = colorScheme.secondary,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     )
                 },
@@ -65,7 +64,7 @@ fun BottomNavigationBar(
                         painter = painterResource(id = if (isSelected) tab.selectedIcon else tab.icon),
                         contentDescription = null,
                         modifier = Modifier,
-                        tint = colorScheme.surfaceTint
+                        tint = if (isSelected) colorScheme.surfaceTint else colorScheme.secondary
                     )
                 },
                 onClick = {

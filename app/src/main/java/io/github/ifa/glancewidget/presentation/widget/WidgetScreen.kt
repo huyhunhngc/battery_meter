@@ -140,7 +140,7 @@ private fun WidgetScreen(
             batteryOverall(
                 batteryDataWrapper = uiState.batteryOverall,
                 onOpenWattsDetailScreen = onOpenWattsDetailScreen,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(vertical = 16.dp)
             )
             batteryExtraInformation(
                 batteryDataWrapper = uiState.batteryOverall,
