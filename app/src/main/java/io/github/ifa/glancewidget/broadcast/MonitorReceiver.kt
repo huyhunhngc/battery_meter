@@ -3,7 +3,6 @@ package io.github.ifa.glancewidget.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,8 +15,12 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.service.NotificationHandler
 import io.github.ifa.glancewidget.utils.getObject
+import io.github.ifa.glancewidget.utils.getSerializable
+import io.github.ifa.glancewidget.utils.setBoolean
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +35,13 @@ import javax.inject.Inject
 class MonitorReceiver : BroadcastReceiver() {
     @Inject
     lateinit var batteryStateRepository: BatteryStateRepository
+
     @Inject
     lateinit var batteryUseCase: BatteryUseCase
+
     @Inject
     lateinit var notificationHandler: NotificationHandler
+
     @Inject
     lateinit var appSettingsRepository: AppSettingsRepository
 
@@ -57,22 +63,33 @@ class MonitorReceiver : BroadcastReceiver() {
 
             Intent.ACTION_POWER_DISCONNECTED -> batteryData.setChargingStatus(false)
 
-            in BLUETOOTH_STATE_ACTIONS, ACTION_SHOW_PAIRED_DEVICES_CHANGED -> {
+            in BLUETOOTH_STATE_ACTIONS -> {
                 batteryData.setPairedDevices(context)
             }
 
             else -> batteryData
         }
         goAsync(MainScope()) {
+            var shouldUpdateWidget = false
+            if (intent.action == ACTION_SHOW_PAIRED_DEVICES_CHANGED) {
+                val showPairedDevices = intent.getBooleanExtra(SHOW_PAIRED_DEVICES, true)
+                hideOrShowPairedDevices(context, showPairedDevices)
+                shouldUpdateWidget = true
+            }
+            handleThemeSetting(context, intent)
             if (updatedBatteryData != batteryData) {
                 batteryData = updatedBatteryData
-                updateBatteryWidget(context)
+                updateBatteryWidgetData(context)
                 handleNotification()
+                shouldUpdateWidget = true
+            }
+            if (shouldUpdateWidget) {
+                updateBatteryWidget(context)
             }
         }
     }
 
-    private suspend fun updateBatteryWidget(context: Context) = coroutineScope {
+    private suspend fun updateBatteryWidgetData(context: Context) = coroutineScope {
         withContext(Dispatchers.IO) {
             val savedBatteryData = context.batteryWidgetStore.getObject<BatteryData>(
                 BATTERY_PREFERENCES
@@ -83,6 +100,21 @@ class MonitorReceiver : BroadcastReceiver() {
             batteryStateRepository.saveExtraBatteryInformation()
             context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, batteryData)
         }
+    }
+
+    private suspend fun hideOrShowPairedDevices(
+        context: Context,
+        showPairedDevices: Boolean
+    ) {
+        withContext(Dispatchers.IO) {
+            context.batteryWidgetStore.setBoolean(
+                BatteryWidget.SHOW_PAIRED_DEVICES,
+                showPairedDevices
+            )
+        }
+    }
+
+    private suspend fun updateBatteryWidget(context: Context) {
         val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(BatteryWidget::class.java)
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
@@ -90,6 +122,19 @@ class MonitorReceiver : BroadcastReceiver() {
                 glanceId = glanceId,
             ) { _ ->
                 BatteryWidget().updateIfBatteryChanged(context, glanceId)
+            }
+        }
+    }
+
+    private suspend fun handleThemeSetting(context: Context, intent: Intent) {
+        if (intent.action == ACTION_SYNC_THEME) {
+            intent.getSerializable<ThemeType>(SYNC_THEME)?.let {
+                BatteryWidget().updateWidgetSetting(context) { copy(theme = it) }
+            }
+        }
+        if (intent.action == ACTION_SYNC_THEME_COLOR) {
+            intent.getSerializable<ThemeTypeColor>(SYNC_THEME_COLOR)?.let {
+                BatteryWidget().updateWidgetSetting(context) { copy(themeColor = it) }
             }
         }
     }
@@ -102,9 +147,13 @@ class MonitorReceiver : BroadcastReceiver() {
         }
     }
 
-
     companion object {
         const val ACTION_SHOW_PAIRED_DEVICES_CHANGED = "action_show_paired_devices_changed"
+        const val SHOW_PAIRED_DEVICES = "show_paired_devices"
+        const val ACTION_SYNC_THEME = "action_sync_theme"
+        const val SYNC_THEME = "sync_theme"
+        const val ACTION_SYNC_THEME_COLOR = "action_sync_theme_color"
+        const val SYNC_THEME_COLOR = "sync_theme_color"
     }
 }
 

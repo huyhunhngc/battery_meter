@@ -7,7 +7,7 @@ data class WidgetSetting(
     val appWidgetId: Int = -1,
     val isTransparent: Boolean = false,
     val width: Int = 1,
-    val height: Int = 1
+    val height: Int = 1,
 ) {
     enum class Type {
         Small, Tall, Wide, Large, Default, Square, FullWidex1;
@@ -39,5 +39,7 @@ data class WidgetSetting(
 
 @Serializable
 data class WidgetSettings(
-    val settings: Map<Int, WidgetSetting> = emptyMap()
+    val settings: Map<Int, WidgetSetting> = emptyMap(),
+    val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
+    val themeColor: ThemeTypeColor = ThemeTypeColor.System,
 )
