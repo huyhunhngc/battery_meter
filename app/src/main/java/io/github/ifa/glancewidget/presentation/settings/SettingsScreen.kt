@@ -24,6 +24,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SHOW_PAIRED_DEVICES_CHANGED
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SYNC_THEME
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SYNC_THEME_COLOR
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.SHOW_PAIRED_DEVICES
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.SYNC_THEME
+import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.SYNC_THEME_COLOR
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
@@ -115,12 +120,11 @@ internal fun SettingsScreen(
                     notificationSetting = uiState.notificationSetting,
                     onSetNotificationEnabled = onSetNotificationEnabled,
                     onSetShowPairedDevice = { enabled ->
-                        if (enabled) {
-                            context.findActivity()?.sendBroadcast(Intent().apply {
-                                `package` = context.packageName
-                                action = ACTION_SHOW_PAIRED_DEVICES_CHANGED
-                            })
-                        }
+                        context.findActivity()?.sendBroadcast(Intent().apply {
+                            `package` = context.packageName
+                            action = ACTION_SHOW_PAIRED_DEVICES_CHANGED
+                            putExtra(SHOW_PAIRED_DEVICES, enabled)
+                        })
                         onSetShowPairedDevice(enabled)
                     }
                 )
@@ -132,8 +136,22 @@ internal fun SettingsScreen(
             }
             item {
                 ThemeSetting(
-                    onSelectTheme = onSelectTheme,
-                    onSelectThemeColor = onSelectThemeColor,
+                    onSelectTheme = { theme ->
+                        onSelectTheme(theme)
+                        context.findActivity()?.sendBroadcast(Intent().apply {
+                            `package` = context.packageName
+                            action = ACTION_SYNC_THEME
+                            putExtra(SYNC_THEME, theme)
+                        })
+                    },
+                    onSelectThemeColor = { themeColor ->
+                        onSelectThemeColor(themeColor)
+                        context.findActivity()?.sendBroadcast(Intent().apply {
+                            `package` = context.packageName
+                            action = ACTION_SYNC_THEME_COLOR
+                            putExtra(SYNC_THEME_COLOR, themeColor)
+                        })
+                    },
                     uiState = uiState
                 )
             }

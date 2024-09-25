@@ -15,6 +15,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
+import androidx.glance.appwidget.updateAll
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
@@ -25,6 +26,7 @@ import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
 import io.github.ifa.glancewidget.glance.battery.component.FullWidthItem
 import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
+import io.github.ifa.glancewidget.glance.battery.ui.PixelBatteryTheme
 import io.github.ifa.glancewidget.glance.battery.utils.cornerRadiusCompat
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
@@ -49,11 +51,16 @@ class BatteryWidget : GlanceAppWidget() {
             val battery = remember(batteryJson) {
                 fromJson<BatteryData>(batteryJson)
             }
-            val setting = remember(widgetSettingsJson) {
-                val settings = fromJson<WidgetSettings>(widgetSettingsJson)
-                settings?.getSettingByGlance(context, id)
+            val settings = remember(widgetSettingsJson) {
+                fromJson<WidgetSettings>(widgetSettingsJson) ?: WidgetSettings()
             }
-            GlanceTheme {
+            val setting = remember(widgetSettingsJson) {
+                settings.getSettingByGlance(context, id)
+            }
+            PixelBatteryTheme(
+                themeTypeColor = settings.themeColor,
+                themeType = settings.theme
+            ) {
                 Content(battery = battery, setting = setting, showPairedDevices = showPairedDevices)
             }
         }
@@ -82,6 +89,17 @@ class BatteryWidget : GlanceAppWidget() {
             })
         store.setObject(WIDGET_PREFERENCES, newSettings)
         update(context, glanceId)
+    }
+
+    suspend fun updateWidgetSetting(
+        context: Context,
+        transformNewSettings: WidgetSettings.() -> WidgetSettings
+    ) {
+        val store = context.batteryWidgetStore
+        val savedSettings = store.getObject<WidgetSettings>(WIDGET_PREFERENCES) ?: WidgetSettings()
+        val newWidgetSettings = savedSettings.transformNewSettings()
+        store.setObject(WIDGET_PREFERENCES, newWidgetSettings)
+        updateAll(context)
     }
 
     @Composable
@@ -113,7 +131,7 @@ class BatteryWidget : GlanceAppWidget() {
                     if (isTransparent) {
                         ColorProvider(Color.Transparent)
                     } else {
-                        GlanceTheme.colors.background
+                        GlanceTheme.colors.widgetBackground
                     }
                 ),
         ) {

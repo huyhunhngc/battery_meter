@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.Serializable
 
 
 inline fun <reified T> fromJson(jsonString: String?): T? {
@@ -49,6 +51,23 @@ suspend inline fun <reified T> DataStore<Preferences>.getObject(
 ): T? {
     val string = data.map { it[key] }.firstOrNull() ?: return null
     return fromJson(string)
+}
+
+suspend inline fun  DataStore<Preferences>.setBoolean(
+    key: Preferences.Key<Boolean>, value: Boolean
+) {
+    edit {
+        it[key] = value
+    }
+}
+
+inline fun <reified T: Serializable> Intent.getSerializable(key: String?): T? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        getSerializableExtra(key, T::class.java)
+    } else {
+        @Suppress("DEPRECATION")
+        getSerializableExtra(key) as? T
+    }
 }
 
 val BluetoothPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
