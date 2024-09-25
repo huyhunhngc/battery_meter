@@ -11,7 +11,7 @@ plugins {
 val versionMajor = 1
 val versionMinor = 0
 val versionPatch = 1
-val versionIncrement = 5
+val versionIncrement = 6
 
 android {
     namespace = "io.github.ifa.glancewidget"
