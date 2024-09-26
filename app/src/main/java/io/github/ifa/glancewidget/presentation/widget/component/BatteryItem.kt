@@ -116,6 +116,7 @@ fun BatteryItem(
                             text = description,
                             modifier = Modifier.padding(end = 4.dp),
                             style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }

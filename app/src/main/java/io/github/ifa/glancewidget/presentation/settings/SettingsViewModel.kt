@@ -24,6 +24,7 @@ class SettingsViewModel @Inject constructor(
         val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
         val themeColor: ThemeTypeColor = ThemeTypeColor.System,
         val language: AppSettings.Language? = null,
+        val syncColorEnabled: Boolean = false,
         val notificationSetting: AppSettings.NotificationSetting = AppSettings.NotificationSetting(),
     ) {
         val colorScheme = if (!isSupportedDynamicColor() && themeColor == ThemeTypeColor.System) {

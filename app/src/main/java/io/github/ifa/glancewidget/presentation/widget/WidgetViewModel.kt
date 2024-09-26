@@ -12,7 +12,6 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.utils.buildUiState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +26,10 @@ class WidgetViewModel @Inject constructor(
 ) : ViewModel() {
     data class WidgetScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
-        val batteryOverall: BatteryDataWrapper
-    )
+        val batteryOverall: BatteryDataWrapper,
+    ) {
+        val showMeasurementWarning = batteryOverall.chargeDisChargeCurrent.showMeasurementWarning()
+    }
 
     private val _setupWidgetId = MutableStateFlow(INVALID_APPWIDGET_ID)
     private val _batteryDataWrapper = batteryUseCase.getBatteryWrapper().stateIn(

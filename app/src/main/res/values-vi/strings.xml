@@ -79,4 +79,8 @@
     <string name="subscription_terms">Đăng ký sẽ tự động gia hạn mỗi năm hoặc 3 tháng. Bạn có thể quản lý đăng ký của mình hoặc hủy bất cứ lúc nào trong cài đặt tài khoản Google > Thanh toán &amp; đăng ký</string>
     <string name="upgrade_to_pro">Nâng cấp lên Pro &amp; Premium</string>
     <string name="get_access_to_all_features">Truy cập tất cả các tính năng</string>
+    <string name="sync_color_scheme_with_widget">Đồng bộ với tiện ích</string>
+    <string name="sync_color_scheme_with_widget_description">Tiện ích sẽ đồng bộ với chủ đề và bảng màu của bạn</string>
+    <string name="measurement_in_progress">Đang đo</string>
+    <string name="measurement_in_progress_description"> Sẽ mất một thời gian để tính toán chính xác mức sử dụng pin.</string>
 </resources>
