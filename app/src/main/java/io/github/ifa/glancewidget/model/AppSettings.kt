@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class AppSettings(
     val theme: ThemeType = ThemeType.FOLLOW_SYSTEM,
     val themeColor: ThemeTypeColor = ThemeTypeColor.System,
+    val syncColorEnabled: Boolean = true,
     val language: Language = Language.DEFAULT,
     val notificationSetting: NotificationSetting = NotificationSetting()
 ) {

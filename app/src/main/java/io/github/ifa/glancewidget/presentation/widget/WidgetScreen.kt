@@ -47,6 +47,7 @@ import io.github.ifa.glancewidget.presentation.widget.component.BatteryExtraInfo
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
 import io.github.ifa.glancewidget.presentation.widget.component.ConnectedDevice
 import io.github.ifa.glancewidget.presentation.widget.component.DropdownMenu
+import io.github.ifa.glancewidget.presentation.widget.component.MeasurementWarning
 import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
@@ -137,6 +138,7 @@ private fun WidgetScreen(
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
+            batteryMeasurementWarning(uiState.showMeasurementWarning)
             batteryOverall(
                 batteryDataWrapper = uiState.batteryOverall,
                 onOpenWattsDetailScreen = onOpenWattsDetailScreen,
@@ -186,6 +188,16 @@ private fun Appbar(scrollBehavior: TopAppBarScrollBehavior, onClickAddWidget: ()
             )
         }
     )
+}
+
+private fun LazyListScope.batteryMeasurementWarning(
+    showMeasurementWarning: Boolean
+) {
+    item {
+        if (showMeasurementWarning) {
+            MeasurementWarning()
+        }
+    }
 }
 
 

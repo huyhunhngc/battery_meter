@@ -79,4 +79,8 @@
     <string name="subscription_terms">L\'abonnement sera renouvelé automatiquement tous les ans ou tous les 3 mois. Vous pouvez gérer votre abonnement ou l\'annuler à tout moment dans les paramètres de compte Google > Paiements et abonnements</string>
     <string name="upgrade_to_pro">Passer à Pro et Premium</string>
     <string name="get_access_to_all_features">Accéder à toutes les fonctionnalités</string>
+    <string name="sync_color_scheme_with_widget">Synchronisation avec le widget</string>
+    <string name="sync_color_scheme_with_widget_description">Le widget se synchronisera avec votre thème et votre palette de couleurs</string>
+    <string name="measurement_in_progress">Mesure en cours</string>
+    <string name="measurement_in_progress_description"> Il faudra un certain temps pour calculer avec précision l\'utilisation de la batterie.</string>
 </resources>

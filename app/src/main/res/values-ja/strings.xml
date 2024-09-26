@@ -79,4 +79,8 @@
     <string name="subscription_terms">サブスクリプションは1年または3か月ごとに自動的に更新されます。Googleアカウント設定 > お支払いとサブスクリプションでいつでもサブスクリプションを管理またはキャンセルできます。</string>
     <string name="upgrade_to_pro">Pro および Premium にアップグレード</string>
     <string name="get_access_to_all_features">すべての機能にアクセス</string>
+    <string name="sync_color_scheme_with_widget">ウィジェットと同期</string>
+    <string name="sync_color_scheme_with_widget_description">ウィジェットはテーマとカラースキームと同期します</string>
+    <string name="measurement_in_progress">測定中</string>
+    <string name="measurement_in_progress_description"> バッテリー使用量を正確に計算するには、しばらく時間がかかります。</string>
 </resources>

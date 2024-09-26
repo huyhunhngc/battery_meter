@@ -38,7 +38,7 @@ fun appLightColors(): Map<ThemeTypeColor, ColorProviders> {
             inverseOnSurface = ColorProvider(colorScheme.inverseOnSurface),
             inversePrimary = ColorProvider(colorScheme.inversePrimary),
             inverseSurface = ColorProvider(colorScheme.inverseSurface),
-            widgetBackground = ColorProvider(colorScheme.surfaceContainer)
+            widgetBackground = ColorProvider(colorScheme.surfaceContainerLow)
         )
     }
 }
@@ -73,7 +73,7 @@ fun appDarkColors(): Map<ThemeTypeColor, ColorProviders> {
             inverseOnSurface = ColorProvider(colorScheme.inverseOnSurface),
             inversePrimary = ColorProvider(colorScheme.inversePrimary),
             inverseSurface = ColorProvider(colorScheme.inverseSurface),
-            widgetBackground = ColorProvider(colorScheme.surfaceContainer)
+            widgetBackground = ColorProvider(colorScheme.surfaceContainerLow)
         )
     }
 }
@@ -137,8 +137,8 @@ fun dayNightColors(): Map<ThemeTypeColor, ColorProviders> {
             inversePrimary = ColorProvider(lightScheme.inversePrimary, darkScheme.inversePrimary),
             inverseSurface = ColorProvider(lightScheme.inverseSurface, darkScheme.inverseSurface),
             widgetBackground = ColorProvider(
-                lightScheme.surfaceContainer,
-                darkScheme.surfaceContainer
+                lightScheme.surfaceContainerLow,
+                darkScheme.surfaceContainerLow
             )
         )
     }
