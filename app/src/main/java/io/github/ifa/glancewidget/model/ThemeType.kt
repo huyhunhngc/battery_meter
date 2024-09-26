@@ -19,6 +19,13 @@ enum class ThemeTypeColor(val code: Int) {
     OliverGreen(0xFF63A002.toInt()),
     MintyOrange(0xFFFF9800.toInt());
 
+    val next: ThemeTypeColor
+        get() {
+            val index = ThemeTypeColor.entries.indexOf(this)
+            val nextIndex = (index + 1) % ThemeTypeColor.entries.size
+            return ThemeTypeColor.entries[nextIndex]
+        }
+
     companion object {
         fun entries(): List<ThemeTypeColor> {
             return if (isSupportedDynamicColor()) entries else entries.filter { it != System }

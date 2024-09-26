@@ -66,4 +66,25 @@
     <string name="need_to_allow_notification">Need to allow notifications</string>
     <string name="go_to_app_settings">Go to App settings</string>
     <string name="power_monitor">Power Monitor</string>
+    <string name="premium">Premium</string>
+    <string name="standard">Standard</string>
+    <string name="lifetime_plan">Lifetime Plan</string>
+    <string name="lifetime_plan_price">%s/once</string>
+    <string name="yearly_plan">Yearly Plan</string>
+    <string name="yearly_plan_price">%s/year</string>
+    <string name="monthly_plan_price">%s/year</string>
+    <string name="choose_your_plan">Choose your plan</string>
+    <string name="free_trial_description">3 day free-trial for new subscribers. \nCancel anytime.</string>
+    <string name="change_your_theme">Choose the app theme style with the color you want.</string>
+    <string name="change_your_theme_sync_widget">Sync app colors with widget.</string>
+    <string name="floating_battery_monitor">Floating battery monitors.</string>
+    <string name="history_stats_monitor">History stats monitor.</string>
+    <string name="more_widget_style">More widget style.</string>
+    <string name="subscription_terms">Subscription will renew automatically every year or 3 months. You can manage your subscription or cancel anytime in Google account settings > Payments &amp; subscriptions</string>
+    <string name="upgrade_to_pro">Upgrade to Pro &amp; Premium</string>
+    <string name="get_access_to_all_features">Get access to all features</string>
+    <string name="sync_color_scheme_with_widget">Sync with widget</string>
+    <string name="sync_color_scheme_with_widget_description">Widget will sync with your theme and color scheme.</string>
+    <string name="measurement_in_progress">Measurement in progress</string>
+    <string name="measurement_in_progress_description"> It will take some time to accurately calculate the battery usage.</string>
 </resources>

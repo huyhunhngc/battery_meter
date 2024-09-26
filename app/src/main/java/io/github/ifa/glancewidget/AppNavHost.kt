@@ -26,6 +26,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import io.github.ifa.glancewidget.presentation.about.aboutScreen
 import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
+import io.github.ifa.glancewidget.presentation.gopro.goPremiumScreen
+import io.github.ifa.glancewidget.presentation.gopro.goPremiumScreenRoute
 import io.github.ifa.glancewidget.presentation.main.mainTabScreens
 import io.github.ifa.glancewidget.presentation.settings.settingsScreen
 import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.navigateToWattsDetailScreen
@@ -51,6 +53,7 @@ fun AppNavHost(
                 modifier = modifier,
             ) {
                 mainScreen(navController)
+                goPremiumScreen(onNavigationIconClick = navController::popBackStack)
                 aboutScreen(
                     onNavigationIconClick = navController::popBackStack,
                     onExternalUrlClick = { navigateUrl(it) }
@@ -68,12 +71,19 @@ private fun NavGraphBuilder.mainScreen(
 ) {
     mainTabScreens { navMainController, paddingValues ->
         widgetScreen(onOpenWattsDetailScreen = navController::navigateToWattsDetailScreen)
-        settingsScreen(onOpenAboutScreen = navController::navigateToAboutScreen)
+        settingsScreen(
+            onOpenAboutScreen = navController::navigateToAboutScreen,
+            onOpenGoPremiumScreen = navController::navigateToGoPremiumScreen
+        )
     }
 }
 
 fun NavController.navigateToAboutScreen() {
     navigate(aboutScreenRoute)
+}
+
+fun NavController.navigateToGoPremiumScreen() {
+    navigate(goPremiumScreenRoute)
 }
 
 @Composable
