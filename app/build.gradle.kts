@@ -11,7 +11,7 @@ plugins {
 val versionMajor = 1
 val versionMinor = 0
 val versionPatch = 1
-val versionIncrement = 6
+val versionIncrement = 7
 
 android {
     namespace = "io.github.ifa.glancewidget"
@@ -103,6 +103,8 @@ dependencies {
     implementation(libs.androidx.work.multiprocess)
     implementation(libs.androidx.hilt.work)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.billing)
+    implementation(libs.billing.ktx)
     kapt(libs.androidx.hilt.compiler)
     kapt(libs.daggerHiltAndroidCompiler)
     kapt(libs.daggerHiltCompiler)

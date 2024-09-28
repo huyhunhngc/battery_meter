@@ -65,9 +65,9 @@
     <string name="premium">Cao cấp</string>
     <string name="standard">Tiêu chuẩn</string>
     <string name="lifetime_plan">Gói trọn đời</string>
-    <string name="lifetime_plan_price">%s/once</string>
+    <string name="lifetime_plan_price">%s/vĩnh viễn</string>
     <string name="yearly_plan">Gói hàng năm</string>
-    <string name="yearly_plan_price">%s/year</string>
+    <string name="yearly_plan_price">%s/năm</string>
     <string name="monthly_plan_price">%s/year</string>
     <string name="choose_your_plan">Chọn gói của bạn</string>
     <string name="free_trial_description">Dùng thử miễn phí 3 ngày cho người đăng ký mới. \nHủy bất cứ lúc nào.</string>
