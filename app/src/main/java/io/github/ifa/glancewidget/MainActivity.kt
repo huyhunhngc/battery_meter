@@ -1,8 +1,6 @@
 package io.github.ifa.glancewidget
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -11,33 +9,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.background.cancelBatteryMonitorRequest
 import io.github.ifa.glancewidget.background.enqueueBatteryMonitorRequest
 import io.github.ifa.glancewidget.broadcast.MonitorReceiver
 import io.github.ifa.glancewidget.di.RepositoryProvider
-import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
-import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
-import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.utils.AppPermissions
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
-import io.github.ifa.glancewidget.utils.NotificationPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var repositoryProvider: RepositoryProvider
+    private val viewModel: MainViewModel by viewModels()
 
     @Inject
-    lateinit var appSettingsRepository: AppSettingsRepository
+    lateinit var repositoryProvider: RepositoryProvider
 
     private val monitorReceiver by lazy { MonitorReceiver() }
 
@@ -73,7 +65,7 @@ class MainActivity : ComponentActivity() {
             } else {
                 registerMonitorReceiver(BATTERY_ACTIONS)
             }
-            saveShowPairedDevicesSetting(isGrantedBluetooth)
+            viewModel.saveShowPairedDevicesSetting(isGrantedBluetooth)
         }
 
     private fun registerMonitorReceiver(actions: List<String>) {
@@ -84,13 +76,6 @@ class MainActivity : ComponentActivity() {
             registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(monitorReceiver, filter)
-        }
-    }
-
-
-    private fun saveShowPairedDevicesSetting(showPairedDevices: Boolean) {
-        lifecycleScope.launch {
-            appSettingsRepository.saveShowPairedDevicesSetting(showPairedDevices)
         }
     }
 
