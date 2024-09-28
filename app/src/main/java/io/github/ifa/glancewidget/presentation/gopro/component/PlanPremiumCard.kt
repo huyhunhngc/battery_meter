@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -45,10 +46,13 @@ import kotlin.math.absoluteValue
 fun PlanPremiumCard(
     pagerState: PagerState,
     page: Int,
-    onSelectYearlyPlan: () -> Unit = {},
-    onSelectLifetimePlan: () -> Unit = {}
+    onSelectYearlyPlan: (String) -> Unit = {},
+    onSelectLifetimePlan: (String) -> Unit = {}
 ) {
-    val plan = LocalPremiumPlan.current[page]
+    val premiumPlanData = LocalPremiumPlan.current
+    val plan = remember(page, premiumPlanData) {
+        premiumPlanData[page]
+    }
     GradientCard(pagerState = pagerState, page = page) {
         Title(text = stringResource(id = plan.title))
         Features(features = plan.features)
@@ -58,14 +62,20 @@ fun PlanPremiumCard(
             description = stringResource(
                 id = plan.primaryAction.description, plan.primaryAction.price
             ),
-            onClick = onSelectYearlyPlan
+            enabled = plan.primaryAction.planId.isNotEmpty(),
+            onClick = {
+                onSelectYearlyPlan(plan.primaryAction.planId)
+            }
         )
         SecondaryButton(
             text = stringResource(id = plan.secondaryAction.text),
             description = stringResource(
                 id = plan.secondaryAction.description, plan.secondaryAction.price
             ),
-            onClick = onSelectLifetimePlan
+            enabled = plan.secondaryAction.planId.isNotEmpty(),
+            onClick = {
+                onSelectLifetimePlan(plan.secondaryAction.planId)
+            }
         )
     }
 }
@@ -173,12 +183,13 @@ private fun Features(features: List<PremiumPlanData.Feature>) {
 }
 
 @Composable
-private fun PrimaryButton(text: String, description: String, onClick: () -> Unit) {
+private fun PrimaryButton(text: String, description: String, enabled: Boolean, onClick: () -> Unit) {
     val colorScheme = LocalDynamicAnimatedTheme.current
     val primaryColor by animateColor(colorScheme.primary)
     val onPrimaryColor by animateColor(colorScheme.onPrimary)
     Button(
         modifier = Modifier.fillMaxWidth(),
+        enabled = enabled,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             contentColor = onPrimaryColor,
@@ -203,16 +214,17 @@ private fun PrimaryButton(text: String, description: String, onClick: () -> Unit
 }
 
 @Composable
-private fun SecondaryButton(text: String, description: String, onClick: () -> Unit) {
+private fun SecondaryButton(text: String, description: String, enabled: Boolean, onClick: () -> Unit) {
     val colorScheme = LocalDynamicAnimatedTheme.current
     val primaryColor by animateColor(colorScheme.primary)
     OutlinedButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = primaryColor
         ),
-        border = BorderStroke(1.dp, primaryColor)
+        border = BorderStroke(1.5.dp, primaryColor)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
