@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.model
+package io.github.ifa.glancewidget.model.premium
 
 data class PremiumBillingProduct(
     val productId: String,
