@@ -14,9 +14,7 @@ class PurchaseListener @Inject constructor() {
     val onPurchasesUpdated = PurchasesUpdatedListener { billingResult, purchases ->
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             listeners.forEach { listener ->
-                purchases.forEach { purchase ->
-                    listener.onPurchase(purchase)
-                }
+                listener.onPurchase(purchases)
             }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             listeners.forEach { listener ->
@@ -39,7 +37,7 @@ class PurchaseListener @Inject constructor() {
 }
 
 interface OnPurchaseListener {
-    fun onPurchase(purchase: Purchase)
+    fun onPurchase(purchases: List<Purchase>)
     fun onPurchaseError(billingResult: BillingResult)
     fun onPurchaseCancelled()
 }
