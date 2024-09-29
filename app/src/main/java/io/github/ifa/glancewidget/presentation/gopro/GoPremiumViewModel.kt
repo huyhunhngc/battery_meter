@@ -13,6 +13,7 @@ import io.github.ifa.glancewidget.domain.PlayBillingRepository
 import io.github.ifa.glancewidget.utils.buildUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -25,8 +26,8 @@ class GoPremiumViewModel @Inject constructor(
 ) : ViewModel() {
     private val onPurchaseListener by lazy {
         object : OnPurchaseListener {
-            override fun onPurchase(purchase: Purchase) {
-                handlePurchase(purchase)
+            override fun onPurchase(purchases: List<Purchase>) {
+                handlePurchase(purchases)
             }
 
             override fun onPurchaseError(billingResult: BillingResult) {
@@ -57,11 +58,12 @@ class GoPremiumViewModel @Inject constructor(
 
     private val _purchaseState = MutableStateFlow(GoPremiumUiState.PurchaseState.IDLE)
     private val _premiumProducts =
-        playBillingRepository.premiumProductsFlow().map { it.toPremiumPlanData() }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = PremiumPlan.premiumPlans
-        )
+        playBillingRepository.premiumProductsFlow().map { it.toPremiumPlanData() }.catch { }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = PremiumPlan.premiumPlans
+            )
 
     val uiState =
         buildUiState(_premiumProducts, _purchaseState) { premiumPlanData, purchaseState ->
@@ -71,7 +73,7 @@ class GoPremiumViewModel @Inject constructor(
             )
         }
 
-    fun handlePurchase(purchase: Purchase) {
+    fun handlePurchase(purchases: List<Purchase>) {
 
     }
 

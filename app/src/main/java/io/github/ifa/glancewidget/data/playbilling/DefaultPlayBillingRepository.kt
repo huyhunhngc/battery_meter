@@ -1,6 +1,5 @@
 package io.github.ifa.glancewidget.data.playbilling
 
-import android.util.Log
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -28,7 +27,6 @@ class DefaultPlayBillingRepository(
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.d(TAG, "onBillingSetupFinished: success")
                     continuation.resume(true)
                 }
             }
@@ -39,9 +37,21 @@ class DefaultPlayBillingRepository(
         })
     }
 
-    private fun retryBillingServiceConnection(): Boolean {
-        // TODO
-        return false
+    private fun retryBillingServiceConnection(tryCount: Int = 1): Boolean {
+        if (tryCount >= 3) return false
+        var isFinished = false
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingServiceDisconnected() {
+                isFinished = retryBillingServiceConnection(tryCount + 1)
+            }
+
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    isFinished = true
+                }
+            }
+        })
+        return isFinished
     }
 
     override suspend fun processPurchases(
