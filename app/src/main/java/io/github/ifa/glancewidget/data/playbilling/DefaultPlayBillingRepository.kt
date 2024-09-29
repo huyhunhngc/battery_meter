@@ -1,15 +1,17 @@
 package io.github.ifa.glancewidget.data.playbilling
 
-import android.util.Log
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.queryProductDetails
+import com.android.billingclient.api.queryPurchaseHistory
 import io.github.ifa.glancewidget.domain.PlayBillingRepository
-import io.github.ifa.glancewidget.model.PremiumBillingProduct
+import io.github.ifa.glancewidget.model.premium.HistoryPurchaseRecord
+import io.github.ifa.glancewidget.model.premium.PremiumBillingProduct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +30,6 @@ class DefaultPlayBillingRepository(
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.d(TAG, "onBillingSetupFinished: success")
                     continuation.resume(true)
                 }
             }
@@ -39,9 +40,21 @@ class DefaultPlayBillingRepository(
         })
     }
 
-    private fun retryBillingServiceConnection(): Boolean {
-        // TODO
-        return false
+    private fun retryBillingServiceConnection(tryCount: Int = 1): Boolean {
+        if (tryCount >= 3) return false
+        var isFinished = false
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingServiceDisconnected() {
+                isFinished = retryBillingServiceConnection(tryCount + 1)
+            }
+
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    isFinished = true
+                }
+            }
+        })
+        return isFinished
     }
 
     override suspend fun processPurchases(
@@ -104,6 +117,26 @@ class DefaultPlayBillingRepository(
 
     override suspend fun premiumBillingProducts(): List<PremiumBillingProduct> {
         return queryInAppProducts() + querySubscriptions()
+    }
+
+    override suspend fun historyPurchaseRecords(): List<HistoryPurchaseRecord> {
+        val inAppPurchaseParams = QueryPurchaseHistoryParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+        val subscriptionPurchaseParams = QueryPurchaseHistoryParams.newBuilder()
+            .setProductType(BillingClient.ProductType.SUBS)
+            .build()
+        val inAppPurchaseResult = withContext(Dispatchers.IO) {
+            val purchaseHistoryResult = billingClient.queryPurchaseHistory(inAppPurchaseParams)
+            purchaseHistoryResult.purchaseHistoryRecordList ?: emptyList()
+        }
+        val subscriptionPurchaseResult = withContext(Dispatchers.IO) {
+            val purchaseHistoryResult = billingClient.queryPurchaseHistory(subscriptionPurchaseParams)
+            purchaseHistoryResult.purchaseHistoryRecordList ?: emptyList()
+        }
+        return (inAppPurchaseResult + subscriptionPurchaseResult).map {
+            HistoryPurchaseRecord(it.purchaseToken)
+        }
     }
 
     override fun premiumProductsFlow(): Flow<List<PremiumBillingProduct>> {
