@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.model.PremiumBillingProduct
+import io.github.ifa.glancewidget.model.premium.PremiumBillingProduct
 
 internal val LocalPremiumPlan = compositionLocalOf<List<PremiumPlanData>> { listOf() }
 

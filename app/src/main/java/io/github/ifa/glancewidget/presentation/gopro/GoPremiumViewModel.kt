@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.data.playbilling.OnPurchaseListener
 import io.github.ifa.glancewidget.data.playbilling.PurchaseListener
 import io.github.ifa.glancewidget.domain.PlayBillingRepository
+import io.github.ifa.glancewidget.domain.PremiumFeatureUseCase
 import io.github.ifa.glancewidget.utils.buildUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GoPremiumViewModel @Inject constructor(
     private val playBillingRepository: PlayBillingRepository,
+    private val premiumFeatureUseCase: PremiumFeatureUseCase,
     private val purchaseListener: PurchaseListener
 ) : ViewModel() {
     private val onPurchaseListener by lazy {
@@ -74,7 +76,9 @@ class GoPremiumViewModel @Inject constructor(
         }
 
     fun handlePurchase(purchases: List<Purchase>) {
-
+        viewModelScope.launch {
+            premiumFeatureUseCase.handlePurchases(purchases)
+        }
     }
 
     fun processSubscription(
