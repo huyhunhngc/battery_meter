@@ -1,10 +1,12 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.text.Layout
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
@@ -21,10 +23,13 @@ import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.copyColor
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
+import io.github.ifa.glancewidget.R
 
 @Composable
 internal fun rememberMarker(): CartesianMarker {
+    val typeface = LocalContext.current.resources.getFont(R.font.googlesansregular)
     val label = rememberTextComponent(
+        typeface = Typeface.create(typeface, Typeface.BOLD),
         color = MaterialTheme.colorScheme.primary,
         textAlignment = Layout.Alignment.ALIGN_CENTER,
         padding = dimensions(8.dp, 4.dp),
