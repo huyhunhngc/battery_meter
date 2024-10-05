@@ -16,7 +16,8 @@ data class WidgetSetting(
             return when (this) {
                 Small -> 1
                 FullWidex1, Square -> 2
-                Tall, Wide, Large -> 3
+                Wide -> 3
+                Tall, Large -> 4
                 Default -> 1
             }
         }

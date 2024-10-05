@@ -260,7 +260,7 @@ private fun TemperatureMonitor(
             modifier = Modifier
                 .padding(8.dp)
                 .size(24.dp)
-                .align(Alignment.BottomEnd)
+                .align(Alignment.TopEnd)
         )
     }
 }
@@ -306,7 +306,7 @@ private fun VoltageMonitor(
             modifier = Modifier
                 .padding(8.dp)
                 .size(24.dp)
-                .align(Alignment.BottomEnd)
+                .align(Alignment.TopEnd)
         )
     }
 }

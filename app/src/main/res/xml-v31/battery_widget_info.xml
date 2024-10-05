@@ -4,6 +4,7 @@
     android:minWidth="180dp"
     android:minHeight="50dp"
     android:maxHeight="240dp"
+    android:maxResizeHeight="240dp"
     android:updatePeriodMillis="1000"
     android:configure="io.github.ifa.glancewidget.MainActivity"
     android:resizeMode="horizontal|vertical">

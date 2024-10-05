@@ -47,7 +47,7 @@ class BatteryWidget : GlanceAppWidget() {
             val data by batteryWidgetStore.data.collectAsState(initial)
             val widgetSettingsJson by rememberUpdatedState(data[WIDGET_PREFERENCES])
             val batteryJson by rememberUpdatedState(data[BATTERY_PREFERENCES])
-            val showPairedDevices by rememberUpdatedState(data[SHOW_PAIRED_DEVICES] ?: true)
+            val showPairedDevices by rememberUpdatedState(data[SHOW_PAIRED_DEVICES] ?: false)
             val battery = remember(batteryJson) {
                 fromJson<BatteryData>(batteryJson)
             }
@@ -104,7 +104,7 @@ class BatteryWidget : GlanceAppWidget() {
 
     @Composable
     private fun Content(
-        battery: BatteryData?, setting: WidgetSetting?, showPairedDevices: Boolean = true
+        battery: BatteryData?, setting: WidgetSetting?, showPairedDevices: Boolean = false
     ) {
         val percent = battery?.myDevice?.level ?: 100
         val isCharging = battery?.myDevice?.isCharging ?: false
