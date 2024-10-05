@@ -288,7 +288,7 @@ private fun VoltageMonitor(
     ) {
         LineChart(
             modelProducer = modelProducer,
-            modifier = Modifier.padding(top = 48.dp),
+            modifier = Modifier.padding(top = 32.dp),
             minY = 1.0,
             maxY = 5.0
         )
@@ -318,14 +318,15 @@ private fun LineChart(
     minY: Double,
     maxY: Double
 ) {
-    val lineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
+    val marker = rememberMarker()
+    val lineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f)
     CartesianChartHost(
         chart =
         rememberCartesianChart(
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
                     LineCartesianLayer.rememberLine(
-                        remember { LineCartesianLayer.LineFill.single(fill(lineColor)) }
+                        remember(lineColor) { LineCartesianLayer.LineFill.single(fill(lineColor)) }
                     )
                 ),
                 rangeProvider = remember {
@@ -333,6 +334,7 @@ private fun LineChart(
                 },
                 pointSpacing = 1.dp
             ),
+            marker = marker,
         ),
         modelProducer = modelProducer,
         modifier = modifier,
