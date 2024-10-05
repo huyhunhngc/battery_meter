@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,6 +41,7 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import io.github.ifa.glancewidget.R
@@ -126,7 +128,7 @@ fun BatteryOverall(
         TemperatureMonitor(
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth(0.5f),
+                .fillMaxWidth(0.48f),
             temperature = myDevice.temperature,
             temperatureTracking = chartTrackingData.temperatures
         )
@@ -235,10 +237,15 @@ private fun TemperatureMonitor(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .height(120.dp)
+            .aspectRatio(1.0f)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
-        LineChart(modelProducer = modelProducer, modifier = Modifier.padding(top = 48.dp))
+        LineChart(
+            modelProducer = modelProducer,
+            modifier = Modifier.padding(top = 32.dp),
+            minY = 25.0,
+            maxY = 50.0
+        )
         Text(
             text = temperature.formatTemperature(),
             modifier = Modifier.padding(16.dp),
@@ -276,10 +283,15 @@ private fun VoltageMonitor(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .height(120.dp)
+            .aspectRatio(1.0f)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
-        LineChart(modelProducer = modelProducer, modifier = Modifier.padding(top = 48.dp))
+        LineChart(
+            modelProducer = modelProducer,
+            modifier = Modifier.padding(top = 48.dp),
+            minY = 1.0,
+            maxY = 5.0
+        )
         Text(
             text = String.format("%.2f", voltage) + " V",
             modifier = Modifier.padding(16.dp),
@@ -300,7 +312,12 @@ private fun VoltageMonitor(
 }
 
 @Composable
-private fun LineChart(modelProducer: CartesianChartModelProducer, modifier: Modifier) {
+private fun LineChart(
+    modelProducer: CartesianChartModelProducer,
+    modifier: Modifier,
+    minY: Double,
+    maxY: Double
+) {
     val lineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     CartesianChartHost(
         chart =
@@ -311,7 +328,10 @@ private fun LineChart(modelProducer: CartesianChartModelProducer, modifier: Modi
                         remember { LineCartesianLayer.LineFill.single(fill(lineColor)) }
                     )
                 ),
-                pointSpacing = 4.dp
+                rangeProvider = remember {
+                    CartesianLayerRangeProvider.fixed(minY = minY, maxY = maxY)
+                },
+                pointSpacing = 1.dp
             ),
         ),
         modelProducer = modelProducer,
