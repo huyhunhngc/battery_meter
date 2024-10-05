@@ -40,6 +40,7 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
+import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.widget.component.AddWidgetBottomSheet
@@ -141,6 +142,7 @@ private fun WidgetScreen(
             batteryMeasurementWarning(uiState.showMeasurementWarning)
             batteryOverall(
                 batteryDataWrapper = uiState.batteryOverall,
+                chartTrackingData = uiState.chartTrackingData,
                 onOpenWattsDetailScreen = onOpenWattsDetailScreen,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
@@ -203,6 +205,7 @@ private fun LazyListScope.batteryMeasurementWarning(
 
 private fun LazyListScope.batteryOverall(
     batteryDataWrapper: BatteryDataWrapper,
+    chartTrackingData: ChartRecord,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -210,6 +213,7 @@ private fun LazyListScope.batteryOverall(
         BatteryOverall(
             modifier = modifier,
             batteryDataWrapper = batteryDataWrapper,
+            chartTrackingData = chartTrackingData,
             onOpenWattsDetailScreen = onOpenWattsDetailScreen
         )
     }

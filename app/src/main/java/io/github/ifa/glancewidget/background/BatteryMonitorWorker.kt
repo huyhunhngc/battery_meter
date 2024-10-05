@@ -35,16 +35,20 @@ class BatteryMonitorWorker @AssistedInject constructor(
     private suspend fun startRecording() = coroutineScope {
         launch {
             combine(
-                batteryStateRepository.batteryFlow().map { it.myDevice.isCharging }
+                batteryStateRepository.batteryFlow().map { it.myDevice }
                     .distinctUntilChanged(),
                 batteryStateRepository.extraBatteryFlow().distinctUntilChanged { old, new ->
                     old.chargeCurrent == new.chargeCurrent
                 }
-            ) { isCharging, extraBatteryInfo ->
-                Pair(isCharging, extraBatteryInfo)
-            }.conflate().onEach { delay(5000) }.collect { (isCharging, extraBatteryInfo) ->
+            ) { myDevice, extraBatteryInfo ->
+                Pair(myDevice, extraBatteryInfo)
+            }.conflate().onEach { delay(5000) }.collect { (myDevice, extraBatteryInfo) ->
+                batteryStateRepository.saveHistoryForChart(
+                    myDevice.temperature.temperature,
+                    myDevice.voltage
+                )
                 batteryStateRepository.saveChargeCurrent(
-                    extraBatteryInfo.getChargeDisChargeCurrent(isCharging)
+                    extraBatteryInfo.getChargeDisChargeCurrent(myDevice.isCharging)
                 )
             }
         }
