@@ -15,4 +15,5 @@ object Constants {
     const val IFA_LICENSES_URL = "https://www.termsfeed.com/live/82a28b83-ca15-4847-a3f4-6b85508f6060"
     const val DEFAULT_MAX_WATTS_CHARGE = 60.0f
     const val DEFAULT_MAX_COLLECT_CURRENT = 500
+    const val NUMBER_OF_CYCLES_PATH = "/sys/class/power_supply/battery/cycle_count"
 }

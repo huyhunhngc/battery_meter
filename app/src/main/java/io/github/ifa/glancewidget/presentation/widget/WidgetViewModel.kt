@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.domain.BatteryUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
+import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.utils.buildUiState
 import kotlinx.coroutines.Dispatchers
@@ -27,11 +28,17 @@ class WidgetViewModel @Inject constructor(
     data class WidgetScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryOverall: BatteryDataWrapper,
+        val chartTrackingData: ChartRecord,
     ) {
         val showMeasurementWarning = batteryOverall.chargeDisChargeCurrent.showMeasurementWarning()
     }
 
     private val _setupWidgetId = MutableStateFlow(INVALID_APPWIDGET_ID)
+    private val _chartTrackingData = batteryStateRepository.chartRecordFlow().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ChartRecord()
+    )
     private val _batteryDataWrapper = batteryUseCase.getBatteryWrapper().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -39,9 +46,9 @@ class WidgetViewModel @Inject constructor(
     )
 
     val uiState: StateFlow<WidgetScreenUiState> = buildUiState(
-        _setupWidgetId, _batteryDataWrapper
-    ) { setupWidgetId, batteryDataWrapper ->
-        WidgetScreenUiState(setupWidgetId, batteryDataWrapper)
+        _setupWidgetId, _batteryDataWrapper, _chartTrackingData
+    ) { setupWidgetId, batteryDataWrapper, chartTrackingData ->
+        WidgetScreenUiState(setupWidgetId, batteryDataWrapper, chartTrackingData)
     }
 
     fun hideBottomSheet() {

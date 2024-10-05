@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
+import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.utils.Constants.DEFAULT_MAX_COLLECT_CURRENT
@@ -57,6 +58,10 @@ class DefaultBatteryStateRepository(
         return batteryDataStore.getChargeCurrentFlow()
     }
 
+    override fun chartRecordFlow(): Flow<ChartRecord> {
+        return batteryDataStore.getChartRecordFlow()
+    }
+
     override suspend fun saveExtraBatteryInformation() {
         val extraBatteryInfo = context.getExtraBatteryInformation()
         batteryDataStore.saveExtraBatteryInformation(extraBatteryInfo)
@@ -74,7 +79,6 @@ class DefaultBatteryStateRepository(
             })
         batteryDataStore.saveWidgetSettings(newSettings)
     }
-
 
     override suspend fun saveChargeCurrent(chargeCurrent: Int) {
         val chargeDisChargeCurrent = batteryDataStore.getChargeCurrent()
@@ -117,6 +121,28 @@ class DefaultBatteryStateRepository(
             }
         }
         batteryDataStore.saveChargeCurrent(newChargeDisChargeCurrent)
+    }
+
+    override suspend fun saveHistoryForChart(temperature: Float, voltage: Float) {
+        val chartHistory = batteryDataStore.getChartRecord()
+        val temperatures = chartHistory.temperatures.toMutableList()
+        val voltages = chartHistory.voltages.toMutableList()
+        var shouldSave = false
+        if (temperature != temperatures.lastOrNull()) {
+            shouldSave = true
+            temperatures.add(temperature)
+        }
+        if (voltage != voltages.lastOrNull()) {
+            shouldSave = true
+            voltages.add(voltage)
+        }
+        if (!shouldSave) return
+        batteryDataStore.saveChartRecord(
+            ChartRecord(
+                temperatures = temperatures.takeLast(100),
+                voltages = voltages.takeLast(100)
+            )
+        )
     }
 }
 

@@ -7,6 +7,7 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.WIDGET_PREFERENCES
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
+import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.model.WidgetSettings
 import io.github.ifa.glancewidget.utils.fromJson
@@ -48,6 +49,22 @@ class BatteryDataStore(
         dataStore.setObject(WIDGET_PREFERENCES, widgetSettings)
     }
 
+    fun getChartRecordFlow(): Flow<ChartRecord> {
+        return dataStore.data.map { preferences ->
+            fromJson<ChartRecord>(preferences[CHART_RECORD_PREFERENCES])
+        }.map {
+            it ?: ChartRecord()
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun saveChartRecord(chartRecord: ChartRecord) {
+        dataStore.setObject(CHART_RECORD_PREFERENCES, chartRecord)
+    }
+
+    suspend fun getChartRecord(): ChartRecord {
+        return dataStore.getObject<ChartRecord>(CHART_RECORD_PREFERENCES) ?: ChartRecord()
+    }
+
     fun getChargeCurrentFlow(): Flow<ChargeDisChargeCurrent> {
         return dataStore.data.map { preferences ->
             fromJson<ChargeDisChargeCurrent>(preferences[CHARGE_CURRENT_PREFERENCES])
@@ -68,5 +85,6 @@ class BatteryDataStore(
     companion object {
         val EXTRA_BATTERY_PREFERENCES = stringPreferencesKey("extraBatteryData")
         val CHARGE_CURRENT_PREFERENCES = stringPreferencesKey("chargeCurrentData")
+        val CHART_RECORD_PREFERENCES = stringPreferencesKey("chartRecordData")
     }
 }
