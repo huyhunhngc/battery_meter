@@ -5,11 +5,9 @@ import android.app.LocaleManager
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
-import android.content.res.Configuration
 import android.os.BatteryManager
 import android.os.Build
 import android.os.LocaleList
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -19,7 +17,6 @@ import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.Constants.MAX_DESIGN_CAPACITY
 import io.github.ifa.glancewidget.utils.Constants.MIN_DESIGN_CAPACITY
-import java.util.Locale
 
 @SuppressLint("MissingPermission")
 fun Context.getPairedDevices(): List<BonedDevice> {
@@ -50,28 +47,25 @@ fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
         propertyChargeCounter / 1000
     }
     val capacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-    val fullChargeCapacity = chargeCounter.toFloat() / capacity.toFloat() * 100f
-    val chargingTimeRemaining = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        batteryManager.computeChargeTimeRemaining() / 1000
-    } else {
-        -1
-    }
 
+    val fullChargeCapacity = chargeCounter.toFloat() / capacity.toFloat() * 100f
+    // micro amp to millis amp
     val chargeCurrent = batteryManager.getIntProperty(
         BatteryManager.BATTERY_PROPERTY_CURRENT_NOW
-    ) / 1_000 // micro to millis
+    ) / 1_000
+    val designCapacity = getDesignCapacity()
 
     return ExtraBatteryInfo(
-        capacity = getDesignCapacity(),
-        fullChargeCapacity = fullChargeCapacity.roundToNearestHundred(),
+        capacity = designCapacity,
+        fullChargeCapacity = fullChargeCapacity.roundToNearestHundred(designCapacity),
         chargeCounter = chargeCounter,
-        chargingTimeRemaining = chargingTimeRemaining,
         chargeCurrent = chargeCurrent
     )
 }
 
-fun Float.roundToNearestHundred(): Int {
-    return (this.toInt() + 50) / 100 * 100
+fun Float.roundToNearestHundred(capacity: Int): Int {
+    val rounded = (this.toInt() + 50) / 100 * 100
+    return minOf(rounded, capacity)
 }
 
 @SuppressLint("PrivateApi")
@@ -85,7 +79,8 @@ private fun Context.getDesignCapacity(): Int {
     ).invoke(mPowerProfile) as Double).toInt()
 
     return when {
-        designCapacity == 0 || designCapacity < MIN_DESIGN_CAPACITY || designCapacity > MAX_DESIGN_CAPACITY -> MIN_DESIGN_CAPACITY
+        designCapacity == 0 || designCapacity < MIN_DESIGN_CAPACITY
+                || designCapacity > MAX_DESIGN_CAPACITY -> MIN_DESIGN_CAPACITY
         else -> designCapacity
     }
 }

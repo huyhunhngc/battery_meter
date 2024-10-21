@@ -28,8 +28,8 @@ data class ExtraBatteryInfo(
             .coerceAtLeast(0)
     }
 
-    fun powerInWatt(voltage: Float, isCharging: Boolean = false): Double {
-        return if (isCharging) abs(chargeCurrent.toDouble() / 1000.0 * voltage.toDouble()) else 0.0
+    fun powerInWatt(voltage: Float): Double {
+        return abs(chargeCurrent.toDouble() / 1000.0 * voltage.toDouble())
     }
 
     fun getChargeDisChargeCurrent(isCharging: Boolean) =

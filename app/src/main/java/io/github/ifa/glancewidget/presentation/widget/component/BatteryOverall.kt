@@ -11,17 +11,18 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,24 +34,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BatteryOverall(
     modifier: Modifier = Modifier,
     batteryDataWrapper: BatteryDataWrapper,
+    chartTrackingData: ChartRecord,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit = {}
 ) {
     val myDevice = batteryDataWrapper.batteryData.myDevice
     val extraBatteryInfo = batteryDataWrapper.extraBatteryInfo
-    val power = remember(extraBatteryInfo.chargeCurrent, myDevice.isCharging) {
-        extraBatteryInfo.powerInWatt(myDevice.voltage, myDevice.isCharging)
+    val power = remember(extraBatteryInfo.chargeCurrent) {
+        extraBatteryInfo.powerInWatt(myDevice.voltage)
     }
     val powerPercentage = remember(power) {
         power.toFloat() / extraBatteryInfo.maxWattsChargeInput
@@ -113,14 +128,16 @@ fun BatteryOverall(
         TemperatureMonitor(
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth(0.5f),
-            temperature = myDevice.temperature
+                .fillMaxWidth(0.48f),
+            temperature = myDevice.temperature,
+            temperatureTracking = chartTrackingData.temperatures
         )
         VoltageMonitor(
             modifier = Modifier
                 .padding(8.dp)
                 .weight(1f),
-            voltage = myDevice.voltage
+            voltage = myDevice.voltage,
+            voltageTracking = chartTrackingData.voltages
         )
     }
 }
@@ -204,13 +221,31 @@ private fun CurrentAndChargingMonitor(
 }
 
 @Composable
-private fun TemperatureMonitor(modifier: Modifier, temperature: MyDevice.Temperature) {
+private fun TemperatureMonitor(
+    modifier: Modifier,
+    temperature: MyDevice.Temperature,
+    temperatureTracking: List<Float>
+) {
+    val modelProducer = remember { CartesianChartModelProducer() }
+    LaunchedEffect(temperatureTracking) {
+        withContext(Dispatchers.Default) {
+            modelProducer.runTransaction {
+                lineSeries { series(temperatureTracking.ifEmpty { listOf(temperature.temperature) }) }
+            }
+        }
+    }
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .height(90.dp)
+            .aspectRatio(1.0f)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
+        LineChart(
+            modelProducer = modelProducer,
+            modifier = Modifier.padding(top = 32.dp),
+            minY = 25.0,
+            maxY = 50.0
+        )
         Text(
             text = temperature.formatTemperature(),
             modifier = Modifier.padding(16.dp),
@@ -225,20 +260,38 @@ private fun TemperatureMonitor(modifier: Modifier, temperature: MyDevice.Tempera
             modifier = Modifier
                 .padding(8.dp)
                 .size(24.dp)
-                .align(Alignment.BottomEnd)
+                .align(Alignment.TopEnd)
         )
     }
 }
 
 @SuppressLint("DefaultLocale")
 @Composable
-private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
+private fun VoltageMonitor(
+    modifier: Modifier,
+    voltage: Float,
+    voltageTracking: List<Float>,
+) {
+    val modelProducer = remember { CartesianChartModelProducer() }
+    LaunchedEffect(voltageTracking) {
+        withContext(Dispatchers.Default) {
+            modelProducer.runTransaction {
+                lineSeries { series(voltageTracking.ifEmpty { listOf(voltage) }) }
+            }
+        }
+    }
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .height(90.dp)
+            .aspectRatio(1.0f)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
+        LineChart(
+            modelProducer = modelProducer,
+            modifier = Modifier.padding(top = 32.dp),
+            minY = 1.0,
+            maxY = 5.0
+        )
         Text(
             text = String.format("%.2f", voltage) + " V",
             modifier = Modifier.padding(16.dp),
@@ -253,15 +306,48 @@ private fun VoltageMonitor(modifier: Modifier, voltage: Float) {
             modifier = Modifier
                 .padding(8.dp)
                 .size(24.dp)
-                .align(Alignment.BottomEnd)
+                .align(Alignment.TopEnd)
         )
     }
 }
+
+@Composable
+private fun LineChart(
+    modelProducer: CartesianChartModelProducer,
+    modifier: Modifier,
+    minY: Double,
+    maxY: Double
+) {
+    val marker = rememberMarker()
+    val lineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f)
+    CartesianChartHost(
+        chart =
+        rememberCartesianChart(
+            rememberLineCartesianLayer(
+                LineCartesianLayer.LineProvider.series(
+                    LineCartesianLayer.rememberLine(
+                        remember(lineColor) { LineCartesianLayer.LineFill.single(fill(lineColor)) }
+                    )
+                ),
+                rangeProvider = remember {
+                    CartesianLayerRangeProvider.fixed(minY = minY, maxY = maxY)
+                },
+                pointSpacing = 1.dp
+            ),
+            marker = marker,
+        ),
+        modelProducer = modelProducer,
+        modifier = modifier,
+        zoomState = rememberVicoZoomState(zoomEnabled = false),
+    )
+}
+
 
 @Preview
 @Composable
 fun BatteryOverallPreview() {
     BatteryOverall(
-        batteryDataWrapper = BatteryDataWrapper()
+        batteryDataWrapper = BatteryDataWrapper(),
+        chartTrackingData = ChartRecord()
     )
 }
