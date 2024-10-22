@@ -16,13 +16,21 @@ data class WidgetSetting(
     enum class Type {
         Small, Tall, Wide, Large, Default, Square, FullWidex1;
 
-        fun itemOnSize(): Int {
+        fun itemOnSizeForHorizontal(): Int {
             return when (this) {
                 Small -> 1
                 FullWidex1, Square -> 2
                 Wide -> 3
                 Tall, Large -> 4
                 Default -> 1
+            }
+        }
+
+        fun itemOnSizeForCircle(): Int {
+            return when (this) {
+                Small -> 2
+                FullWidex1, Square -> 3
+                else -> 2
             }
         }
     }

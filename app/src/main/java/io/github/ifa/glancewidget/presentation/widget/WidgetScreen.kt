@@ -85,7 +85,7 @@ internal fun WidgetScreen(
     WidgetScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
-        isShowBottomSheet = showBottomSheet,
+        isShowAddWidgetBottomSheet = showBottomSheet,
         onOpenWattsDetailScreen = onOpenWattsDetailScreen,
         onDisMissBottomSheet = viewModel::hideBottomSheet,
         onClickAddWidget = { params ->
@@ -119,7 +119,7 @@ fun Activity.addWidget(appWidgetId: Int) {
 private fun WidgetScreen(
     uiState: WidgetViewModel.WidgetScreenUiState,
     snackbarHostState: SnackbarHostState,
-    isShowBottomSheet: Boolean = false,
+    isShowAddWidgetBottomSheet: Boolean = false,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
     onClickAddWidget: (AddWidgetParams) -> Unit,
@@ -156,7 +156,7 @@ private fun WidgetScreen(
             )
         }
 
-        if (isShowBottomSheet) {
+        if (isShowAddWidgetBottomSheet) {
             AddWidgetBottomSheet(
                 uiState = uiState,
                 padding = padding,

@@ -56,7 +56,7 @@ class BatteryUseCase @Inject constructor(
         return copy(
             myDevice = myDevice.copy(cycleCount = if (cycles == 0) myDevice.cycleCount else cycles),
             batteryConnectedDevices = if (appSettings.notificationSetting.showPairedDevices) {
-                batteryConnectedDevices
+                batteryConnectedDevices.distinctBy { it.address }
             } else {
                 emptyList()
             }
