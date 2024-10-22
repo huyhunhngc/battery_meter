@@ -8,7 +8,11 @@ data class WidgetSetting(
     val isTransparent: Boolean = false,
     val width: Int = 1,
     val height: Int = 1,
+    val style: Style = Style.Horizontal,
 ) {
+    enum class Style {
+        Circle, Vertical, Horizontal
+    }
     enum class Type {
         Small, Tall, Wide, Large, Default, Square, FullWidex1;
 
