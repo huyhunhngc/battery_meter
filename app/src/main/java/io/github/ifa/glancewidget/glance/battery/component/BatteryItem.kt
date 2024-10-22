@@ -134,10 +134,10 @@ fun BatteryItem(
 }
 
 @Composable
-private fun Text(
+fun Text(
     text: String,
     style: TextStyle,
-    fontWeight: FontWeight = FontWeight.Normal,
+    fontWeight: FontWeight,
     modifier: GlanceModifier = GlanceModifier
 ) {
     Text(

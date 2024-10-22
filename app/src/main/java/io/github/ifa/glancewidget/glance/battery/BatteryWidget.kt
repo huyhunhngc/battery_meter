@@ -14,7 +14,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.updateAll
 import io.github.ifa.glancewidget.data.batteryWidgetStore
-import io.github.ifa.glancewidget.glance.battery.component.HorizontalBatteryWidget
+import io.github.ifa.glancewidget.glance.battery.component.CircleBatteryWidget
 import io.github.ifa.glancewidget.glance.battery.ui.PixelBatteryTheme
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
@@ -100,22 +100,24 @@ class BatteryWidget : GlanceAppWidget() {
             setting?.getType() ?: WidgetSetting.Type.Small
         }
 
-        val connectedDevice = remember(sizeWidget, battery, showPairedDevices) {
-            battery?.batteryConnectedDevices?.take(
-                if (showPairedDevices) sizeWidget.itemOnSize() else 0
-            )
+        val connectedDevices = remember(battery, showPairedDevices) {
+            if (showPairedDevices) {
+                battery?.batteryConnectedDevices?.distinctBy { it.address }.orEmpty()
+            } else {
+                emptyList()
+            }
         }
 
         val isTransparent = remember(setting) {
             setting?.isTransparent ?: false
         }
 
-        HorizontalBatteryWidget(
+        CircleBatteryWidget(
             battery = battery,
             percent = percent,
             isCharging = isCharging,
             isTransparent = isTransparent,
-            connectedDevice = connectedDevice,
+            connectedDevice = connectedDevices,
             sizeWidget = sizeWidget
         )
     }
