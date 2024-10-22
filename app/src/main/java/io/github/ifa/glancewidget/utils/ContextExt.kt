@@ -5,12 +5,21 @@ import android.app.LocaleManager
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.BatteryManager
 import android.os.Build
 import android.os.LocaleList
+import android.text.TextPaint
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.TextUnit
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.LocaleListCompat
+import androidx.core.util.TypedValueCompat.spToPx
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
@@ -106,4 +115,26 @@ private fun Context.setLocaleForDevicesHigherApi33(localeCode: String) {
 
 private fun setLocaleForDevicesLowerApi33(localeTag: String) {
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
+}
+
+fun Context.textAsBitmap(
+    text: String,
+    fontSize: TextUnit,
+    color: Color = Color.Black,
+    letterSpacing: Float = 0.1f,
+    font: Int
+): Bitmap {
+    val paint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+    paint.textSize = spToPx(fontSize.value, resources.displayMetrics)
+    paint.color = color.toArgb()
+    paint.letterSpacing = letterSpacing
+    paint.typeface = ResourcesCompat.getFont(this, font)
+
+    val baseline = -paint.ascent()
+    val width = (paint.measureText(text)).toInt()
+    val height = (baseline + paint.descent()).toInt()
+    val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(image)
+    canvas.drawText(text, 0f, baseline, paint)
+    return image
 }

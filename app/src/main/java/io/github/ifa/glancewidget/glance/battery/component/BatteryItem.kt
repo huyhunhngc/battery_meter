@@ -70,22 +70,29 @@ fun BatteryItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.Start,
-            modifier = GlanceModifier.fillMaxSize().padding(8.dp)
+            modifier = GlanceModifier.fillMaxSize().padding(horizontal = 8.dp)
         ) {
-            Image(
-                modifier = GlanceModifier.size(24.dp).padding(end = 4.dp),
-                provider = ImageProvider(deviceType.icon),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
-            )
+            Box(
+                modifier = GlanceModifier.size(24.dp)
+                    .cornerRadiusCompat(12, GlanceTheme.colors.widgetBackground),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    modifier = GlanceModifier.size(16.dp),
+                    provider = ImageProvider(deviceType.icon),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
+                )
+            }
+
             Text(
                 text = deviceName,
                 style = TextStyle(
-                    color = GlanceTheme.colors.onSurface,
+                    color = GlanceTheme.colors.secondary,
                     fontSize = fontSizeScale.sp
                 ),
                 fontWeight = FontWeight.Bold,
-                modifier = GlanceModifier.defaultWeight()
+                modifier = GlanceModifier.defaultWeight().padding(start = 4.dp)
             )
 
             if (percent > 0) {
@@ -137,7 +144,7 @@ private fun Text(
         text = text,
         modifier = modifier,
         maxLines = 2,
-        style = style.copy(fontWeight = fontWeight, color = GlanceTheme.colors.primary)
+        style = style.copy(fontWeight = fontWeight, color = style.color)
     )
 }
 

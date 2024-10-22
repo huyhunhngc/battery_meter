@@ -6,31 +6,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
-import androidx.glance.GlanceModifier
-import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.updateAll
-import androidx.glance.layout.Box
-import androidx.glance.layout.Column
-import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
-import androidx.glance.layout.padding
-import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.data.batteryWidgetStore
-import io.github.ifa.glancewidget.glance.battery.component.BatteryItem
-import io.github.ifa.glancewidget.glance.battery.component.FullWidthItem
-import io.github.ifa.glancewidget.glance.battery.component.GridWrapItem
+import io.github.ifa.glancewidget.glance.battery.component.HorizontalBatteryWidget
 import io.github.ifa.glancewidget.glance.battery.ui.PixelBatteryTheme
-import io.github.ifa.glancewidget.glance.battery.utils.cornerRadiusCompat
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
-import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.model.WidgetSettings
 import io.github.ifa.glancewidget.utils.fromJson
@@ -109,13 +96,13 @@ class BatteryWidget : GlanceAppWidget() {
         val percent = battery?.myDevice?.level ?: 100
         val isCharging = battery?.myDevice?.isCharging ?: false
 
-        val typeWidget = remember(setting) {
+        val sizeWidget = remember(setting) {
             setting?.getType() ?: WidgetSetting.Type.Small
         }
 
-        val connectedDevice = remember(typeWidget, battery, showPairedDevices) {
+        val connectedDevice = remember(sizeWidget, battery, showPairedDevices) {
             battery?.batteryConnectedDevices?.take(
-                if (showPairedDevices) typeWidget.itemOnSize() else 0
+                if (showPairedDevices) sizeWidget.itemOnSize() else 0
             )
         }
 
@@ -123,45 +110,14 @@ class BatteryWidget : GlanceAppWidget() {
             setting?.isTransparent ?: false
         }
 
-        Box(
-            modifier = GlanceModifier.fillMaxSize()
-                .padding(PADDING)
-                .cornerRadiusCompat(
-                    24,
-                    if (isTransparent) {
-                        ColorProvider(Color.Transparent)
-                    } else {
-                        GlanceTheme.colors.widgetBackground
-                    }
-                ),
-        ) {
-            Column(modifier = GlanceModifier.fillMaxSize()) {
-                BatteryItem(
-                    deviceType = battery?.myDevice?.deviceType ?: DeviceType.PHONE,
-                    percent = percent,
-                    isCharging = isCharging,
-                    deviceName = battery?.myDevice?.name.toString(),
-                    modifier = GlanceModifier.defaultWeight()
-                )
-                if (!connectedDevice.isNullOrEmpty()) {
-                    when (typeWidget) {
-                        WidgetSetting.Type.FullWidex1, WidgetSetting.Type.Wide -> {
-                            GridWrapItem(
-                                connectedDevice = connectedDevice,
-                                modifier = GlanceModifier.defaultWeight().fillMaxWidth()
-                            )
-                        }
-
-                        else -> {
-                            FullWidthItem(
-                                connectedDevices = connectedDevice,
-                                modifier = GlanceModifier.defaultWeight().fillMaxWidth()
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        HorizontalBatteryWidget(
+            battery = battery,
+            percent = percent,
+            isCharging = isCharging,
+            isTransparent = isTransparent,
+            connectedDevice = connectedDevice,
+            sizeWidget = sizeWidget
+        )
     }
 
     companion object {
