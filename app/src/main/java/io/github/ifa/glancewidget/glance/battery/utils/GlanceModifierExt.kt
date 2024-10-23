@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.glance.battery.utils
 
 import android.annotation.SuppressLint
 import android.os.Build
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
@@ -20,9 +21,15 @@ fun GlanceModifier.cornerRadiusCompat(
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         this.background(color).cornerRadius(cornerRadius.dp)
     } else {
-        this.background(
-            imageProvider = ImageProvider(R.drawable.bg_widget_16),
-            colorFilter = ColorFilter.tint(color)
-        )
+        if (color == ColorProvider(Color.Transparent)) {
+            this.background(
+                imageProvider = ImageProvider(R.drawable.bg_widget_transparent)
+            )
+        } else {
+            this.background(
+                imageProvider = ImageProvider(R.drawable.bg_widget_16),
+                colorFilter = ColorFilter.tint(color)
+            )
+        }
     }
 }
