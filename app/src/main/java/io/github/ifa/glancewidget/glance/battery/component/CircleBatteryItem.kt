@@ -27,8 +27,8 @@ import androidx.glance.preview.ExperimentalGlancePreviewApi
 import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.model.DeviceType
-
 
 @Composable
 fun CircleBatteryItem(
@@ -36,13 +36,18 @@ fun CircleBatteryItem(
     percent: Int,
     isCharging: Boolean,
     scaleTextSize: Float = 1.0f,
+    transparency: Float = 1.0f,
     modifier: GlanceModifier = GlanceModifier,
 ) {
     val context = LocalContext.current
     val backgroundColor = GlanceTheme.colors.secondaryContainer
-    val widgetBackgroundColor = GlanceTheme.colors.widgetBackground
+    val widgetBackgroundColor = ColorProvider(
+        GlanceTheme.colors.widgetBackground.getColor(context).copy(alpha = transparency)
+    )
     val foregroundColor = GlanceTheme.colors.inversePrimary
     val onBackgroundColor = GlanceTheme.colors.primary
+    val iconColor = onBackgroundColor.getColor(context)
+        .copy(alpha = if (deviceType == DeviceType.OTHER) 0.2f else 1.0f)
 
     Box(
         modifier = modifier,
@@ -50,12 +55,10 @@ fun CircleBatteryItem(
     ) {
         GlanceCanvas(modifier = GlanceModifier.fillMaxSize()) {
             val rectF = RectF(x - radius, y - radius + 2f, x + radius, y + radius)
-            val spaceStartAngle = if (isCharging) 40f else 20f
-            val spaceSweepAngle = if (isCharging) 40f else 0f
             drawCircle(x, y, radius + 32f, Paint().apply {
                 color = widgetBackgroundColor.getColor(context).toArgb()
             })
-            drawArc(rectF, 250f + spaceStartAngle, 360f - spaceSweepAngle, false, Paint().apply {
+            drawArc(rectF, 270f, 360f, false, Paint().apply {
                 color = backgroundColor.getColor(context).toArgb()
                 style = Paint.Style.STROKE
                 strokeWidth = 72f
@@ -63,8 +66,8 @@ fun CircleBatteryItem(
             })
             drawArc(
                 rectF,
-                250f + spaceStartAngle,
-                minOf(percent.toFloat() / 100 * 360f, 360f - spaceSweepAngle),
+                275f,
+                percent.toFloat() / 100 * 360f - 5f,
                 false,
                 Paint().apply {
                     color = foregroundColor.getColor(context).toArgb()
@@ -75,16 +78,30 @@ fun CircleBatteryItem(
             )
             if (isCharging) {
                 val path = Path()
-                path.moveTo(x + 8f, y - radius - 32f)
-                path.lineTo(x - 24f, y - radius + 16f)
-                path.lineTo(x - 4f, y - radius + 16f)
-                path.lineTo(x - 8f, y - radius + 48f)
-                path.lineTo(x + 24f, y - radius)
-                path.lineTo(x + 4f, y - radius)
+                val xAxis = 10f
+                val yAxis = 3 * xAxis
+                path.moveTo(x + 2 * xAxis, y - radius - 2f * yAxis - 8f)
+                path.lineTo(x - 4 * xAxis, y - radius + yAxis - 8f)
+                path.lineTo(x - xAxis, y - radius + yAxis - 8f)
+                path.lineTo(x - 2 * xAxis, y - radius + 3f * yAxis - 8f)
+                path.lineTo(x + 4 * xAxis, y - radius - 8f)
+                path.lineTo(x + xAxis, y - radius - 8f)
                 path.close()
                 drawPath(
                     path,
-                    Paint().apply { color = onBackgroundColor.getColor(context).toArgb() }
+                    Paint().apply {
+                        color = onBackgroundColor.getColor(context).toArgb()
+                    }
+                )
+                drawPath(
+                    path,
+                    Paint().apply {
+                        color = widgetBackgroundColor.getColor(context).toArgb()
+                        style = Paint.Style.STROKE
+                        strokeCap = Paint.Cap.ROUND
+                        strokeJoin = Paint.Join.ROUND
+                        strokeWidth = 10f
+                    }
                 )
             }
         }
@@ -110,7 +127,7 @@ fun CircleBatteryItem(
                 modifier = GlanceModifier.size((16 * scale).dp),
                 provider = ImageProvider(deviceType.icon),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
+                colorFilter = ColorFilter.tint(ColorProvider(iconColor))
             )
         }
 
@@ -143,6 +160,7 @@ fun CircleBatteryItemPreview() {
     CircleBatteryItem(
         deviceType = DeviceType.PHONE,
         percent = 100,
+        transparency = 0f,
         isCharging = true,
     )
 }
@@ -153,7 +171,7 @@ fun CircleBatteryItemPreview() {
 fun CircleBatteryItemPreview1() {
     CircleBatteryItem(
         deviceType = DeviceType.PHONE,
-        percent = 0,
+        percent = 100,
         isCharging = false,
     )
 }

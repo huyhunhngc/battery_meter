@@ -67,17 +67,17 @@ class DefaultBatteryStateRepository(
         batteryDataStore.saveExtraBatteryInformation(extraBatteryInfo)
     }
 
+    @Deprecated("Use saveWidgetTransparencySetting")
     override suspend fun saveWidgetTransparentSetting(isTransparent: Boolean, appWidgetId: Int) {
-        val widgetSettings = batteryDataStore.getWidgetSettings()
-        val savedSetting = widgetSettings.settings[appWidgetId] ?: WidgetSetting()
-        val newWidgetSetting = savedSetting.copy(
-            isTransparent = isTransparent
-        )
-        val newSettings =
-            widgetSettings.copy(settings = widgetSettings.settings.toMutableMap().apply {
-                this[appWidgetId] = newWidgetSetting
-            })
-        batteryDataStore.saveWidgetSettings(newSettings)
+        saveWidgetSettings(appWidgetId) {
+            it.copy(isTransparent = isTransparent)
+        }
+    }
+
+    override suspend fun saveWidgetInitialSetting(transparency: Float, appWidgetId: Int) {
+        saveWidgetSettings(appWidgetId) {
+            it.copy(transparency = transparency)
+        }
     }
 
     override suspend fun saveChargeCurrent(chargeCurrent: Int) {
@@ -143,6 +143,20 @@ class DefaultBatteryStateRepository(
                 voltages = voltages.takeLast(100)
             )
         )
+    }
+
+    private suspend fun saveWidgetSettings(
+        appWidgetId: Int,
+        onAppliedNewSetting: (WidgetSetting) -> WidgetSetting
+    ) {
+        val widgetSettings = batteryDataStore.getWidgetSettings()
+        val savedSetting = widgetSettings.settings[appWidgetId] ?: WidgetSetting()
+        val newWidgetSetting = onAppliedNewSetting(savedSetting)
+        val newSettings =
+            widgetSettings.copy(settings = widgetSettings.settings.toMutableMap().apply {
+                this[appWidgetId] = newWidgetSetting
+            })
+        batteryDataStore.saveWidgetSettings(newSettings)
     }
 }
 
