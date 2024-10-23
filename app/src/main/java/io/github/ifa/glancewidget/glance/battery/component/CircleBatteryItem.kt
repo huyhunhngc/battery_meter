@@ -36,7 +36,7 @@ fun CircleBatteryItem(
     percent: Int,
     isCharging: Boolean,
     scaleTextSize: Float = 1.0f,
-    transparency: Float = 1.0f,
+    transparency: Float = 1f,
     modifier: GlanceModifier = GlanceModifier,
 ) {
     val context = LocalContext.current
@@ -55,10 +55,12 @@ fun CircleBatteryItem(
     ) {
         GlanceCanvas(modifier = GlanceModifier.fillMaxSize()) {
             val rectF = RectF(x - radius, y - radius + 2f, x + radius, y + radius)
+            val spaceStartAngle = if (isCharging) 40f else 20f
+            val spaceSweepAngle = if (isCharging) 40f else 0f
             drawCircle(x, y, radius + 32f, Paint().apply {
                 color = widgetBackgroundColor.getColor(context).toArgb()
             })
-            drawArc(rectF, 270f, 360f, false, Paint().apply {
+            drawArc(rectF, 250f + spaceStartAngle, 360f - spaceSweepAngle, false, Paint().apply {
                 color = backgroundColor.getColor(context).toArgb()
                 style = Paint.Style.STROKE
                 strokeWidth = 72f
@@ -66,8 +68,8 @@ fun CircleBatteryItem(
             })
             drawArc(
                 rectF,
-                275f,
-                percent.toFloat() / 100 * 360f - 5f,
+                250f + spaceStartAngle,
+                minOf(percent.toFloat() / 100 * 360f, 360f - spaceSweepAngle),
                 false,
                 Paint().apply {
                     color = foregroundColor.getColor(context).toArgb()
@@ -78,7 +80,7 @@ fun CircleBatteryItem(
             )
             if (isCharging) {
                 val path = Path()
-                val xAxis = 10f
+                val xAxis = 8f
                 val yAxis = 3 * xAxis
                 path.moveTo(x + 2 * xAxis, y - radius - 2f * yAxis - 8f)
                 path.lineTo(x - 4 * xAxis, y - radius + yAxis - 8f)
@@ -93,16 +95,6 @@ fun CircleBatteryItem(
                         color = onBackgroundColor.getColor(context).toArgb()
                     }
                 )
-                drawPath(
-                    path,
-                    Paint().apply {
-                        color = widgetBackgroundColor.getColor(context).toArgb()
-                        style = Paint.Style.STROKE
-                        strokeCap = Paint.Cap.ROUND
-                        strokeJoin = Paint.Join.ROUND
-                        strokeWidth = 10f
-                    }
-                )
             }
         }
 
@@ -114,7 +106,7 @@ fun CircleBatteryItem(
             val scale = if (percent > 0) scaleTextSize else scaleTextSize * 1.4f
             if (percent > 0) {
                 Text(
-                    text = "$percent%",
+                    text = percent.toString(),
                     style = TextStyle(
                         color = GlanceTheme.colors.primary,
                         fontSize = (9 * scaleTextSize).sp
@@ -160,7 +152,6 @@ fun CircleBatteryItemPreview() {
     CircleBatteryItem(
         deviceType = DeviceType.PHONE,
         percent = 100,
-        transparency = 0f,
         isCharging = true,
     )
 }
