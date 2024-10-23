@@ -35,9 +35,6 @@ fun CircleBatteryWidget(
     val deviceType by remember(battery) {
         derivedStateOf { battery?.myDevice?.deviceType ?: DeviceType.PHONE }
     }
-    val deviceName by remember(battery) {
-        derivedStateOf { battery?.myDevice?.name.toString() }
-    }
     val charging by rememberUpdatedState(newValue = isCharging)
     val connectedDevices by remember(connectedDevice, sizeWidget) {
         derivedStateOf { connectedDevice.take(sizeWidget.itemOnSizeForCircle()) }
@@ -67,7 +64,6 @@ fun CircleBatteryWidget(
                 deviceType = deviceType,
                 percent = percent,
                 isCharging = charging,
-                deviceName = deviceName,
                 scaleTextSize = scaleTextSize,
                 modifier = GlanceModifier.defaultWeight()
             )
@@ -76,7 +72,6 @@ fun CircleBatteryWidget(
                     deviceType = it.deviceType,
                     percent = it.batteryInPercentage,
                     isCharging = false,
-                    deviceName = it.name,
                     scaleTextSize = scaleTextSize,
                     modifier = GlanceModifier.defaultWeight()
                 )
