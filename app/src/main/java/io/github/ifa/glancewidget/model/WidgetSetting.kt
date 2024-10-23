@@ -44,7 +44,7 @@ data class WidgetSetting(
             height > 300 && width > 300 -> Type.Large // 4x4
             width < height -> Type.Tall
             height in 110..<width -> Type.Wide
-            ratio < 1.2 && ratio > 0.8 -> Type.Square
+            ratio in 0.75..1.25 -> Type.Square
             else -> Type.Default
         }
     }
