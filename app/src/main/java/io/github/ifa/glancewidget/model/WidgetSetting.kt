@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class WidgetSetting(
     val appWidgetId: Int = -1,
     val isTransparent: Boolean = false,
+    val transparency: Float = 1.0f,
     val width: Int = 1,
     val height: Int = 1,
     val style: Style = Style.Horizontal,

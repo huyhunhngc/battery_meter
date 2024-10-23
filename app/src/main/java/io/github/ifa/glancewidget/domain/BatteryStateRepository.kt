@@ -19,7 +19,9 @@ interface BatteryStateRepository {
     suspend fun chargeCurrent(): ChargeDisChargeCurrent
     suspend fun saveExtraBatteryInformation()
     suspend fun saveChargeCurrent(chargeCurrent: Int)
+    @Deprecated("Use saveWidgetTransparencySetting")
     suspend fun saveWidgetTransparentSetting(isTransparent: Boolean, appWidgetId: Int)
+    suspend fun saveWidgetInitialSetting(transparency: Float, appWidgetId: Int)
     suspend fun saveHistoryForChart(temperature: Float, voltage: Float)
 }
 

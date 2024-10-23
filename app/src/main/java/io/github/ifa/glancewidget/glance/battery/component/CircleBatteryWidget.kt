@@ -37,7 +37,7 @@ fun CircleBatteryWidget(
     }
     val charging by rememberUpdatedState(newValue = isCharging)
     val connectedDevices by remember(connectedDevice, sizeWidget) {
-        derivedStateOf { connectedDevice.take(sizeWidget.itemOnSizeForCircle()) }
+        derivedStateOf { connectedDevice.ifEmpty { List(3) { BonedDevice() } }.take(sizeWidget.itemOnSizeForCircle()) }
     }
     val scaleTextSize = remember(sizeWidget) {
         if (sizeWidget == WidgetSetting.Type.Large || sizeWidget == WidgetSetting.Type.Wide) {
