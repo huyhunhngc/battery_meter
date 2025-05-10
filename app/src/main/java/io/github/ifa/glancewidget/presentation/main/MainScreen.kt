@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.presentation.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -48,6 +49,7 @@ fun NavGraphBuilder.mainTabScreens(
     }
 }
 
+@SuppressLint("ImplicitSamInstance")
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),

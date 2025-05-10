@@ -102,7 +102,8 @@ internal fun WidgetScreen(
                 activity?.addWidget(uiState.setupWidgetId)
             }
         },
-        onRequestPiningWidget = viewModel::createPinnedWidget
+        onRequestPiningWidget = viewModel::createPinnedWidget,
+        onShowInWidgetChanged = viewModel::updateDeviceShowInWidget
     )
 }
 
@@ -123,7 +124,8 @@ private fun WidgetScreen(
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
     onClickAddWidget: (AddWidgetParams) -> Unit,
-    onRequestPiningWidget: () -> Unit = {}
+    onRequestPiningWidget: () -> Unit = {},
+    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -151,8 +153,9 @@ private fun WidgetScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             connectedDevices(
+                modifier = Modifier.padding(bottom = 16.dp),
                 batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
-                modifier = Modifier.padding(bottom = 16.dp)
+                onShowInWidgetChanged = onShowInWidgetChanged
             )
         }
 
@@ -229,11 +232,17 @@ private fun LazyListScope.batteryExtraInformation(
 }
 
 private fun LazyListScope.connectedDevices(
-    batteryConnectedDevices: List<BonedDevice>, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    batteryConnectedDevices: List<BonedDevice>,
+    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
 ) {
     if (batteryConnectedDevices.isNotEmpty()) {
         item {
-            ConnectedDevice(batteryConnectedDevices, modifier)
+            ConnectedDevice(
+                modifier = modifier,
+                batteryConnectedDevice = batteryConnectedDevices,
+                onShowInWidgetChanged = onShowInWidgetChanged,
+            )
         }
     }
 }

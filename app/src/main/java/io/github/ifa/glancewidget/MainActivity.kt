@@ -1,6 +1,5 @@
 package io.github.ifa.glancewidget
 
-import android.content.Context
 import android.content.IntentFilter
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -43,7 +42,7 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             repositoryProvider.Provide {
-                ConfigApp(startDestination = mainScreenRoute)
+                BatteryApp(startDestination = mainScreenRoute)
             }
         }
     }
@@ -73,7 +72,7 @@ class MainActivity : ComponentActivity() {
             actions.forEach { addAction(it) }
         }
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            registerReceiver(monitorReceiver, filter, RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(monitorReceiver, filter)
         }

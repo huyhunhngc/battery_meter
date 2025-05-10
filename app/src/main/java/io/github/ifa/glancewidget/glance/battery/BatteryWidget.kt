@@ -23,18 +23,18 @@ import io.github.ifa.glancewidget.model.WidgetSettings
 import io.github.ifa.glancewidget.utils.fromJson
 import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setObject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class BatteryWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val batteryWidgetStore = context.batteryWidgetStore
-        val initial = batteryWidgetStore.data.first()
+        val initial = batteryWidgetStore.data.firstOrNull()
 
         provideContent {
             val data by batteryWidgetStore.data.collectAsState(initial)
-            val widgetSettingsJson by rememberUpdatedState(data[WIDGET_PREFERENCES])
-            val batteryJson by rememberUpdatedState(data[BATTERY_PREFERENCES])
-            val showPairedDevices by rememberUpdatedState(data[SHOW_PAIRED_DEVICES] ?: false)
+            val widgetSettingsJson by rememberUpdatedState(data?.get(WIDGET_PREFERENCES))
+            val batteryJson by rememberUpdatedState(data?.get(BATTERY_PREFERENCES))
+            val showPairedDevices by rememberUpdatedState(data?.get(SHOW_PAIRED_DEVICES) == true)
             val battery = remember(batteryJson) {
                 fromJson<BatteryData>(batteryJson)
             }
@@ -60,7 +60,9 @@ class BatteryWidget : GlanceAppWidget() {
     }
 
     suspend fun updateOnSizeChanged(
-        context: Context, glanceId: GlanceId, widgetSetting: WidgetSetting
+        context: Context,
+        glanceId: GlanceId,
+        widgetSetting: WidgetSetting
     ) {
         val store = context.batteryWidgetStore
         val widgetSettings = store.getObject<WidgetSettings>(WIDGET_PREFERENCES) ?: WidgetSettings()
@@ -91,10 +93,12 @@ class BatteryWidget : GlanceAppWidget() {
 
     @Composable
     private fun Content(
-        battery: BatteryData?, setting: WidgetSetting?, showPairedDevices: Boolean = false
+        battery: BatteryData?,
+        setting: WidgetSetting?,
+        showPairedDevices: Boolean = false
     ) {
         val percent = battery?.myDevice?.level ?: 100
-        val isCharging = battery?.myDevice?.isCharging ?: false
+        val isCharging = battery?.myDevice?.isCharging == true
 
         val sizeWidget = remember(setting) {
             setting?.getType() ?: WidgetSetting.Type.Small
@@ -109,7 +113,7 @@ class BatteryWidget : GlanceAppWidget() {
         }
 
         val isTransparent = remember(setting) {
-            setting?.isTransparent ?: false
+            setting?.isTransparent == true
         }
 
         CircleBatteryWidget(
