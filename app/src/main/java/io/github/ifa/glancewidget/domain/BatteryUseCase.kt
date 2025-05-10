@@ -10,6 +10,7 @@ import io.github.ifa.glancewidget.model.wrapper.PowerDetails
 import io.github.ifa.glancewidget.utils.Constants.NUMBER_OF_CYCLES_PATH
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -78,6 +79,8 @@ class BatteryUseCase @Inject constructor(
     }
 
     private fun getNumberOfCyclesAndroidApi33(): Flow<Int> = flow {
+        val a = MutableSharedFlow<Int>()
+        a.tryEmit()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             emit(0)
             return@flow
