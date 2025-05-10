@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.presentation.main.MainScreenTab.entries
 import io.github.ifa.glancewidget.presentation.settings.settingsScreenRoute
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
 
@@ -30,7 +31,9 @@ enum class MainScreenTab(
     Widget(
         widgetScreenRoute, R.string.widget_tab, R.drawable.ic_widgets_filled, R.drawable.ic_widgets
     ),
-    Settings(settingsScreenRoute, R.string.settings, R.drawable.ic_setting_filled, R.drawable.ic_settings);
+    Settings(
+        settingsScreenRoute, R.string.settings, R.drawable.ic_setting_filled, R.drawable.ic_settings
+    );
 
     companion object {
         fun indexOf(tab: MainScreenTab): Int = entries.indexOf(tab)

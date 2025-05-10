@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.domain.BatteryUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
+import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.utils.buildUiState
@@ -73,5 +74,12 @@ class WidgetViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             batteryStateRepository.saveWidgetTransparentSetting(isTransparent, appWidgetId)
         }
+    }
+
+    fun updateDeviceShowInWidget(
+        device: BonedDevice,
+        showInWidget: Boolean
+    ) {
+
     }
 }

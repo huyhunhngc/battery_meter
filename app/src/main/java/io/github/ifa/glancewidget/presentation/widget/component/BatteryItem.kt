@@ -52,7 +52,7 @@ fun BatteryItem(
     isTransparent: Boolean,
 ) {
     val isActive = percent > 0
-    val animatePercentFloat = remember { Animatable(00.0f) }
+    val animatePercentFloat = remember(percent) { Animatable(00.0f) }
     LaunchedEffect(percent) {
         animatePercentFloat.animateTo(
             targetValue = percent / 100f,

@@ -28,7 +28,7 @@ import io.github.ifa.glancewidget.ui.theme.getLightScheme
 import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
 
 @Composable
-fun ConfigApp(
+fun BatteryApp(
     modifier: Modifier = Modifier,
     startDestination: String,
     appSettingsRepository: AppSettingsRepository = localAppSettingsRepository()

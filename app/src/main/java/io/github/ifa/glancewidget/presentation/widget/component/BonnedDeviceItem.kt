@@ -1,20 +1,22 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.model.BonedDevice
@@ -22,34 +24,58 @@ import io.github.ifa.glancewidget.model.DeviceType
 
 @Composable
 fun BonedDeviceItem(
-    device: BonedDevice, modifier: Modifier = Modifier, onItemClick: (BonedDevice) -> Unit
+    device: BonedDevice,
+    modifier: Modifier = Modifier,
+    showInWidget: Boolean = true,
+    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
+    onItemClick: (BonedDevice) -> Unit,
 ) {
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        BatteryItem(
-            deviceType = device.deviceType,
-            percent = device.batteryInPercentage,
-            deviceName = device.name,
-            isCharging = false,
-            isTransparent = true,
-            isShowLargeLevel = true,
-            modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth(0.5f)
-                .clickable { onItemClick(device) }
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onItemClick(device) },
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         )
+    ) {
         Column(
-            modifier = Modifier
-                .height(100.dp)
-                .weight(1f)
-                .padding(8.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
-                .padding(8.dp)
-            ,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.padding(8.dp)
         ) {
-            ShortInformationRow(value = device.name)
-            ShortInformationRow(value = device.address)
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Switch(
+                    checked = showInWidget,
+                    onCheckedChange = {
+                        onShowInWidgetChanged(device, it)
+                    },
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Show in widget",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+            ) {
+                BatteryItem(
+                    deviceType = device.deviceType,
+                    percent = device.batteryInPercentage.coerceAtLeast(0),
+                    deviceName = device.name,
+                    description = device.address,
+                    isCharging = false,
+                    isTransparent = true,
+                    isShowLargeLevel = false
+                )
+            }
         }
     }
 }
@@ -65,6 +91,8 @@ fun BonedDeviceItemPreview() {
             batteryInMinutes = 0,
             deviceType = DeviceType.OTHER
         ),
-        onItemClick = {}
+        onItemClick = {},
+        onShowInWidgetChanged = { _, _ -> },
+        showInWidget = false
     )
 }
