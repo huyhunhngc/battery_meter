@@ -39,5 +39,5 @@ class PurchaseListener @Inject constructor() {
 interface OnPurchaseListener {
     fun onPurchase(purchases: List<Purchase>)
     fun onPurchaseError(billingResult: BillingResult)
-    fun onPurchaseCancelled()
+        fun onPurchaseCancelled()
 }
