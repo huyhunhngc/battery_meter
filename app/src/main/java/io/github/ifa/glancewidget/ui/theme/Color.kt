@@ -1,6 +1,11 @@
 package io.github.ifa.glancewidget.ui.theme
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+
+val containerColorAlpha60
+    @Composable get() = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.6f)
 
 object AppColor {
     val LightColors = lightColors(

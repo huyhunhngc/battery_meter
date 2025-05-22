@@ -16,10 +16,9 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.Serializable
-
+import java.util.Calendar
 
 inline fun <reified T> fromJson(jsonString: String?): T? {
     if (jsonString == null) return null
@@ -115,4 +114,13 @@ fun isSupportedDynamicColor(): Boolean {
 
 fun isAppCompatLocaleDeprecated(): Boolean {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+}
+
+fun Calendar.getStartOfDay(): Calendar {
+    return this.apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
 }

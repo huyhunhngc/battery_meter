@@ -50,6 +50,7 @@ import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.SessionText
+import io.github.ifa.glancewidget.ui.theme.containerColorAlpha60
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -86,7 +87,7 @@ fun BatteryOverall(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(containerColorAlpha60)
             .padding(8.dp)
     ) {
         Header(Modifier.fillMaxWidth())

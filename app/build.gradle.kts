@@ -15,12 +15,12 @@ val versionIncrement = 8
 
 android {
     namespace = "io.github.ifa.glancewidget"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.github.ifa.glancewidget"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = versionMajor * 100000 + versionMinor * 1000 + versionPatch * 10 + versionIncrement
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
@@ -56,7 +56,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
