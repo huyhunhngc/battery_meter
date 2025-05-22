@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface AppUsageRepository {
     fun getAppUsageStats(): Flow<List<UsageStatsWrapper>>
     fun hasAppUsagePermission(): Flow<Boolean>
+
+    fun onChangedUsageRange(start: Long, end: Long)
 }
 
 @Composable

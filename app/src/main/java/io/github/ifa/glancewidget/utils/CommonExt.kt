@@ -124,3 +124,24 @@ fun Calendar.getStartOfDay(): Calendar {
         set(Calendar.MILLISECOND, 0)
     }
 }
+
+fun Calendar.getEndOfDay(): Calendar {
+    return this.apply {
+        set(Calendar.HOUR_OF_DAY, 23)
+        set(Calendar.MINUTE, 59)
+        set(Calendar.SECOND, 59)
+        set(Calendar.MILLISECOND, 999)
+    }
+}
+
+fun Calendar.subtractDays(days: Int): Calendar {
+    return this.apply {
+        add(Calendar.DAY_OF_MONTH, -days)
+    }
+}
+
+fun Calendar.subtractHours(hours: Int): Calendar {
+    return this.apply {
+        add(Calendar.HOUR_OF_DAY, -hours)
+    }
+}

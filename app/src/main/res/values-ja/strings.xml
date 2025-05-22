@@ -83,4 +83,9 @@
     <string name="sync_color_scheme_with_widget_description">ウィジェットはテーマとカラースキームと同期します</string>
     <string name="measurement_in_progress">測定中</string>
     <string name="measurement_in_progress_description"> バッテリー使用量を正確に計算するには、しばらく時間がかかります。</string>
+    <string name="request_app_usage_permission">アプリの使用状況へのアクセス許可を付与</string>
+    <string name="last_one_hour">過去1時間</string>
+    <string name="today">今日</string>
+    <string name="yesterday">昨日</string>
+    <string name="last_seven_day">過去7日間</string>
 </resources>

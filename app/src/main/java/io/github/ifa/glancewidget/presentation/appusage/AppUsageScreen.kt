@@ -3,27 +3,33 @@ package io.github.ifa.glancewidget.presentation.appusage
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -50,7 +56,8 @@ fun AppUsageScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     AppUsageScreenContent(
         snackbarHostState = snackbarHostState,
-        uiState = uiState
+        uiState = uiState,
+        onUsageRangeChange = viewModel::setUsageRange
     )
 }
 
@@ -58,7 +65,8 @@ fun AppUsageScreen(
 @Composable
 private fun AppUsageScreenContent(
     snackbarHostState: SnackbarHostState,
-    uiState: AppUsageViewModel.AppUsageScreenUiState,
+    uiState: AppUsageScreenUiState,
+    onUsageRangeChange: (AppUsageScreenUiState.UsageRange) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 ) {
     val context = LocalContext.current
@@ -78,24 +86,52 @@ private fun AppUsageScreenContent(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (uiState.hasAppUsagePermission) {
                 AppUsageList(
                     appUsageStats = uiState.appUsageStats,
+                    usageRange = uiState.usageRange,
+                    onUsageRangeChange = onUsageRangeChange,
                     modifier = Modifier
                 )
             } else {
-                Button(onClick = {
+                OutlinedButton(onClick = {
                     val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                     context.startActivity(intent)
                 }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_monitoring),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_monitoring),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(
+                            text = stringResource(id = R.string.request_app_usage_permission),
+                            modifier = Modifier.padding(start = 8.dp),
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
+
                 }
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun AppUsageScreenContentPreview() {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val uiState = AppUsageScreenUiState()
+    AppUsageScreenContent(
+        snackbarHostState = snackbarHostState,
+        uiState = uiState,
+        onUsageRangeChange = {}
+    )
 }

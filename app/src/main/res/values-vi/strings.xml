@@ -83,4 +83,9 @@
     <string name="sync_color_scheme_with_widget_description">Tiện ích sẽ đồng bộ với chủ đề và bảng màu của bạn</string>
     <string name="measurement_in_progress">Đang đo</string>
     <string name="measurement_in_progress_description"> Sẽ mất một thời gian để tính toán chính xác mức sử dụng pin.</string>
+    <string name="request_app_usage_permission">Cấp quyền sử dụng ứng dụng</string>
+    <string name="last_one_hour">1H</string>
+    <string name="today">Hôm nay</string>
+    <string name="yesterday">Hôm qua</string>
+    <string name="last_seven_day">7D</string>
 </resources>
