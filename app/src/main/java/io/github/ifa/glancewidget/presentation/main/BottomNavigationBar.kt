@@ -13,12 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.presentation.main.MainScreenTab.entries
+import io.github.ifa.glancewidget.presentation.appusage.appUsageScreenRoute
 import io.github.ifa.glancewidget.presentation.settings.settingsScreenRoute
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
 
@@ -30,6 +29,9 @@ enum class MainScreenTab(
 ) {
     Widget(
         widgetScreenRoute, R.string.widget_tab, R.drawable.ic_widgets_filled, R.drawable.ic_widgets
+    ),
+    AppUsage(
+        appUsageScreenRoute, R.string.widget_tab, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
     ),
     Settings(
         settingsScreenRoute, R.string.settings, R.drawable.ic_setting_filled, R.drawable.ic_settings
@@ -58,7 +60,6 @@ fun BottomNavigationBar(
                     Text(
                         text = stringResource(id = tab.label),
                         color = colorScheme.secondary,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     )
                 },
                 alwaysShowLabel = true, selected = isSelected,

@@ -26,6 +26,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import io.github.ifa.glancewidget.presentation.about.aboutScreen
 import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
+import io.github.ifa.glancewidget.presentation.appusage.appUsageScreen
 import io.github.ifa.glancewidget.presentation.gopro.goPremiumScreen
 import io.github.ifa.glancewidget.presentation.gopro.goPremiumScreenRoute
 import io.github.ifa.glancewidget.presentation.main.mainTabScreens
@@ -71,6 +72,7 @@ private fun NavGraphBuilder.mainScreen(
 ) {
     mainTabScreens { navMainController, paddingValues ->
         widgetScreen(onOpenWattsDetailScreen = navController::navigateToWattsDetailScreen)
+        appUsageScreen()
         settingsScreen(
             onOpenAboutScreen = navController::navigateToAboutScreen,
             onOpenGoPremiumScreen = navController::navigateToGoPremiumScreen

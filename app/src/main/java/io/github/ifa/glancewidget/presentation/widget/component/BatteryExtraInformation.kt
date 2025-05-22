@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.ui.component.SessionText
+import io.github.ifa.glancewidget.ui.theme.containerColorAlpha60
 import io.github.ifa.glancewidget.utils.Constants.MAH_UNIT
 
 @Composable
@@ -81,7 +82,7 @@ fun BatteryExtraInformation(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clip(RoundedCornerShape(cornerRadius))
-                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .background(containerColorAlpha60)
                 .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
         ) {
             SessionText(

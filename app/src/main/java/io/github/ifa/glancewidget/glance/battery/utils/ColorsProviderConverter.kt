@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.glance.battery.utils
 
+import android.annotation.SuppressLint
 import androidx.glance.color.ColorProvider
 import androidx.glance.color.ColorProviders
 import androidx.glance.color.colorProviders
@@ -8,6 +9,7 @@ import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.ui.theme.getDarkScheme
 import io.github.ifa.glancewidget.ui.theme.getLightScheme
 
+@SuppressLint("RestrictedApi")
 fun appLightColors(): Map<ThemeTypeColor, ColorProviders> {
     return ThemeTypeColor.entries.filter { it != ThemeTypeColor.System }.associateWith {
         val colorScheme = getLightScheme(it.code)

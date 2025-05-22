@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 fun SessionText(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold,
         modifier = modifier,

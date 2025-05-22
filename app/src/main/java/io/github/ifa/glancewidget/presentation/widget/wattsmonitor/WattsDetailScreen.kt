@@ -127,7 +127,7 @@ internal fun WattsDetailScreen(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .sharedElement(
-                        state = rememberSharedContentState(key = WattsDetailDestination.STATE_KEY),
+                        sharedContentState = rememberSharedContentState(key = WattsDetailDestination.STATE_KEY),
                         animatedVisibilityScope = animatedScope,
                     )
             }

@@ -10,7 +10,7 @@ enum class ThemeType {
 
 enum class ThemeTypeColor(val code: Int) {
     System(0xFF386239.toInt()),
-    Spotify(0xFF386239.toInt()),
+    Spotify(0xFF375938.toInt()),
     FlowerBlue(0xFF769CDF.toInt()),
     MidnightPurple(0xFF220050.toInt()),
     FireRed(0xFFB33B15.toInt()),

@@ -1,16 +1,22 @@
 package io.github.ifa.glancewidget.utils
 
 import android.annotation.SuppressLint
+import android.app.AppOpsManager
+import android.app.AppOpsManager.OPSTR_GET_USAGE_STATS
 import android.app.LocaleManager
+import android.app.usage.UsageStatsManager
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.BatteryManager
 import android.os.Build
 import android.os.LocaleList
+import android.os.Process.myUid
 import android.text.TextPaint
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
@@ -26,6 +32,7 @@ import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.Constants.MAX_DESIGN_CAPACITY
 import io.github.ifa.glancewidget.utils.Constants.MIN_DESIGN_CAPACITY
+
 
 @SuppressLint("MissingPermission")
 fun Context.getPairedDevices(): List<BonedDevice> {
@@ -137,4 +144,28 @@ fun Context.textAsBitmap(
     val canvas = Canvas(image)
     canvas.drawText(text, 0f, baseline, paint)
     return image
+}
+
+fun Context.checkAppUsagePermission(): Boolean {
+    val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+    val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        appOps.unsafeCheckOpNoThrow(OPSTR_GET_USAGE_STATS, myUid(), packageName)
+    } else {
+        appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, myUid(), packageName)
+    }
+    return mode == AppOpsManager.MODE_ALLOWED
+}
+
+fun Context.getUsageStatsManager(): UsageStatsManager? {
+    return getSystemService(Context.USAGE_STATS_SERVICE) as? UsageStatsManager
+}
+
+@SuppressLint("QueryPermissionsNeeded")
+fun Context.getInstalledApps(): List<String> {
+    val flags = PackageManager.GET_META_DATA
+    val installedApps = packageManager.getInstalledApplications(flags).map { it.packageName }
+    val intent = Intent(Intent.ACTION_MAIN, null)
+    intent.addCategory(Intent.CATEGORY_LAUNCHER)
+    val resolvedApps = packageManager.queryIntentActivities(intent, flags).map { it.toString() }
+    return installedApps + resolvedApps
 }

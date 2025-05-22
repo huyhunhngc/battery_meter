@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +51,7 @@ fun BatteryItem(
     isTransparent: Boolean,
 ) {
     val isActive = percent > 0
-    val animatePercentFloat = remember(percent) { Animatable(00.0f) }
+    val animatePercentFloat = remember { Animatable(00.0f) }
     LaunchedEffect(percent) {
         animatePercentFloat.animateTo(
             targetValue = percent / 100f,
@@ -103,15 +102,12 @@ fun BatteryItem(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (isActive) {
-                        ItemLargeText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
-                    } else {
+                    val text = if (isActive) "$percent%" else "0%"
+                    if (description.isNotEmpty()) {
                         ItemText(
-                            text = stringResource(id = R.string.not_active),
+                            text = text,
                             modifier = Modifier.padding(end = 4.dp)
                         )
-                    }
-                    if (description.isNotEmpty()) {
                         Text(
                             text = description,
                             modifier = Modifier.padding(end = 4.dp),
@@ -119,6 +115,8 @@ fun BatteryItem(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
+                    } else {
+                        ItemLargeText(text = text, modifier = Modifier.padding(end = 4.dp))
                     }
                 }
 
@@ -160,6 +158,7 @@ private fun ItemText(text: String, modifier: Modifier = Modifier) {
         modifier = modifier,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.headlineSmall,
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold
     )

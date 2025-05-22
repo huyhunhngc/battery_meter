@@ -8,49 +8,49 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import io.github.ifa.glancewidget.R
 
-internal val googlesansLightFont = Font(R.font.googlesansregular, FontWeight.Light)
-internal val googlesansRegularFont = Font(R.font.googlesansregular, FontWeight.Normal)
-internal val googlesansMediumFont = Font(R.font.googlesanstextregular, FontWeight.Medium)
-internal val googlesansSemiBoldFont = Font(R.font.googlesanstextmedium, FontWeight.SemiBold)
-internal val googlesansBoldFont = Font(R.font.googlesanstextmedium, FontWeight.Bold)
+internal val interLightFont = Font(R.font.interlight, FontWeight.Light)
+internal val interRegularFont = Font(R.font.interregular, FontWeight.Normal)
+internal val interMediumFont = Font(R.font.intermedium, FontWeight.Medium)
+internal val interSemiBoldFont = Font(R.font.intersemibold, FontWeight.SemiBold)
+internal val interBoldFont = Font(R.font.interbold, FontWeight.Bold)
 
-val googleFont: FontFamily = FontFamily(
-    googlesansLightFont,
-    googlesansRegularFont,
-    googlesansMediumFont,
-    googlesansSemiBoldFont,
-    googlesansBoldFont
+val interFont: FontFamily = FontFamily(
+    interLightFont,
+    interRegularFont,
+    interMediumFont,
+    interSemiBoldFont,
+    interBoldFont
 )
 
 object Type {
     val typography = Typography(
         headlineLarge = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 32.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 32.sp
         ), headlineMedium = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 28.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 28.sp
         ), headlineSmall = TextStyle(
-            fontFamily = googleFont,
+            fontFamily = interFont,
             fontWeight = FontWeight.Medium,
             fontSize = 22.sp,
             letterSpacing = 0.15.sp
         ), titleLarge = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 20.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 20.sp
         ), titleMedium = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 16.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 16.sp
         ), titleSmall = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 14.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 14.sp
         ), bodyLarge = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 16.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 16.sp
         ), bodyMedium = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 14.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 14.sp
         ), bodySmall = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
         ), labelLarge = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.SemiBold, fontSize = 12.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
         ), labelMedium = TextStyle(
-            fontFamily = googleFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
+            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
         ), labelSmall = TextStyle(
-            fontFamily = googleFont,
+            fontFamily = interFont,
             fontWeight = FontWeight.Medium,
             fontSize = 10.sp,
             letterSpacing = 1.5.sp

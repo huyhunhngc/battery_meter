@@ -31,7 +31,7 @@ fun WattsMonitor(
     val sharedModifier = if (sharedTransitionScope != null && animatedScope != null) {
         with(sharedTransitionScope) {
             Modifier.sharedElement(
-                state = rememberSharedContentState(key = WattsDetailDestination.STATE_KEY),
+                sharedContentState = rememberSharedContentState(key = WattsDetailDestination.STATE_KEY),
                 animatedVisibilityScope = animatedScope,
             )
         }
