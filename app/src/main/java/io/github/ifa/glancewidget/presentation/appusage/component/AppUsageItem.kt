@@ -33,12 +33,13 @@ import io.github.ifa.glancewidget.ui.theme.containerColorAlpha60
 
 @Composable
 fun AppUsageItem(
+    modifier: Modifier = Modifier,
     appName: String,
     appIcon: Drawable,
     usageTime: Long
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 16.dp)
             .clip(RoundedCornerShape(16.dp))

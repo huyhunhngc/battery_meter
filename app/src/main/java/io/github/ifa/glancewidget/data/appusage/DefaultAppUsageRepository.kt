@@ -44,6 +44,11 @@ class DefaultAppUsageRepository(
         }
     }
 
+    override fun onChangedUsageRange(start: Long, end: Long) {
+        startTime.value = start
+        endTime.value = end
+    }
+
     private fun buildUsageStatsWrapper(
         packageNames: List<String>,
         usageStats: List<UsageStats>

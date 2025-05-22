@@ -87,4 +87,9 @@
     <string name="sync_color_scheme_with_widget_description">Widget will sync with your theme and color scheme.</string>
     <string name="measurement_in_progress">Measurement in progress</string>
     <string name="measurement_in_progress_description"> It will take some time to accurately calculate the battery usage.</string>
+    <string name="request_app_usage_permission">Grant App Usage Permission</string>
+    <string name="last_one_hour">1H</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="last_seven_day">7D</string>
 </resources>
