@@ -1,5 +1,10 @@
 package io.github.ifa.glancewidget
 
+import android.graphics.Color
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Surface
@@ -7,6 +12,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -14,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.localAppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
@@ -42,9 +47,21 @@ fun BatteryApp(
 
     val colorScheme = rememberColorScheme(isDarkTheme, settings.themeColor)
     val navController: NavHostController = rememberNavController()
-    val systemUiController = rememberSystemUiController()
-    LaunchedEffect(isDarkTheme) {
-        systemUiController.statusBarDarkContentEnabled = !isDarkTheme
+    val activity = LocalActivity.current as? ComponentActivity
+    val systemBarStyle by remember(isDarkTheme) {
+        derivedStateOf {
+            if (isDarkTheme) {
+                SystemBarStyle.dark(Color.TRANSPARENT)
+            } else {
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            }
+        }
+    }
+    LaunchedEffect(systemBarStyle) {
+        activity?.enableEdgeToEdge(
+            statusBarStyle = systemBarStyle,
+            navigationBarStyle = systemBarStyle
+        )
     }
     val appColorScheme = rememberAppColorScheme(isDarkTheme, colorScheme)
     AppTheme(

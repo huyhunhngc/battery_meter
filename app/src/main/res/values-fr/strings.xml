@@ -88,4 +88,5 @@
     <string name="today">Aujourd\'hui</string>
     <string name="yesterday">Hier</string>
     <string name="last_seven_day">7D</string>
+    <string name="app_usage">App Usage</string>
 </resources>

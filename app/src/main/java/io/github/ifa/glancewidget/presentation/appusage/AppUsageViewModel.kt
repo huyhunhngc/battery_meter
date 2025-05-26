@@ -10,7 +10,6 @@ import io.github.ifa.glancewidget.utils.buildUiState
 import io.github.ifa.glancewidget.utils.getEndOfDay
 import io.github.ifa.glancewidget.utils.getStartOfDay
 import io.github.ifa.glancewidget.utils.subtractDays
-import io.github.ifa.glancewidget.utils.subtractHours
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -53,15 +52,14 @@ class AppUsageViewModel @Inject constructor(
 
 data class AppUsageScreenUiState(
     val appUsageStats: List<UsageStatsWrapper> = emptyList(),
-    val usageRange: UsageRange = UsageRange.LAST_1_HOURS,
+    val usageRange: UsageRange = UsageRange.TODAY,
     val hasAppUsagePermission: Boolean = false
 ) {
     enum class UsageRange {
-        LAST_1_HOURS, TODAY, YESTERDAY, LAST_7_DAYS;
+        TODAY, YESTERDAY, LAST_7_DAYS;
 
         fun displayName(): Int {
             return when (this) {
-                LAST_1_HOURS -> R.string.last_one_hour
                 TODAY -> R.string.today
                 YESTERDAY -> R.string.yesterday
                 LAST_7_DAYS -> R.string.last_seven_day
@@ -70,12 +68,6 @@ data class AppUsageScreenUiState(
 
         fun getRangeTime(): Pair<Long, Long> {
             return when (this) {
-                LAST_1_HOURS -> {
-                    val startTime = Calendar.getInstance().subtractHours(1).timeInMillis
-                    val endTime = Calendar.getInstance().timeInMillis
-                    Pair(startTime, endTime)
-                }
-
                 TODAY -> {
                     val startTime = Calendar.getInstance().getStartOfDay().timeInMillis
                     val endTime = Calendar.getInstance().timeInMillis
@@ -104,7 +96,7 @@ data class AppUsageScreenUiState(
         companion object {
             fun options(): List<UsageRange> {
                 return listOf(
-                    LAST_1_HOURS, TODAY, YESTERDAY, LAST_7_DAYS
+                    TODAY, YESTERDAY, LAST_7_DAYS
                 )
             }
         }
