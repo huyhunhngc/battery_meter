@@ -31,7 +31,7 @@ enum class MainScreenTab(
         widgetScreenRoute, R.string.widget_tab, R.drawable.ic_widgets_filled, R.drawable.ic_widgets
     ),
     AppUsage(
-        appUsageScreenRoute, R.string.widget_tab, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
+        appUsageScreenRoute, R.string.app_usage, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
     ),
     Settings(
         settingsScreenRoute, R.string.settings, R.drawable.ic_setting_filled, R.drawable.ic_settings

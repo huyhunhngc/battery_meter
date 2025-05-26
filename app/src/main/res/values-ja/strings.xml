@@ -88,4 +88,5 @@
     <string name="today">今日</string>
     <string name="yesterday">昨日</string>
     <string name="last_seven_day">過去7日間</string>
+    <string name="app_usage">App Usage</string>
 </resources>

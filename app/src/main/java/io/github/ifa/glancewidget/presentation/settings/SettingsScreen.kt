@@ -34,7 +34,6 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.settings.component.LanguageSetting
-import io.github.ifa.glancewidget.presentation.settings.component.LaunchPremiumSession
 import io.github.ifa.glancewidget.presentation.settings.component.NotificationSetting
 import io.github.ifa.glancewidget.presentation.settings.component.OtherSession
 import io.github.ifa.glancewidget.presentation.settings.component.ThemeSetting
@@ -112,28 +111,9 @@ internal fun SettingsScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                LaunchPremiumSession(onOpenGoPremiumScreen = onOpenGoPremiumScreen)
-            }
-            item {
-                NotificationSetting(
-                    notificationSetting = uiState.notificationSetting,
-                    onSetNotificationEnabled = onSetNotificationEnabled,
-                    onSetShowPairedDevice = { enabled ->
-                        context.findActivity()?.sendBroadcast(Intent().apply {
-                            `package` = context.packageName
-                            action = ACTION_SHOW_PAIRED_DEVICES_CHANGED
-                            putExtra(SHOW_PAIRED_DEVICES, enabled)
-                        })
-                        onSetShowPairedDevice(enabled)
-                    }
-                )
-            }
-            if (!isAppCompatLocaleDeprecated()) {
-                item {
-                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-                }
-            }
+//            item {
+//                LaunchPremiumSession(onOpenGoPremiumScreen = onOpenGoPremiumScreen)
+//            }
             item {
                 ThemeSetting(
                     onSelectTheme = { theme ->
@@ -155,6 +135,26 @@ internal fun SettingsScreen(
                     uiState = uiState
                 )
             }
+            item {
+                NotificationSetting(
+                    notificationSetting = uiState.notificationSetting,
+                    onSetNotificationEnabled = onSetNotificationEnabled,
+                    onSetShowPairedDevice = { enabled ->
+                        context.findActivity()?.sendBroadcast(Intent().apply {
+                            `package` = context.packageName
+                            action = ACTION_SHOW_PAIRED_DEVICES_CHANGED
+                            putExtra(SHOW_PAIRED_DEVICES, enabled)
+                        })
+                        onSetShowPairedDevice(enabled)
+                    }
+                )
+            }
+            if (!isAppCompatLocaleDeprecated()) {
+                item {
+                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                }
+            }
+
             item {
                 OtherSession(onOpenAboutScreen, onOpenLicensesScreen, onOpenPrivacyPolicy)
             }
