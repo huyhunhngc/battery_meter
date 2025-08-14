@@ -10,6 +10,7 @@ import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.BatteryData
+import io.github.ifa.glancewidget.model.BatteryMeterNotification
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.service.BatteryStatusService.Companion.SERVICE_ID
@@ -43,32 +44,19 @@ class NotificationHandler @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    fun notifyBatteryMonitorNotification(batteryData: BatteryData) {
+    fun notifyBatteryMonitorNotification(
+        notification: BatteryMeterNotification
+    ) {
         val channel = NotificationChannels.BatteryStatus
         createChannelIfAbsent(channel)
         val notification = createBatteryMonitorNotification(
             batteryNotificationData = BatteryNotificationData(
                 channelId = channel.id,
-                level = batteryData.myDevice.level,
-                isCharging = batteryData.myDevice.isCharging,
-                temperature = batteryData.myDevice.temperature
-            )
-        )
-        notificationManager.notify(SERVICE_ID, notification)
-    }
-
-    @SuppressLint("MissingPermission")
-    fun notifyBatteryMonitorNotification(batteryDataWrapper: BatteryDataWrapper) {
-        val channel = NotificationChannels.BatteryStatus
-        createChannelIfAbsent(channel)
-        val notification = createBatteryMonitorNotification(
-            batteryNotificationData = BatteryNotificationData(
-                channelId = channel.id,
-                level = batteryDataWrapper.batteryData.myDevice.level,
-                isCharging = batteryDataWrapper.batteryData.myDevice.isCharging,
-                temperature = batteryDataWrapper.batteryData.myDevice.temperature,
-                remainBatteryTime = batteryDataWrapper.remainBatteryTime,
-                remainChargeTime = batteryDataWrapper.remainChargeTime
+                level = notification.batteryLevel,
+                isCharging = notification.isCharging,
+                remainBatteryTime = notification.remainBatteryTime,
+                remainChargeTime = notification.remainChargeTime,
+                temperature = notification.temperature
             )
         )
         notificationManager.notify(SERVICE_ID, notification)

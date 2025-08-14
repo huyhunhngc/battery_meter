@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlayBillingRepository {
     suspend fun startConnection(): Boolean
-
     /**
      * This maybe anti pattern, but so hard to follow clean architecture.
      *
@@ -29,14 +28,11 @@ interface PlayBillingRepository {
         productId: String,
         launchBillingFlow: BillingClient.(BillingFlowParams) -> Unit
     )
-
     suspend fun processSubscriptions(
         productId: String,
         launchBillingFlow: BillingClient.(BillingFlowParams) -> Unit
     )
-
     suspend fun premiumBillingProducts(): List<PremiumBillingProduct>
-    suspend fun historyPurchaseRecords(): List<HistoryPurchaseRecord>
     fun premiumProductsFlow(): Flow<List<PremiumBillingProduct>>
 }
 

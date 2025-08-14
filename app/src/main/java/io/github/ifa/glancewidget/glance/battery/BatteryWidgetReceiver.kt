@@ -11,15 +11,18 @@ import android.os.Bundle
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.ifa.glancewidget.broadcast.MonitorReceiver
-import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SHOW_PAIRED_DEVICES_CHANGED
-import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SYNC_THEME
-import io.github.ifa.glancewidget.broadcast.MonitorReceiver.Companion.ACTION_SYNC_THEME_COLOR
+import io.github.ifa.glancewidget.background.BatteryWidgetWorker
+import io.github.ifa.glancewidget.broadcast.BatteryWidgetMonitor
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
+import io.github.ifa.glancewidget.model.AppIntent
 import io.github.ifa.glancewidget.model.WidgetSetting
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,7 +32,25 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     @Inject
     lateinit var appSettingsRepository: AppSettingsRepository
 
-    private lateinit var monitorBroadcastReceiver: MonitorReceiver
+    private lateinit var monitorBroadcastReceiver: BatteryWidgetMonitor
+
+    override fun onEnabled(context: Context?) {
+        super.onEnabled(context)
+        val periodicUpdateRequest =
+            PeriodicWorkRequestBuilder<BatteryWidgetWorker>(10, TimeUnit.MINUTES)
+                .build()
+        if (context == null) return
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "BatteryWidgetMonitor",
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicUpdateRequest
+        )
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        WorkManager.getInstance(context).cancelUniqueWork("BatteryWidgetMonitor")
+    }
 
     override fun onUpdate(
         context: Context,
@@ -40,7 +61,7 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         if (::monitorBroadcastReceiver.isInitialized) {
             context.applicationContext.unregisterReceiver(monitorBroadcastReceiver)
         }
-        monitorBroadcastReceiver = MonitorReceiver()
+        monitorBroadcastReceiver = BatteryWidgetMonitor()
         val filter = IntentFilter().apply {
             (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
         }
@@ -82,16 +103,15 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
             Intent.ACTION_POWER_DISCONNECTED,
             Intent.ACTION_POWER_CONNECTED,
             Intent.ACTION_BATTERY_OKAY,
-            ACTION_SHOW_PAIRED_DEVICES_CHANGED,
-            ACTION_SYNC_THEME,
-            ACTION_SYNC_THEME_COLOR
+            AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED,
+            AppIntent.ACTION_SYNC_THEME,
+            AppIntent.ACTION_SYNC_THEME_COLOR
         )
         val BLUETOOTH_STATE_ACTIONS = listOf(
             BluetoothAdapter.ACTION_STATE_CHANGED,
             BluetoothDevice.ACTION_ACL_DISCONNECTED,
             BluetoothDevice.ACTION_ACL_CONNECTED
         )
-        const val ACTION_NEW_WIDGET = "action_new_widget"
         const val PINNED_WIDGET_DEFAULT_ID = -11
     }
 }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
@@ -12,10 +13,15 @@ import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
+import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
 import io.github.ifa.glancewidget.model.AddWidgetParams
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.Serializable
 import java.util.Calendar
@@ -143,5 +149,28 @@ fun Calendar.subtractDays(days: Int): Calendar {
 fun Calendar.subtractHours(hours: Int): Calendar {
     return this.apply {
         add(Calendar.HOUR_OF_DAY, -hours)
+    }
+}
+
+fun BroadcastReceiver.goAsyncCoroutine(
+    coroutineScope: CoroutineScope,
+    block: suspend () -> Unit
+) {
+    val pendingResult = goAsync()
+    coroutineScope.launch {
+        block()
+        pendingResult.finish()
+    }
+}
+
+suspend fun Context.updateBatteryWidget() {
+    val glanceIds = GlanceAppWidgetManager(this).getGlanceIds(BatteryWidget::class.java)
+    glanceIds.forEach { glanceId ->
+        updateAppWidgetState(
+            context = this,
+            glanceId = glanceId,
+        ) { _ ->
+            BatteryWidget().updateIfBatteryChanged(this, glanceId)
+        }
     }
 }

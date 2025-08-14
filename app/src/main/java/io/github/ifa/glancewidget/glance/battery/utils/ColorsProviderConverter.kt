@@ -45,6 +45,7 @@ fun appLightColors(): Map<ThemeTypeColor, ColorProviders> {
     }
 }
 
+@SuppressLint("RestrictedApi")
 fun appDarkColors(): Map<ThemeTypeColor, ColorProviders> {
     return ThemeTypeColor.entries.filter { it != ThemeTypeColor.System }.associateWith {
         val colorScheme = getDarkScheme(it.code)

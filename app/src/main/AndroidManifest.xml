@@ -52,7 +52,7 @@
         </receiver>
 
         <receiver
-            android:name=".broadcast.MonitorReceiver"
+            android:name=".broadcast.BatteryWidgetMonitor"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>

@@ -12,7 +12,7 @@ import android.os.IBinder
 import android.provider.Settings
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.BuildConfig
-import io.github.ifa.glancewidget.broadcast.MonitorReceiver
+import io.github.ifa.glancewidget.broadcast.BatteryWidgetMonitor
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.model.MyDevice
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +26,7 @@ class BatteryStatusService : Service() {
     @Inject
     lateinit var notificationHandler: NotificationHandler
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val monitorReceiver by lazy { MonitorReceiver() }
+    private val batteryWidgetMonitor by lazy { BatteryWidgetMonitor() }
 
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -46,9 +46,9 @@ class BatteryStatusService : Service() {
             actions.forEach { addAction(it) }
         }
         return if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            registerReceiver(monitorReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            registerReceiver(batteryWidgetMonitor, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
-            registerReceiver(monitorReceiver, filter)
+            registerReceiver(batteryWidgetMonitor, filter)
         }
     }
 
