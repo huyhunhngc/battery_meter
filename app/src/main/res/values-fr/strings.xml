@@ -88,5 +88,9 @@
     <string name="today">Aujourd\'hui</string>
     <string name="yesterday">Hier</string>
     <string name="last_seven_day">7D</string>
-    <string name="app_usage">App Usage</string>
+    <string name="app_usage">Utilisation de l\'application</string>
+    <string name="allow">Autoriser</string>
+    <string name="not_now">Pas maintenant</string>
+    <string name="should_allow_app_usage">Accès à l\'utilisation des applications requis</string>
+    <string name="should_allow_app_usage_desc">Pour vous montrer quelles applications consomment le plus d\'énergie, veuillez autoriser l\'accès à vos données d\'utilisation des applications. Vous pouvez ignorer cette étape, cela n\'affectera pas les autres fonctionnalités comme l\'analyse de la batterie ou le widget.</string>
 </resources>

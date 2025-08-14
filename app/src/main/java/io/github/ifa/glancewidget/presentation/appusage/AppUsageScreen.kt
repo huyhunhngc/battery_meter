@@ -2,12 +2,17 @@ package io.github.ifa.glancewidget.presentation.appusage
 
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
@@ -24,10 +29,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -97,27 +104,63 @@ private fun AppUsageScreenContent(
                     modifier = Modifier
                 )
             } else {
-                OutlinedButton(onClick = {
+                AppUsagePermission(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                ) {
                     val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                     context.startActivity(intent)
-                }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_monitoring),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        Text(
-                            text = stringResource(id = R.string.request_app_usage_permission),
-                            modifier = Modifier.padding(start = 8.dp),
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                    }
-
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun AppUsagePermission(
+    modifier: Modifier = Modifier,
+    onRequestPermission: () -> Unit = {}
+) {
+    Column(
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                shape = RoundedCornerShape(16.dp)
+            ).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_program_time),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = stringResource(id = R.string.should_allow_app_usage),
+            style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+            text = stringResource(id = R.string.should_allow_app_usage_desc),
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_no_permission),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            alignment = Alignment.Center,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(onClick = onRequestPermission) {
+                Text(
+                    text = stringResource(id = R.string.request_app_usage_permission),
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
         }
     }

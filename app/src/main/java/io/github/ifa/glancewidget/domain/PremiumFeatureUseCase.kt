@@ -12,8 +12,7 @@ class PremiumFeatureUseCase @Inject constructor(
     private val billingClient: BillingClient
 ) {
     suspend fun checkPremiumStatus(): Boolean {
-        if (!playBillingRepository.startConnection()) return false
-        val historyPurchaseRecords = playBillingRepository.historyPurchaseRecords()
+
         return true
     }
     suspend fun handlePurchases(purchases: List<Purchase>) {
