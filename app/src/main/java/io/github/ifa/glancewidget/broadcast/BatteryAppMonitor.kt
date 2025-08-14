@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.domain.MonitorUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
@@ -21,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class BatteryAppMonitor : BroadcastReceiver() {
     @Inject
     lateinit var notificationHandler: NotificationHandler
@@ -59,7 +61,7 @@ class BatteryAppMonitor : BroadcastReceiver() {
 
             AppIntent.ACTION_SYNC_THEME -> {
                 goAsyncCoroutine(scope) {
-                    intent.getSerializable<ThemeType>(AppIntent.SYNC_THEME)?.let {
+                    intent.getSerializable<ThemeType>(AppExtra.SYNC_THEME)?.let {
                         BatteryWidget().updateWidgetSetting(context) { copy(theme = it) }
                     }
                 }
@@ -67,7 +69,7 @@ class BatteryAppMonitor : BroadcastReceiver() {
 
             AppIntent.ACTION_SYNC_THEME_COLOR -> {
                 goAsyncCoroutine(scope) {
-                    intent.getSerializable<ThemeTypeColor>(AppIntent.SYNC_THEME_COLOR)?.let {
+                    intent.getSerializable<ThemeTypeColor>(AppExtra.SYNC_THEME_COLOR)?.let {
                         BatteryWidget().updateWidgetSetting(context) { copy(themeColor = it) }
                     }
                 }

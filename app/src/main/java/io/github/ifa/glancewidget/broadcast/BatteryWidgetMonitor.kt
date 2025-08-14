@@ -61,7 +61,7 @@ class BatteryWidgetMonitor : BroadcastReceiver() {
 
             AppIntent.ACTION_SYNC_THEME -> {
                 goAsyncCoroutine(scope) {
-                    intent.getSerializable<ThemeType>(AppIntent.SYNC_THEME)?.let {
+                    intent.getSerializable<ThemeType>(AppExtra.SYNC_THEME)?.let {
                         BatteryWidget().updateWidgetSetting(context) { copy(theme = it) }
                     }
                 }
@@ -69,7 +69,7 @@ class BatteryWidgetMonitor : BroadcastReceiver() {
 
             AppIntent.ACTION_SYNC_THEME_COLOR -> {
                 goAsyncCoroutine(scope) {
-                    intent.getSerializable<ThemeTypeColor>(AppIntent.SYNC_THEME_COLOR)?.let {
+                    intent.getSerializable<ThemeTypeColor>(AppExtra.SYNC_THEME_COLOR)?.let {
                         BatteryWidget().updateWidgetSetting(context) { copy(themeColor = it) }
                     }
                 }

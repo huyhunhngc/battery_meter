@@ -14,4 +14,5 @@
 .externalNativeBuild
 .cxx
 local.properties
-/.kotlin/errors/errors-1747973795751.log
+/.kotlin/errors/
+GEMINI.md
