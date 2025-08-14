@@ -19,12 +19,6 @@ data class BatteryData(
         return copy(myDevice = myDevice.copy(isCharging = isCharging))
     }
 
-    fun setPairedDevices(context: Context): BatteryData {
-        return copy(
-            batteryConnectedDevices = context.getPairedDevices()
-                .ifEmpty { batteryConnectedDevices })
-    }
-
     companion object {
         fun initial(): BatteryData {
             return BatteryData(

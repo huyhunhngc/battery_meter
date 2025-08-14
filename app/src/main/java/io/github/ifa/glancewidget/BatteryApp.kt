@@ -115,10 +115,12 @@ fun rememberAppColorSchemeMap(
     return remember(isDarkTheme) {
         ThemeTypeColor.entries.associateWith { themeTypeColor ->
             AppColorScheme(
-                themeTypeColor,
-                if (isDarkTheme) getDarkScheme(themeTypeColor.code) else getLightScheme(
-                    themeTypeColor.code
-                )
+                themeTypeColor = themeTypeColor,
+                colorScheme = if (isDarkTheme) {
+                    getDarkScheme(themeTypeColor.code)
+                } else {
+                    getLightScheme(themeTypeColor.code)
+                }
             )
         }
     }

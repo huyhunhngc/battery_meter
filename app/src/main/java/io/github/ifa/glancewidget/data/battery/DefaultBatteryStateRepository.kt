@@ -5,7 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.glance.battery.BatteryWidget
+import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.BATTERY_PREFERENCES
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
 import io.github.ifa.glancewidget.model.ChartRecord
@@ -14,6 +17,8 @@ import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.utils.Constants.DEFAULT_MAX_COLLECT_CURRENT
 import io.github.ifa.glancewidget.utils.chunked
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
+import io.github.ifa.glancewidget.utils.setBoolean
+import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
@@ -35,19 +40,16 @@ class DefaultBatteryStateRepository(
         return batteryDataStore.get()
     }
 
-    override fun extraBattery(): ExtraBatteryInfo {
-        return context.getExtraBatteryInformation()
-    }
-
     override fun extraBatteryFlow(): Flow<ExtraBatteryInfo> {
-        return flow {
-            emit(extraBattery())
-            batteryDataStore.getExtraBatteryInformation()
-                .chunked(3)
-                .conflate()
-                .map { it.average() }
-                .collect { chunk -> emit(chunk) }
+        val extraBattery = try {
+            context.getExtraBatteryInformation()
+        } catch (e: Exception) {
+            ExtraBatteryInfo()
         }
+        return batteryDataStore.getExtraBatteryInformation(extraBattery)
+            .chunked(3)
+            .conflate()
+            .map { it.average() }
     }
 
     override suspend fun chargeCurrent(): ChargeDisChargeCurrent {
@@ -63,8 +65,23 @@ class DefaultBatteryStateRepository(
     }
 
     override suspend fun saveExtraBatteryInformation() {
-        val extraBatteryInfo = context.getExtraBatteryInformation()
+        val extraBatteryInfo = try {
+            context.getExtraBatteryInformation()
+        } catch (e: Exception) {
+            ExtraBatteryInfo()
+        }
         batteryDataStore.saveExtraBatteryInformation(extraBatteryInfo)
+    }
+
+    override suspend fun setBatteryData(batteryData: BatteryData) {
+        context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, batteryData)
+    }
+
+    override suspend fun changePairedDevicesVisibility(showPairedDevices: Boolean) {
+        context.batteryWidgetStore.setBoolean(
+            BatteryWidget.SHOW_PAIRED_DEVICES,
+            showPairedDevices
+        )
     }
 
     @Deprecated("Use saveWidgetTransparencySetting")

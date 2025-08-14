@@ -29,11 +29,11 @@ class BatteryDataStore(
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getExtraBatteryInformation(): Flow<ExtraBatteryInfo> {
+    fun getExtraBatteryInformation(default: ExtraBatteryInfo): Flow<ExtraBatteryInfo> {
         return dataStore.data.map { preferences ->
             fromJson<ExtraBatteryInfo>(preferences[EXTRA_BATTERY_PREFERENCES])
         }.map {
-            it ?: ExtraBatteryInfo()
+            it ?: default
         }.flowOn(Dispatchers.IO)
     }
 

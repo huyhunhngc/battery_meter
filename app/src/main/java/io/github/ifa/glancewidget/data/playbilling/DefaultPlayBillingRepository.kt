@@ -6,11 +6,8 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
-import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.queryProductDetails
-import com.android.billingclient.api.queryPurchaseHistory
 import io.github.ifa.glancewidget.domain.PlayBillingRepository
-import io.github.ifa.glancewidget.model.premium.HistoryPurchaseRecord
 import io.github.ifa.glancewidget.model.premium.PremiumBillingProduct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -58,8 +55,7 @@ class DefaultPlayBillingRepository(
     }
 
     override suspend fun processPurchases(
-        productId: String,
-        launchBillingFlow: BillingClient.(BillingFlowParams) -> Unit
+        productId: String, launchBillingFlow: BillingClient.(BillingFlowParams) -> Unit
     ) {
         val productList = listOf(createInAppProductParams(productId))
         val params = QueryProductDetailsParams.newBuilder()
@@ -73,21 +69,19 @@ class DefaultPlayBillingRepository(
         val productDetails = productDetailsResult.productDetailsList?.firstOrNull() ?: return
 
         val productDetailsParamsList = listOf(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
-                .setProductDetails(productDetails)
+            BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(productDetails)
                 .build()
         )
-        val billingFlowParams = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(productDetailsParamsList)
-            .build()
+        val billingFlowParams =
+            BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
+                .build()
         withContext(Dispatchers.Main) {
             launchBillingFlow(billingClient, billingFlowParams)
         }
     }
 
     override suspend fun processSubscriptions(
-        productId: String,
-        launchBillingFlow: BillingClient.(BillingFlowParams) -> Unit
+        productId: String, launchBillingFlow: BillingClient.(BillingFlowParams) -> Unit
     ) {
         val productList = listOf(createSubscriptionParams(productId))
         val params = QueryProductDetailsParams.newBuilder()
@@ -102,14 +96,12 @@ class DefaultPlayBillingRepository(
         val selectedOfferToken =
             productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: return
         val productDetailsParamsList = listOf(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
-                .setProductDetails(productDetails)
-                .setOfferToken(selectedOfferToken)
-                .build()
+            BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(productDetails)
+                .setOfferToken(selectedOfferToken).build()
         )
-        val billingFlowParams = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(productDetailsParamsList)
-            .build()
+        val billingFlowParams =
+            BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
+                .build()
         withContext(Dispatchers.Main) {
             launchBillingFlow(billingClient, billingFlowParams)
         }
@@ -117,26 +109,6 @@ class DefaultPlayBillingRepository(
 
     override suspend fun premiumBillingProducts(): List<PremiumBillingProduct> {
         return queryInAppProducts() + querySubscriptions()
-    }
-
-    override suspend fun historyPurchaseRecords(): List<HistoryPurchaseRecord> {
-        val inAppPurchaseParams = QueryPurchaseHistoryParams.newBuilder()
-            .setProductType(BillingClient.ProductType.INAPP)
-            .build()
-        val subscriptionPurchaseParams = QueryPurchaseHistoryParams.newBuilder()
-            .setProductType(BillingClient.ProductType.SUBS)
-            .build()
-        val inAppPurchaseResult = withContext(Dispatchers.IO) {
-            val purchaseHistoryResult = billingClient.queryPurchaseHistory(inAppPurchaseParams)
-            purchaseHistoryResult.purchaseHistoryRecordList ?: emptyList()
-        }
-        val subscriptionPurchaseResult = withContext(Dispatchers.IO) {
-            val purchaseHistoryResult = billingClient.queryPurchaseHistory(subscriptionPurchaseParams)
-            purchaseHistoryResult.purchaseHistoryRecordList ?: emptyList()
-        }
-        return (inAppPurchaseResult + subscriptionPurchaseResult).map {
-            HistoryPurchaseRecord(it.purchaseToken)
-        }
     }
 
     override fun premiumProductsFlow(): Flow<List<PremiumBillingProduct>> {
@@ -193,8 +165,8 @@ class DefaultPlayBillingRepository(
                 it.productId.contains(PREMIUM_PLAN_ID) -> PremiumBillingProduct.PlanType.Premium
                 else -> PremiumBillingProduct.PlanType.Unknown
             }
-            val formattedPrice = it.subscriptionOfferDetails?.firstOrNull()?.pricingPhases
-                ?.pricingPhaseList?.firstOrNull()?.formattedPrice.orEmpty()
+            val formattedPrice =
+                it.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice.orEmpty()
             PremiumBillingProduct(
                 productId = it.productId,
                 productType = PremiumBillingProduct.ProductType.Subscription,
@@ -206,21 +178,16 @@ class DefaultPlayBillingRepository(
     }
 
     private fun createSubscriptionParams(productId: String): Product {
-        return Product.newBuilder()
-            .setProductId(productId)
-            .setProductType(BillingClient.ProductType.SUBS)
-            .build()
+        return Product.newBuilder().setProductId(productId)
+            .setProductType(BillingClient.ProductType.SUBS).build()
     }
 
     private fun createInAppProductParams(productId: String): Product {
-        return Product.newBuilder()
-            .setProductId(productId)
-            .setProductType(BillingClient.ProductType.INAPP)
-            .build()
+        return Product.newBuilder().setProductId(productId)
+            .setProductType(BillingClient.ProductType.INAPP).build()
     }
 
     companion object {
-        private const val TAG = "PlayBillingRepository"
         const val STANDARD_PLAN_ID = "standard"
         const val PREMIUM_PLAN_ID = "premium"
         private const val PREMIUM_YEARLY_PLAN_ID = "premium_yearly_plan"

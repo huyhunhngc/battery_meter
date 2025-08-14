@@ -12,12 +12,13 @@ interface BatteryStateRepository {
     @Composable
     fun battery(): BatteryData
     fun batteryFlow(): Flow<BatteryData>
-    fun extraBattery(): ExtraBatteryInfo
     fun extraBatteryFlow(): Flow<ExtraBatteryInfo>
     fun chargeCurrentFlow(): Flow<ChargeDisChargeCurrent>
     fun chartRecordFlow(): Flow<ChartRecord>
     suspend fun chargeCurrent(): ChargeDisChargeCurrent
     suspend fun saveExtraBatteryInformation()
+    suspend fun setBatteryData(batteryData: BatteryData)
+    suspend fun changePairedDevicesVisibility(showPairedDevices: Boolean)
     suspend fun saveChargeCurrent(chargeCurrent: Int)
     @Deprecated("Use saveWidgetTransparencySetting")
     suspend fun saveWidgetTransparentSetting(isTransparent: Boolean, appWidgetId: Int)

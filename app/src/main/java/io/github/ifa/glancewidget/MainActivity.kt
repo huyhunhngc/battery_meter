@@ -11,9 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.ifa.glancewidget.background.cancelBatteryMonitorRequest
-import io.github.ifa.glancewidget.background.enqueueBatteryMonitorRequest
-import io.github.ifa.glancewidget.broadcast.MonitorReceiver
+import io.github.ifa.glancewidget.broadcast.BatteryAppMonitor
 import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
@@ -30,7 +28,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
 
-    private val monitorReceiver by lazy { MonitorReceiver() }
+    private val batteryAppMonitor by lazy { BatteryAppMonitor() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +43,21 @@ class MainActivity : ComponentActivity() {
                 BatteryApp(startDestination = mainScreenRoute)
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.startBatteryMonitoring()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.stopBatteryMonitoring()
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(batteryAppMonitor)
+        super.onDestroy()
     }
 
     private fun requestPermissions() {
@@ -72,25 +85,9 @@ class MainActivity : ComponentActivity() {
             actions.forEach { addAction(it) }
         }
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            registerReceiver(monitorReceiver, filter, RECEIVER_NOT_EXPORTED)
+            registerReceiver(batteryAppMonitor, filter, RECEIVER_NOT_EXPORTED)
         } else {
-            registerReceiver(monitorReceiver, filter)
+            registerReceiver(batteryAppMonitor, filter)
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        enqueueBatteryMonitorRequest()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        cancelBatteryMonitorRequest()
-    }
-
-    override fun onDestroy() {
-        unregisterReceiver(monitorReceiver)
-        super.onDestroy()
-    }
 }
-
