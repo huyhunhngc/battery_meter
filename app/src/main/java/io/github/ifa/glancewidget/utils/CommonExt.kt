@@ -160,7 +160,7 @@ fun BroadcastReceiver.goAsyncCoroutine(
     block: suspend () -> Unit
 ) {
     val pendingResult = goAsync()
-    coroutineScope.launch {
+    coroutineScope.launch(dispatcher) {
         block()
         pendingResult.finish()
     }
@@ -176,4 +176,8 @@ suspend fun Context.updateBatteryWidget() {
             BatteryWidget().updateIfBatteryChanged(this, glanceId)
         }
     }
+}
+
+fun Long.timeMillisToHours(): Long {
+    return this / (1000 * 60 * 60)
 }

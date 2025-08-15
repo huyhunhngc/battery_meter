@@ -154,9 +154,11 @@ private fun Header(
             modifier = Modifier.padding(8.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = {
-            startActivity(context, Intent(Intent.ACTION_POWER_USAGE_SUMMARY), null)
-        }) {
+        IconButton(
+            onClick = {
+                context.startActivity(Intent(Intent.ACTION_POWER_USAGE_SUMMARY))
+            }
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_monitoring),
                 tint = MaterialTheme.colorScheme.primary,
