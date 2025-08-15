@@ -13,10 +13,12 @@ import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.utils.Constants.DEFAULT_MAX_COLLECT_CURRENT
 import io.github.ifa.glancewidget.utils.chunked
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
+import io.github.ifa.glancewidget.utils.getObject
 import io.github.ifa.glancewidget.utils.setBoolean
 import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.collections.immutable.toPersistentList
@@ -138,6 +140,13 @@ class DefaultBatteryStateRepository(
             }
         }
         batteryDataStore.saveChargeCurrent(newChargeDisChargeCurrent)
+    }
+
+    override suspend fun setMyDevice(myDevice: MyDevice) {
+        val data = context.batteryWidgetStore.getObject<BatteryData>(BATTERY_PREFERENCES)
+            ?: BatteryData.initial()
+        val newData = data.copy(myDevice = myDevice)
+        context.batteryWidgetStore.setObject(BATTERY_PREFERENCES, newData)
     }
 
     override suspend fun saveHistoryForChart(temperature: Float, voltage: Float) {

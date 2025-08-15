@@ -32,7 +32,7 @@ import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.Constants.MAX_DESIGN_CAPACITY
 import io.github.ifa.glancewidget.utils.Constants.MIN_DESIGN_CAPACITY
-
+import androidx.core.graphics.createBitmap
 
 @SuppressLint("MissingPermission")
 fun Context.getPairedDevices(): List<BonedDevice> {
@@ -50,6 +50,10 @@ fun Context.getPairedDevices(): List<BonedDevice> {
             deviceType = DeviceType.fromClass(it.bluetoothClass.deviceClass)
         )
     }.sortedBy { it.deviceType.ordinal }
+}
+
+fun Context.safeGetPairedDevices(): List<BonedDevice> {
+    return runCatching { getPairedDevices() }.getOrDefault(emptyList())
 }
 
 fun Context.getExtraBatteryInformation(): ExtraBatteryInfo {
@@ -140,7 +144,7 @@ fun Context.textAsBitmap(
     val baseline = -paint.ascent()
     val width = (paint.measureText(text)).toInt()
     val height = (baseline + paint.descent()).toInt()
-    val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val image = createBitmap(width, height)
     val canvas = Canvas(image)
     canvas.drawText(text, 0f, baseline, paint)
     return image

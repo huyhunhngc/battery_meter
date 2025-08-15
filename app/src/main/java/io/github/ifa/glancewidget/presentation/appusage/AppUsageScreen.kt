@@ -7,17 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -34,7 +31,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -78,14 +74,12 @@ private fun AppUsageScreenContent(
 ) {
     val context = LocalContext.current
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = {
-            AnimatedTextTopAppBar(
-                title = stringResource(id = MainScreenTab.AppUsage.label),
-                scrollBehavior = scrollBehavior
-            )
-        },
-        floatingActionButtonPosition = FabPosition.End
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
+        AnimatedTextTopAppBar(
+            title = stringResource(id = MainScreenTab.AppUsage.label),
+            scrollBehavior = scrollBehavior
+        )
+    }, floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         Column(
             modifier = Modifier
@@ -102,10 +96,18 @@ private fun AppUsageScreenContent(
                     usageRange = uiState.usageRange,
                     onUsageRangeChange = onUsageRangeChange,
                     modifier = Modifier
-                )
+                ) { packageName ->
+                    context.startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = android.net.Uri.fromParts("package", packageName, null)
+                        }
+                    )
+                }
             } else {
                 AppUsagePermission(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                     context.startActivity(intent)
@@ -117,15 +119,15 @@ private fun AppUsageScreenContent(
 
 @Composable
 fun AppUsagePermission(
-    modifier: Modifier = Modifier,
-    onRequestPermission: () -> Unit = {}
+    modifier: Modifier = Modifier, onRequestPermission: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .background(
                 color = MaterialTheme.colorScheme.surfaceContainer,
                 shape = RoundedCornerShape(16.dp)
-            ).padding(16.dp),
+            )
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(
@@ -152,7 +154,9 @@ fun AppUsagePermission(
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
@@ -173,8 +177,5 @@ private fun AppUsageScreenContentPreview() {
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState = AppUsageScreenUiState()
     AppUsageScreenContent(
-        snackbarHostState = snackbarHostState,
-        uiState = uiState,
-        onUsageRangeChange = {}
-    )
+        snackbarHostState = snackbarHostState, uiState = uiState, onUsageRangeChange = {})
 }

@@ -11,18 +11,16 @@ import android.os.Bundle
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.ifa.glancewidget.background.BatteryWidgetWorker
 import io.github.ifa.glancewidget.broadcast.BatteryWidgetMonitor
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
+import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.model.AppIntent
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.WidgetSetting
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,32 +30,16 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     @Inject
     lateinit var appSettingsRepository: AppSettingsRepository
 
+    @Inject
+    lateinit var batteryStateRepository: BatteryStateRepository
+
     private lateinit var monitorBroadcastReceiver: BatteryWidgetMonitor
-
-    override fun onEnabled(context: Context?) {
-        super.onEnabled(context)
-        val periodicUpdateRequest =
-            PeriodicWorkRequestBuilder<BatteryWidgetWorker>(10, TimeUnit.MINUTES)
-                .build()
-        if (context == null) return
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "BatteryWidgetMonitor",
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicUpdateRequest
-        )
-    }
-
-    override fun onDisabled(context: Context) {
-        super.onDisabled(context)
-        WorkManager.getInstance(context).cancelUniqueWork("BatteryWidgetMonitor")
-    }
 
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
         if (::monitorBroadcastReceiver.isInitialized) {
             context.applicationContext.unregisterReceiver(monitorBroadcastReceiver)
         }
@@ -65,13 +47,17 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         val filter = IntentFilter().apply {
             (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val status = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(
                 monitorBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED
             )
         } else {
             context.registerReceiver(monitorBroadcastReceiver, filter)
         }
+        MainScope().launch(Dispatchers.IO) {
+            status?.let { batteryStateRepository.setMyDevice(MyDevice.fromIntent(it)) }
+        }
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
     override fun onAppWidgetOptionsChanged(

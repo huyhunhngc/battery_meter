@@ -18,7 +18,9 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
 import io.github.ifa.glancewidget.model.AddWidgetParams
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -154,6 +156,7 @@ fun Calendar.subtractHours(hours: Int): Calendar {
 
 fun BroadcastReceiver.goAsyncCoroutine(
     coroutineScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher = Dispatchers.Main,
     block: suspend () -> Unit
 ) {
     val pendingResult = goAsync()
