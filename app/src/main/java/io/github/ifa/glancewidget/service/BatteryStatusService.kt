@@ -12,26 +12,36 @@ import android.os.IBinder
 import android.provider.Settings
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.BuildConfig
+import io.github.ifa.glancewidget.broadcast.BatteryAppMonitor
 import io.github.ifa.glancewidget.broadcast.BatteryWidgetMonitor
+import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.model.MyDevice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class BatteryStatusService : Service() {
     @Inject
     lateinit var notificationHandler: NotificationHandler
+    @Inject
+    lateinit var batteryStateRepository: BatteryStateRepository
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val batteryWidgetMonitor by lazy { BatteryWidgetMonitor() }
+    private val batteryMonitor by lazy { BatteryAppMonitor() }
 
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val myDevice = registerReceiver(BATTERY_ACTIONS + BATTERY_STATUS_ACTION)?.let {
             MyDevice.fromIntent(it)
+        }
+        if (myDevice != null) {
+            scope.launch {
+                batteryStateRepository.setMyDevice(myDevice)
+            }
         }
         startForeground(
             SERVICE_ID,
@@ -46,9 +56,9 @@ class BatteryStatusService : Service() {
             actions.forEach { addAction(it) }
         }
         return if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            registerReceiver(batteryWidgetMonitor, filter, Context.RECEIVER_NOT_EXPORTED)
+            registerReceiver(batteryMonitor, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
-            registerReceiver(batteryWidgetMonitor, filter)
+            registerReceiver(batteryMonitor, filter)
         }
     }
 
@@ -58,6 +68,7 @@ class BatteryStatusService : Service() {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(batteryMonitor)
         scope.cancel()
         super.onDestroy()
     }

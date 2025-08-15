@@ -6,6 +6,7 @@ import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.ChargeDisChargeCurrent
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.ExtraBatteryInfo
+import io.github.ifa.glancewidget.model.MyDevice
 import kotlinx.coroutines.flow.Flow
 
 interface BatteryStateRepository {
@@ -20,6 +21,7 @@ interface BatteryStateRepository {
     suspend fun setBatteryData(batteryData: BatteryData)
     suspend fun changePairedDevicesVisibility(showPairedDevices: Boolean)
     suspend fun saveChargeCurrent(chargeCurrent: Int)
+    suspend fun setMyDevice(myDevice: MyDevice)
     @Deprecated("Use saveWidgetTransparencySetting")
     suspend fun saveWidgetTransparentSetting(isTransparent: Boolean, appWidgetId: Int)
     suspend fun saveWidgetInitialSetting(transparency: Float, appWidgetId: Int)

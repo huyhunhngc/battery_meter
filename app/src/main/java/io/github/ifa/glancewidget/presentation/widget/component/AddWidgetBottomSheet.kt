@@ -81,7 +81,7 @@ fun AddWidgetBottomSheet(
                     deviceType = deviceType,
                     percent = level,
                     isCharging = isCharging,
-                    deviceName = name,
+                    deviceName = "",
                     isTransparent = isTransparentSelected,
                     modifier = Modifier
                         .height(100.dp)

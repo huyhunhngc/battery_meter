@@ -16,9 +16,11 @@ import io.github.ifa.glancewidget.service.NotificationHandler
 import io.github.ifa.glancewidget.utils.getPairedDevices
 import io.github.ifa.glancewidget.utils.getSerializable
 import io.github.ifa.glancewidget.utils.goAsyncCoroutine
+import io.github.ifa.glancewidget.utils.safeGetPairedDevices
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
@@ -29,67 +31,54 @@ class BatteryAppMonitor : BroadcastReceiver() {
 
     @Inject
     lateinit var monitorUseCase: MonitorUseCase
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onReceive(context: Context, intent: Intent) {
-        when (intent.action) {
-            Intent.ACTION_BATTERY_CHANGED -> {
-                monitorUseCase.updateBatteryDevice(MyDevice.fromIntent(intent))
-                val pairedDevices = try {
-                    context.getPairedDevices()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    emptyList()
+        goAsyncCoroutine(MainScope(), Dispatchers.IO) {
+            when (intent.action) {
+                Intent.ACTION_BATTERY_CHANGED -> {
+                    monitorUseCase.updateBatteryDevice(MyDevice.fromIntent(intent))
+                    monitorUseCase.setPairedDevices(context.safeGetPairedDevices())
+                    monitorUseCase.onDetectBatteryInfo {
+                        notificationHandler.notifyBatteryMonitorNotification(it)
+                    }
                 }
-                monitorUseCase.setPairedDevices(pairedDevices)
-            }
 
-            Intent.ACTION_POWER_CONNECTED -> {
-                monitorUseCase.setChargingStatus(true)
-            }
+                Intent.ACTION_POWER_CONNECTED -> {
+                    monitorUseCase.setChargingStatus(true)
+                    monitorUseCase.onDetectBatteryInfo {
+                        notificationHandler.notifyBatteryMonitorNotification(it)
+                    }
+                }
 
-            Intent.ACTION_POWER_DISCONNECTED -> {
-                monitorUseCase.setChargingStatus(false)
-            }
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    monitorUseCase.setChargingStatus(false)
+                    monitorUseCase.onDetectBatteryInfo {
+                        notificationHandler.notifyBatteryMonitorNotification(it)
+                    }
+                }
 
-            AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED -> {
-                val showPairedDevices = intent.getBooleanExtra(AppExtra.SHOW_PAIRED_DEVICES, true)
-                goAsyncCoroutine(scope) {
+                AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED -> {
+                    val showPairedDevices = intent.getBooleanExtra(AppExtra.SHOW_PAIRED_DEVICES, true)
                     monitorUseCase.changePairedDevicesVisibility(showPairedDevices)
                 }
-            }
 
-            AppIntent.ACTION_SYNC_THEME -> {
-                goAsyncCoroutine(scope) {
+                AppIntent.ACTION_SYNC_THEME -> {
                     intent.getSerializable<ThemeType>(AppExtra.SYNC_THEME)?.let {
                         BatteryWidget().updateWidgetSetting(context) { copy(theme = it) }
                     }
                 }
-            }
 
-            AppIntent.ACTION_SYNC_THEME_COLOR -> {
-                goAsyncCoroutine(scope) {
+                AppIntent.ACTION_SYNC_THEME_COLOR -> {
                     intent.getSerializable<ThemeTypeColor>(AppExtra.SYNC_THEME_COLOR)?.let {
                         BatteryWidget().updateWidgetSetting(context) { copy(themeColor = it) }
                     }
                 }
-            }
 
-            in BLUETOOTH_STATE_ACTIONS -> {
-                val pairedDevices = try {
-                    context.getPairedDevices()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    emptyList()
+                in BLUETOOTH_STATE_ACTIONS -> {
+                    monitorUseCase.setPairedDevices(context.safeGetPairedDevices())
                 }
-                monitorUseCase.setPairedDevices(pairedDevices)
             }
-        }
-        goAsyncCoroutine(scope) {
             monitorUseCase.refreshBatteryInformation()
-            monitorUseCase.onDetectBatteryInfo {
-                notificationHandler.notifyBatteryMonitorNotification(it)
-            }
             context.updateBatteryWidget()
         }
     }

@@ -21,25 +21,27 @@ class MonitorUseCase @Inject constructor(
         }
 
     suspend fun refreshBatteryInformation() {
-        batteryStateRepository.setBatteryData(batteryData)
         batteryStateRepository.saveExtraBatteryInformation()
     }
 
-    fun setChargingStatus(isCharging: Boolean) {
+    suspend fun setChargingStatus(isCharging: Boolean) {
         batteryData = batteryData.setChargingStatus(isCharging)
+        batteryStateRepository.setBatteryData(batteryData)
     }
 
-    fun setPairedDevices(pairedDevices: List<BonedDevice>) {
+    suspend fun setPairedDevices(pairedDevices: List<BonedDevice>) {
         batteryData = batteryData.copy(
             batteryConnectedDevices = pairedDevices.ifEmpty { batteryData.batteryConnectedDevices })
+        batteryStateRepository.setBatteryData(batteryData)
     }
 
-    fun updateBatteryDevice(myDevice: MyDevice) {
+    suspend fun updateBatteryDevice(myDevice: MyDevice) {
         batteryData = batteryData.copy(myDevice = myDevice)
+        batteryStateRepository.setBatteryData(batteryData)
     }
 
     suspend fun changePairedDevicesVisibility(showPairedDevices: Boolean) {
-
+        batteryStateRepository.changePairedDevicesVisibility(showPairedDevices)
     }
 
     suspend fun onDetectBatteryInfo(onDetect: (BatteryMeterNotification) -> Unit) {

@@ -1,14 +1,19 @@
 package io.github.ifa.glancewidget.presentation.appusage.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,25 +35,46 @@ fun Long.formatDuration(): String {
     }.trim()
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppUsageList(
+    modifier: Modifier = Modifier,
     appUsageStats: List<UsageStatsWrapper>,
     usageRange: AppUsageScreenUiState.UsageRange,
     onUsageRangeChange: (AppUsageScreenUiState.UsageRange) -> Unit,
-    modifier: Modifier = Modifier
+    onAppUsageClick: (String) -> Unit,
 ) {
     val options = remember {
         AppUsageScreenUiState.UsageRange.options()
     }
+    val lazyListState = rememberLazyListState()
+    val isHeaderStuck by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemScrollOffset > 0
+        }
+    }
+    val headerBackgroundColor by animateColorAsState(
+        targetValue = if (isHeaderStuck) {
+            MaterialTheme.colorScheme.surfaceContainer
+        } else {
+            MaterialTheme.colorScheme.background
+        },
+        label = "headerBackgroundColor"
+    )
+
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background),
+        state = lazyListState,
         contentPadding = PaddingValues(bottom = 16.dp),
     ) {
-        item {
+        stickyHeader {
             SelectableChips(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(headerBackgroundColor)
+                    .padding(16.dp),
                 options = options.map { stringResource(it.displayName()) },
                 selected = options.indexOf(usageRange),
                 onSelect = {
@@ -64,11 +90,15 @@ fun AppUsageList(
                 appName = appUsage.appName,
                 appIcon = appUsage.appIcon,
                 usageTime = appUsage.usageStats?.totalTimeInForeground ?: 0,
-                modifier = Modifier.animateItem( // Add animation here
+                modifier = Modifier.animateItem(
+                    // Add animation here
                     fadeInSpec = tween(500), // Fade-in animation
                     fadeOutSpec = tween(500), // Fade-out animation
                     placementSpec = tween(500), // Slide-in animation
-                )
+                ),
+                onAppClick = {
+                    onAppUsageClick(appUsage.usageStats?.packageName.orEmpty())
+                }
             )
         }
     }

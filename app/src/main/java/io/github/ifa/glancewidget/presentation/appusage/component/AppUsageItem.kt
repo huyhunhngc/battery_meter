@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.presentation.appusage.component
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,14 +37,16 @@ fun AppUsageItem(
     modifier: Modifier = Modifier,
     appName: String,
     appIcon: Drawable,
-    usageTime: Long
+    usageTime: Long,
+    onAppClick: () -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 16.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(containerColorAlpha60),
+            .background(containerColorAlpha60)
+            .clickable(onClick = onAppClick),
     ) {
         Row(
             modifier = Modifier
@@ -98,5 +101,6 @@ fun AppUsageItemPreview() {
     AppUsageItem(
         appName = "Sample App",
         appIcon = defaultAppIcon,
-        usageTime = 120000L)
+        usageTime = 120000L
+    ) {}
 }
