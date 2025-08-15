@@ -1,17 +1,21 @@
 package io.github.ifa.glancewidget.presentation.appusage.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -35,6 +39,7 @@ fun Long.formatDuration(): String {
     }.trim()
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppUsageList(
@@ -62,6 +67,10 @@ fun AppUsageList(
         label = "headerBackgroundColor"
     )
 
+    LaunchedEffect(appUsageStats) {
+        lazyListState.animateScrollToItem(0)
+    }
+
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -81,6 +90,17 @@ fun AppUsageList(
                     onUsageRangeChange(options[it])
                 }
             )
+        }
+        item {
+            if (appUsageStats.isNotEmpty()) {
+                AppUsageChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    appUsageStats = appUsageStats.take(4)
+                )
+            }
         }
         items(
             items = appUsageStats,
