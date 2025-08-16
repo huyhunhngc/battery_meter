@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.domain
 import androidx.compose.runtime.Composable
 import io.github.ifa.glancewidget.di.LocalRepositories
 import io.github.ifa.glancewidget.model.AppSettings
+import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,8 @@ interface AppSettingsRepository {
     suspend fun saveThemeColor(themeTypeColor: ThemeTypeColor)
     suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting)
     suspend fun saveShowPairedDevicesSetting(showPairedDevices: Boolean)
+    suspend fun saveBondedDeviceSetting(macAddress: String, showInWidget: Boolean)
+    fun getBondedDevices(): Flow<BonnedDeviceSettings>
 }
 
 @Composable

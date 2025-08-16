@@ -93,11 +93,13 @@ class BatteryUseCase @Inject constructor(
                 val br: BufferedReader? = try {
                     BufferedReader(FileReader(cycleCount))
                 } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
                     null
                 }
                 numberOfCycles = br?.readLine()?.toInt() ?: 0
                 br?.close()
             } catch (e: IOException) {
+                e.printStackTrace()
                 numberOfCycles = 0
             }
         }

@@ -5,10 +5,13 @@ import android.app.Activity.RESULT_OK
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,12 +44,14 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
+import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.presentation.main.MainScreenTab
 import io.github.ifa.glancewidget.presentation.widget.component.AddWidgetBottomSheet
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryExtraInformation
 import io.github.ifa.glancewidget.presentation.widget.component.BatteryOverall
+import io.github.ifa.glancewidget.presentation.widget.component.BonedDeviceItem
 import io.github.ifa.glancewidget.presentation.widget.component.ConnectedDevice
 import io.github.ifa.glancewidget.presentation.widget.component.DropdownMenu
 import io.github.ifa.glancewidget.presentation.widget.component.MeasurementWarning
@@ -134,7 +139,7 @@ private fun WidgetScreen(
     onDisMissBottomSheet: () -> Unit = {},
     onClickAddWidget: (AddWidgetParams) -> Unit,
     onRequestPiningWidget: () -> Unit = {},
-    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
+    onShowInWidgetChanged: (String, Boolean) -> Unit,
     onForceReloadClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -169,6 +174,7 @@ private fun WidgetScreen(
             connectedDevices(
                 modifier = Modifier.padding(bottom = 16.dp),
                 batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
+                batteryDeviceSettings = uiState.bonnedDeviceSettings,
                 onShowInWidgetChanged = onShowInWidgetChanged
             )
         }
@@ -221,7 +227,10 @@ private fun LazyListScope.batteryMeasurementWarning(
     showMeasurementWarning: Boolean
 ) {
     item {
-        if (showMeasurementWarning) {
+        AnimatedVisibility(
+            visible = showMeasurementWarning,
+            enter = slideInVertically(),
+        ) {
             MeasurementWarning()
         }
     }
@@ -256,14 +265,25 @@ private fun LazyListScope.batteryExtraInformation(
 private fun LazyListScope.connectedDevices(
     modifier: Modifier = Modifier,
     batteryConnectedDevices: List<BonedDevice>,
-    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
+    batteryDeviceSettings: BonnedDeviceSettings,
+    onShowInWidgetChanged: (String, Boolean) -> Unit,
 ) {
     if (batteryConnectedDevices.isNotEmpty()) {
         item {
             ConnectedDevice(
                 modifier = modifier,
-                batteryConnectedDevice = batteryConnectedDevices,
+            )
+        }
+        items(
+            items = batteryConnectedDevices,
+            key = { device -> device.address }
+        ) { device ->
+            val showInWidget = batteryDeviceSettings.settings[device.address]?.showInWidget ?: true
+            BonedDeviceItem(
+                device = device,
+                showInWidget = showInWidget,
                 onShowInWidgetChanged = onShowInWidgetChanged,
+                onItemClick = {}
             )
         }
     }

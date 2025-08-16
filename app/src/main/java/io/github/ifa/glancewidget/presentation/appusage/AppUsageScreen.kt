@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -83,7 +84,20 @@ private fun AppUsageScreenContent(
         topBar = {
             AnimatedTextTopAppBar(
                 title = stringResource(id = MainScreenTab.AppUsage.label),
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(onClick = {
+                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_settings),
+                            contentDescription = stringResource(id = R.string.settings),
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
             )
         },
         floatingActionButtonPosition = FabPosition.End

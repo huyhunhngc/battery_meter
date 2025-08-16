@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import java.util.Calendar
 
 class DefaultAppUsageRepository(
@@ -22,6 +23,7 @@ class DefaultAppUsageRepository(
 ) : AppUsageRepository {
     private val startTime = MutableStateFlow(Calendar.getInstance().getStartOfDay().timeInMillis)
     private val endTime = MutableStateFlow(Calendar.getInstance().timeInMillis)
+    private val _hasAppUsagePermission = MutableStateFlow(false)
 
     override fun getAppUsageStats(): Flow<List<UsageStatsWrapper>> {
         val usageStatsManager = context.getUsageStatsManager()
@@ -39,14 +41,15 @@ class DefaultAppUsageRepository(
     }
 
     override fun hasAppUsagePermission(): Flow<Boolean> {
-        return flow {
-            emit(context.checkAppUsagePermission())
+        return _hasAppUsagePermission.onStart {
+            _hasAppUsagePermission.value = context.checkAppUsagePermission()
         }
     }
 
     override fun onChangedUsageRange(start: Long, end: Long) {
         startTime.value = start
         endTime.value = end
+        _hasAppUsagePermission.value = context.checkAppUsagePermission()
     }
 
     private fun buildUsageStatsWrapper(

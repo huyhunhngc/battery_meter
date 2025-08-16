@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.data.appsettings
 import android.content.Context
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
+import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.utils.setLocale
@@ -45,6 +46,19 @@ class DefaultAppSettingsRepository(
                 )
             )
         )
+    }
+
+    override suspend fun saveBondedDeviceSetting(macAddress: String, showInWidget: Boolean) {
+        appSettingDataStore.saveBondedDeviceSetting(
+            BonnedDeviceSettings.BonnedDeviceSetting(
+                address = macAddress,
+                showInWidget = showInWidget
+            )
+        )
+    }
+
+    override fun getBondedDevices(): Flow<BonnedDeviceSettings> {
+        return appSettingDataStore.getBondedDevicesFlow()
     }
 
     override suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting) {

@@ -1,13 +1,10 @@
 package io.github.ifa.glancewidget.model
 
-import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.os.Build
-import android.util.Log
 import androidx.annotation.StringRes
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.utils.getPairedDevices
 import kotlinx.serialization.Serializable
 import kotlin.math.round
 

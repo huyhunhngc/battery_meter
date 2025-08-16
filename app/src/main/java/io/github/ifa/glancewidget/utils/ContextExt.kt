@@ -151,7 +151,7 @@ fun Context.textAsBitmap(
 }
 
 fun Context.checkAppUsagePermission(): Boolean {
-    val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+    val appOps = getSystemService(Context.APP_OPS_SERVICE) as? AppOpsManager ?: return false
     val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         appOps.unsafeCheckOpNoThrow(OPSTR_GET_USAGE_STATS, myUid(), packageName)
     } else {

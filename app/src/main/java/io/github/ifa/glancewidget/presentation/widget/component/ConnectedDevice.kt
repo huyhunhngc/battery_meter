@@ -14,14 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.BonedDevice
+import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.ui.component.SessionText
 
 @Composable
 fun ConnectedDevice(
     modifier: Modifier = Modifier,
-    batteryConnectedDevice: List<BonedDevice>,
-    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
-    onItemClick: (BonedDevice) -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -37,31 +35,11 @@ fun ConnectedDevice(
             color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.padding(horizontal = 4.dp),
         )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        batteryConnectedDevice.forEach {
-            BonedDeviceItem(
-                device = it,
-                showInWidget = true,
-                onShowInWidgetChanged = onShowInWidgetChanged,
-                onItemClick = onItemClick
-            )
-        }
     }
 }
 
 @Preview
 @Composable
 fun ConnectedDevicePreview() {
-    ConnectedDevice(
-        batteryConnectedDevice = listOf(
-            BonedDevice(
-                name = "Sample Device",
-                address = "00:1A:2B:3C:4D:5E",
-                batteryInPercentage = 80,
-                batteryInMinutes = 480
-            )
-        ),
-        onShowInWidgetChanged = { _, _ -> }
-    )
+    ConnectedDevice()
 }
