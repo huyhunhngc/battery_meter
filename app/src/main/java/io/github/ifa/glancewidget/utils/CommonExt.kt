@@ -178,6 +178,6 @@ suspend fun Context.updateBatteryWidget() {
     }
 }
 
-fun Long.timeMillisToHours(): Long {
-    return this / (1000 * 60 * 60)
+fun Long.timeMillisToHours(): Float {
+    return (this.toDouble() / (1000 * 60 * 60)).toFloat()
 }

@@ -96,7 +96,7 @@ fun AppUsageList(
                 AppUsageChart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(180.dp)
+                        .height(200.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     appUsageStats = appUsageStats.take(4)
                 )

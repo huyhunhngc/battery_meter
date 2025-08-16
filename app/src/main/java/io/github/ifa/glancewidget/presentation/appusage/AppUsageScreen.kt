@@ -1,7 +1,9 @@
 package io.github.ifa.glancewidget.presentation.appusage
 
 import android.content.Intent
+import android.os.Build
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -57,13 +59,16 @@ fun AppUsageScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    AppUsageScreenContent(
-        snackbarHostState = snackbarHostState,
-        uiState = uiState,
-        onUsageRangeChange = viewModel::setUsageRange
-    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        AppUsageScreenContent(
+            snackbarHostState = snackbarHostState,
+            uiState = uiState,
+            onUsageRangeChange = viewModel::setUsageRange
+        )
+    }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppUsageScreenContent(
@@ -74,12 +79,14 @@ private fun AppUsageScreenContent(
 ) {
     val context = LocalContext.current
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
-        AnimatedTextTopAppBar(
-            title = stringResource(id = MainScreenTab.AppUsage.label),
-            scrollBehavior = scrollBehavior
-        )
-    }, floatingActionButtonPosition = FabPosition.End
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            AnimatedTextTopAppBar(
+                title = stringResource(id = MainScreenTab.AppUsage.label),
+                scrollBehavior = scrollBehavior
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         Column(
             modifier = Modifier
@@ -170,6 +177,7 @@ fun AppUsagePermission(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable

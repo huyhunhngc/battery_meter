@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.presentation.widget.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -18,11 +19,32 @@ internal fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onAddWidgetClick: () -> Unit,
+    onForceReloadClick: () -> Unit,
 ) {
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest
     ) {
+        DropdownMenuItem(
+            onClick = onForceReloadClick,
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Refresh,
+                    contentDescription = null
+                )
+            },
+            text = {
+                Text(
+                    "Force Reload",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            colors = MenuDefaults.itemColors().copy(
+                textColor = MaterialTheme.colorScheme.primary,
+                leadingIconColor = MaterialTheme.colorScheme.primary,
+                trailingIconColor = MaterialTheme.colorScheme.primary
+            )
+        )
         DropdownMenuItem(
             onClick = onAddWidgetClick,
             leadingIcon = {
