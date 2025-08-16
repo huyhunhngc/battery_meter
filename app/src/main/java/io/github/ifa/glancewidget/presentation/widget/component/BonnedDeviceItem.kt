@@ -35,7 +35,7 @@ fun BonedDeviceItem(
     device: BonedDevice,
     modifier: Modifier = Modifier,
     showInWidget: Boolean = true,
-    onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
+    onShowInWidgetChanged: (String, Boolean) -> Unit,
     onItemClick: (BonedDevice) -> Unit,
 ) {
         Column(
@@ -72,7 +72,7 @@ fun BonedDeviceItem(
                     Switch(
                         checked = showInWidget,
                         onCheckedChange = {
-                            onShowInWidgetChanged(device, it)
+                            onShowInWidgetChanged(device.address, it)
                         },
                     )
                 }

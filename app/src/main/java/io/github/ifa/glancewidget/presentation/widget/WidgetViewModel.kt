@@ -6,10 +6,12 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.domain.BatteryUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.BonedDevice
+import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.utils.buildUiState
@@ -24,12 +26,14 @@ import javax.inject.Inject
 @HiltViewModel
 class WidgetViewModel @Inject constructor(
     private val batteryStateRepository: BatteryStateRepository,
+    private val appSettingsRepository: AppSettingsRepository,
     batteryUseCase: BatteryUseCase,
 ) : ViewModel() {
     data class WidgetScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryOverall: BatteryDataWrapper,
         val chartTrackingData: ChartRecord,
+        val bonnedDeviceSettings: BonnedDeviceSettings
     ) {
         val showMeasurementWarning = batteryOverall.chargeDisChargeCurrent.showMeasurementWarning()
     }
@@ -46,10 +50,24 @@ class WidgetViewModel @Inject constructor(
         initialValue = BatteryDataWrapper()
     )
 
+    private val _bonnedDeviceSettings = appSettingsRepository.getBondedDevices().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = BonnedDeviceSettings()
+    )
+
     val uiState: StateFlow<WidgetScreenUiState> = buildUiState(
-        _setupWidgetId, _batteryDataWrapper, _chartTrackingData
-    ) { setupWidgetId, batteryDataWrapper, chartTrackingData ->
-        WidgetScreenUiState(setupWidgetId, batteryDataWrapper, chartTrackingData)
+        _setupWidgetId,
+        _batteryDataWrapper,
+        _chartTrackingData,
+        _bonnedDeviceSettings
+    ) { setupWidgetId, batteryDataWrapper, chartTrackingData, bonnedDeviceSettings ->
+        WidgetScreenUiState(
+            setupWidgetId = setupWidgetId,
+            batteryOverall = batteryDataWrapper,
+            chartTrackingData = chartTrackingData,
+            bonnedDeviceSettings =bonnedDeviceSettings
+        )
     }
 
     fun hideBottomSheet() {
@@ -77,9 +95,11 @@ class WidgetViewModel @Inject constructor(
     }
 
     fun updateDeviceShowInWidget(
-        device: BonedDevice,
+        address: String,
         showInWidget: Boolean
     ) {
-
+        viewModelScope.launch(Dispatchers.IO) {
+            appSettingsRepository.saveBondedDeviceSetting(address, showInWidget)
+        }
     }
 }

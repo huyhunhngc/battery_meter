@@ -13,7 +13,6 @@ import android.provider.Settings
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.broadcast.BatteryAppMonitor
-import io.github.ifa.glancewidget.broadcast.BatteryWidgetMonitor
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.model.MyDevice

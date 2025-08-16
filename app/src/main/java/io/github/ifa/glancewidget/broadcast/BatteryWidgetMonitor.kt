@@ -17,10 +17,8 @@ import io.github.ifa.glancewidget.utils.getSerializable
 import io.github.ifa.glancewidget.utils.goAsyncCoroutine
 import io.github.ifa.glancewidget.utils.safeGetPairedDevices
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
 @AndroidEntryPoint

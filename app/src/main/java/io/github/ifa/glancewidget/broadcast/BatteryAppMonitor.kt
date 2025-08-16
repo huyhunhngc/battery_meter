@@ -13,15 +13,12 @@ import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.service.NotificationHandler
-import io.github.ifa.glancewidget.utils.getPairedDevices
 import io.github.ifa.glancewidget.utils.getSerializable
 import io.github.ifa.glancewidget.utils.goAsyncCoroutine
 import io.github.ifa.glancewidget.utils.safeGetPairedDevices
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
 @AndroidEntryPoint

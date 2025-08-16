@@ -10,6 +10,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.model.MyDevice
+import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
 
 @HiltWorker
@@ -24,12 +25,29 @@ class BatteryWidgetWorker @AssistedInject constructor(
             val batteryStatus = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let {
                 context.registerReceiver(null, it)
             }
-            batteryStatus?.let { batteryStateRepository.setMyDevice(MyDevice.fromIntent(it)) }
+            val myDevice = batteryStatus?.let { MyDevice.fromIntent(it) } ?: return Result.failure()
+            batteryStateRepository.setMyDevice(myDevice)
             context.updateBatteryWidget()
+            measureBattery(myDevice)
             Result.success()
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure()
+        }
+    }
+
+    private suspend fun measureBattery(myDevice: MyDevice) {
+        try {
+            val extraBatteryInfo = context.getExtraBatteryInformation()
+            batteryStateRepository.saveHistoryForChart(
+                myDevice.temperature.temperature,
+                myDevice.voltage
+            )
+            batteryStateRepository.saveChargeCurrent(
+                extraBatteryInfo.getChargeDisChargeCurrent(myDevice.isCharging)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
