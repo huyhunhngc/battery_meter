@@ -7,6 +7,9 @@ import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -19,7 +22,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val batteryStateRepository: BatteryStateRepository
-): ViewModel() {
+) : ViewModel() {
     private var monitoringJob: Job? = null
 
     fun startBatteryMonitoring() {
@@ -59,6 +62,7 @@ class MainViewModel @Inject constructor(
         monitoringJob?.cancel()
         monitoringJob = null
     }
+
     fun saveShowPairedDevicesSetting(showPairedDevices: Boolean) {
         viewModelScope.launch {
             appSettingsRepository.saveShowPairedDevicesSetting(showPairedDevices)

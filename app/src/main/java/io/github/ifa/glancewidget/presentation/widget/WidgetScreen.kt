@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
@@ -103,7 +104,15 @@ internal fun WidgetScreen(
             }
         },
         onRequestPiningWidget = viewModel::createPinnedWidget,
-        onShowInWidgetChanged = viewModel::updateDeviceShowInWidget
+        onShowInWidgetChanged = viewModel::updateDeviceShowInWidget,
+        onForceReloadClick = {
+            activity?.apply {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                finish()
+                startActivity(intent)
+            }
+        }
     )
 }
 
@@ -126,12 +135,17 @@ private fun WidgetScreen(
     onClickAddWidget: (AddWidgetParams) -> Unit,
     onRequestPiningWidget: () -> Unit = {},
     onShowInWidgetChanged: (BonedDevice, Boolean) -> Unit,
+    onForceReloadClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            Appbar(scrollBehavior = scrollBehavior, onClickAddWidget = onRequestPiningWidget)
+            Appbar(
+                scrollBehavior = scrollBehavior,
+                onClickAddWidget = onRequestPiningWidget,
+                onForceReloadClick = onForceReloadClick
+            )
         },
     ) { padding ->
         LazyColumn(
@@ -172,7 +186,11 @@ private fun WidgetScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Appbar(scrollBehavior: TopAppBarScrollBehavior, onClickAddWidget: () -> Unit) {
+private fun Appbar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    onClickAddWidget: () -> Unit,
+    onForceReloadClick: () -> Unit,
+) {
     var dropdownExpanded by remember { mutableStateOf(false) }
     AnimatedTextTopAppBar(
         title = stringResource(id = MainScreenTab.Widget.label),
@@ -188,6 +206,10 @@ private fun Appbar(scrollBehavior: TopAppBarScrollBehavior, onClickAddWidget: ()
                 onDismissRequest = { dropdownExpanded = false },
                 onAddWidgetClick = {
                     onClickAddWidget()
+                    dropdownExpanded = false
+                },
+                onForceReloadClick = {
+                    onForceReloadClick()
                     dropdownExpanded = false
                 }
             )

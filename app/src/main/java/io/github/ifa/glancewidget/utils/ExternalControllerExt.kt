@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.github.ifa.glancewidget.R
@@ -32,7 +31,7 @@ fun Context.navigateUrl(url: String) {
 @SuppressLint("QueryPermissionsNeeded")
 fun Context.sendMail() {
     val intent = Intent(Intent.ACTION_SENDTO)
-    intent.setData(Uri.parse("mailto:"))
+    intent.data = "mailto:".toUri()
     intent.putExtra(Intent.EXTRA_EMAIL, "huyhunhngc@gmail.com")
     intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
     startActivity(Intent.createChooser(intent, ""))
@@ -47,6 +46,7 @@ private fun Context.navigateToNativeAppApi30(uri: Uri): Boolean {
         startActivity(nativeAppIntent)
         true
     } catch (ex: ActivityNotFoundException) {
+        ex.printStackTrace()
         false
     }
 }

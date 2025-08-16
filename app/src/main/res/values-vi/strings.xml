@@ -93,4 +93,7 @@
     <string name="not_now">Không bây giờ</string>
     <string name="should_allow_app_usage">Cần truy cập sử dụng ứng dụng</string>
     <string name="should_allow_app_usage_desc">Để theo dõi mức sử dụng pin của các ứng dụng, hãy cho phép truy cập dữ liệu sử dụng ứng dụng. Bạn có thể bỏ qua bước này. Nó sẽ không ảnh hưởng đến các tính năng khác (phân tích pin, tiện ích, v.v.).</string>
+    <string name="cpu_time">Tổng CPU</string>
+    <string name="cpu_foreground">CPU nền trước</string>
+    <string name="usage_time">Sử dụng (giờ)</string>
 </resources>

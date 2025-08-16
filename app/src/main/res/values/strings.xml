@@ -97,4 +97,7 @@
     <string name="not_now">Not now</string>
     <string name="should_allow_app_usage">App Usage Access Required</string>
     <string name="should_allow_app_usage_desc">To show you which apps are consuming the most power, please allow access to your app usage data. You can skip this, as it won\'t affect other features like battery analysis or the widget.</string>
+    <string name="cpu_time">CPU total</string>
+    <string name="cpu_foreground">CPU foreground</string>
+    <string name="usage_time">Usage (hours)</string>
 </resources>

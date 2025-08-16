@@ -93,4 +93,7 @@
     <string name="not_now">今はしない</string>
     <string name="should_allow_app_usage">アプリの使用状況へのアクセスが必要です</string>
     <string name="should_allow_app_usage_desc">どのアプリが最も多くの電力を消費しているかを表示するために、アプリの使用状況データへのアクセスを許可してください。これはスキップできます。他の機能（バッテリー分析やウィジェットなど）には影響しません。</string>
+    <string name="cpu_time">CPU合計</string>
+    <string name="cpu_foreground">CPU前面プラン</string>
+    <string name="usage_time">使用時間（時間）</string>
 </resources>

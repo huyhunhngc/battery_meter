@@ -93,4 +93,7 @@
     <string name="not_now">Pas maintenant</string>
     <string name="should_allow_app_usage">Accès à l\'utilisation des applications requis</string>
     <string name="should_allow_app_usage_desc">Pour vous montrer quelles applications consomment le plus d\'énergie, veuillez autoriser l\'accès à vos données d\'utilisation des applications. Vous pouvez ignorer cette étape, cela n\'affectera pas les autres fonctionnalités comme l\'analyse de la batterie ou le widget.</string>
+    <string name="cpu_time">CPU total</string>
+    <string name="cpu_foreground">CPU premier plan</string>
+    <string name="usage_time">Utilisation (heures)</string>
 </resources>

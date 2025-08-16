@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -124,8 +125,10 @@ fun BatteryItem(
             } else {
                 if (deviceName.isNotEmpty()) {
                     ItemText(text = deviceName, modifier = Modifier.weight(1f))
+                    ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
+                } else {
+                    ItemText(text = "$percent%", modifier = Modifier.weight(1f))
                 }
-                ItemText(text = "$percent%", modifier = Modifier.padding(end = 4.dp))
             }
 
             AnimatedVisibility(visible = isCharging, enter = scaleIn(), exit = scaleOut()) {
@@ -162,6 +165,7 @@ private fun ItemText(text: String, modifier: Modifier = Modifier) {
         overflow = TextOverflow.Ellipsis,
         style = MaterialTheme.typography.headlineSmall,
         color = MaterialTheme.colorScheme.primary,
+        textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold
     )
 }
