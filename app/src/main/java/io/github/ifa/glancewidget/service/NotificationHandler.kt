@@ -2,7 +2,10 @@ package io.github.ifa.glancewidget.service
 
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -19,18 +22,22 @@ import javax.inject.Inject
 class NotificationHandler @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    private val notificationManager: NotificationManagerCompat by lazy {
-        NotificationManagerCompat.from(context)
+    private val notificationManager: NotificationManager? by lazy {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
     }
 
-    private fun createChannelIfAbsent(channel: NotificationChannelCompat) {
-        if (notificationManager.getNotificationChannel(channel.id) == null) {
-            notificationManager.createNotificationChannel(channel)
+    private fun createChannelIfAbsent(channel: NotificationChannel) {
+        if (notificationManager?.getNotificationChannel(channel.id) == null) {
+            notificationManager?.createNotificationChannel(channel)
         }
     }
 
     fun createStartMonitorNotification(myDevice: MyDevice?): Notification {
-        val channel = NotificationChannels.BatteryStatus
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_LOW
+        )
         createChannelIfAbsent(channel)
         return createBatteryMonitorNotification(
             batteryNotificationData = BatteryNotificationData(
@@ -38,8 +45,7 @@ class NotificationHandler @Inject constructor(
                 level = myDevice?.level ?: 0,
                 isCharging = myDevice?.isCharging ?: false,
                 temperature = myDevice?.temperature
-            ),
-            priority = NotificationCompat.PRIORITY_HIGH
+            )
         )
     }
 
@@ -47,7 +53,11 @@ class NotificationHandler @Inject constructor(
     fun notifyBatteryMonitorNotification(
         notification: BatteryMeterNotification
     ) {
-        val channel = NotificationChannels.BatteryStatus
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_LOW
+        )
         createChannelIfAbsent(channel)
         val notification = createBatteryMonitorNotification(
             batteryNotificationData = BatteryNotificationData(
@@ -59,13 +69,12 @@ class NotificationHandler @Inject constructor(
                 temperature = notification.temperature
             )
         )
-        notificationManager.notify(SERVICE_ID, notification)
+        notificationManager?.notify(SERVICE_ID, notification)
     }
 
     @SuppressLint("RemoteViewLayout")
     private fun createBatteryMonitorNotification(
-        batteryNotificationData: BatteryNotificationData,
-        priority: Int = NotificationCompat.PRIORITY_MIN
+        batteryNotificationData: BatteryNotificationData
     ): Notification {
         val packageName = context.packageName
         val notificationLayout =
@@ -75,20 +84,18 @@ class NotificationHandler @Inject constructor(
         notificationLayout.applyData(batteryNotificationData)
         notificationLayoutExpanded.applyData(batteryNotificationData)
         val channelId = batteryNotificationData.channelId
-        val action = NotificationCompat.Action(
+        val action = Notification.Action(
             R.drawable.ic_settings,
             context.getString(R.string.settings),
             BatteryStatusService.createOpenBatteryStatusSettingsIntent(context, channelId)
         )
-        return NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_launcher)
+        return Notification.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_charger)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setStyle(Notification.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
             .setCustomBigContentView(notificationLayoutExpanded)
             .addAction(action)
-            .setPriority(priority)
-            .setSound(null)
             .setOngoing(true)
             .build()
     }
@@ -128,24 +135,36 @@ class NotificationHandler @Inject constructor(
     ) {
         val temperatureDisplay = temperature?.formatTemperature() ?: "--"
         val chargeDisplay = if (isCharging == true) R.string.charging else R.string.discharging
-        val levelIcon = when ((level ?: 0) * 7 / 100) {
-            0 -> R.drawable.ic_battery_0_bar
-            1 -> R.drawable.ic_battery_1_bar
-            2 -> R.drawable.ic_battery_2_bar
-            3 -> R.drawable.ic_battery_3_bar
-            4 -> R.drawable.ic_battery_4_bar
-            5 -> R.drawable.ic_battery_5_bar
-            6 -> R.drawable.ic_battery_6_bar
-            7 -> R.drawable.ic_battery_full
-            else -> R.drawable.ic_battery_level
+        val levelIcon = if (isCharging == true) {
+            when((level ?: 0) * 7 / 100) {
+                0 -> R.drawable.ic_battery_charging_10
+                1 -> R.drawable.ic_battery_charging_20
+                2 -> R.drawable.ic_battery_charging_30
+                3 -> R.drawable.ic_battery_charging_50
+                4 -> R.drawable.ic_battery_charging_60
+                5 -> R.drawable.ic_battery_charging_80
+                6 -> R.drawable.ic_battery_charging_90
+                7 -> R.drawable.ic_battery_charging_full
+                else -> R.drawable.ic_battery_charging_full
+            }
+        } else {
+            when ((level ?: 0) * 7 / 100) {
+                0 -> R.drawable.ic_battery_0_bar
+                1 -> R.drawable.ic_battery_1_bar
+                2 -> R.drawable.ic_battery_2_bar
+                3 -> R.drawable.ic_battery_3_bar
+                4 -> R.drawable.ic_battery_4_bar
+                5 -> R.drawable.ic_battery_5_bar
+                6 -> R.drawable.ic_battery_6_bar
+                7 -> R.drawable.ic_battery_full
+                else -> R.drawable.ic_battery_level
+            }
         }
     }
+    companion object {
+        const val NOTIFICATION_ID = 1001
+        const val NOTIFICATION_CHANNEL_ID = "battery_status_channel"
+        const val NOTIFICATION_CHANNEL_NAME = "Battery Status"
+    }
 
-}
-
-object NotificationChannels {
-    val BatteryStatus = NotificationChannelCompat.Builder(
-        "battery-status-notification-channel-id",
-        NotificationManagerCompat.IMPORTANCE_LOW
-    ).setName("Battery status").setShowBadge(true).build()
 }

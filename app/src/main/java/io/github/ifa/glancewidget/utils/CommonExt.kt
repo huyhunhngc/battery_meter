@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.utils
 
 import android.Manifest
 import android.app.Activity
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -10,6 +11,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -68,6 +70,19 @@ suspend inline fun  DataStore<Preferences>.setBoolean(
     }
 }
 
+suspend inline fun DataStore<Preferences>.setInt(
+    key: Preferences.Key<Int>, value: Int
+) {
+    edit {
+        it[key] = value
+    }
+}
+
+suspend inline fun DataStore<Preferences>.getInt(
+    key: Preferences.Key<Int>
+): Int? {
+    return data.map { it[key] }.firstOrNull()
+}
 inline fun <reified T: Serializable> Intent.getSerializable(key: String?): T? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getSerializableExtra(key, T::class.java)
@@ -111,7 +126,19 @@ fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {
     val appWidgetManager = getSystemService(AppWidgetManager::class.java)
     val myProvider = ComponentName(applicationContext, BatteryWidgetReceiver::class.java)
     if (appWidgetManager.isRequestPinAppWidgetSupported) {
-        return appWidgetManager.requestPinAppWidget(myProvider, null, null)
+        val successIntent = Intent(applicationContext, BatteryWidgetReceiver::class.java).apply {
+            action = "ACTION_PINNED_SUCCESS"
+            putExtra("EXTRA_DEVICE_ADDRESS", "Huy's Device")
+        }
+
+        val successCallback = PendingIntent.getBroadcast(
+            applicationContext,
+            System.currentTimeMillis().toInt(),
+            successIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        return appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
     }
     return false
 }

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
+import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.presentation.widget.WidgetViewModel
 import kotlinx.coroutines.launch
 
@@ -126,8 +127,14 @@ fun AddWidgetBottomSheet(
             Spacer(modifier = Modifier.height(32.dp))
             Button(
                 onClick = {
-                    onClickAddWidget(AddWidgetParams(isTransparent = isTransparentSelected))
-                }, modifier = Modifier
+                    onClickAddWidget(
+                        AddWidgetParams(
+                            isTransparent = isTransparentSelected,
+                            widgetStyle = WidgetSetting.Style.Horizontal
+                        )
+                    )
+                },
+                modifier = Modifier
                     .fillMaxWidth(0.85f)
                     .padding(16.dp)
             ) {
