@@ -8,16 +8,21 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.broadcast.BatteryWidgetMonitor
+import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.model.AppIntent
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.WidgetSetting
+import io.github.ifa.glancewidget.utils.getInt
+import io.github.ifa.glancewidget.utils.setInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -33,31 +38,34 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     @Inject
     lateinit var batteryStateRepository: BatteryStateRepository
 
-    private lateinit var monitorBroadcastReceiver: BatteryWidgetMonitor
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        if (::monitorBroadcastReceiver.isInitialized) {
-            context.applicationContext.unregisterReceiver(monitorBroadcastReceiver)
-        }
-        monitorBroadcastReceiver = BatteryWidgetMonitor()
-        val filter = IntentFilter().apply {
-            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
-        }
-        val status = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                monitorBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(monitorBroadcastReceiver, filter)
-        }
-        MainScope().launch(Dispatchers.IO) {
-            status?.let { batteryStateRepository.setMyDevice(MyDevice.fromIntent(it)) }
+        syncLatestBatteryState(context)
+        for (appWidgetId in appWidgetIds) {
+            MainScope().launch(Dispatchers.IO) {
+                context.batteryWidgetStore.setInt(
+                    key = PINNED_WIDGET_PREFERENCES,
+                    value = appWidgetId
+                )
+            }
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action == "ACTION_PINNED_SUCCESS") {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val deviceName = intent.getStringExtra("EXTRA_DEVICE_ADDRESS")
+            MainScope().launch {
+                val appWidgetId = context.batteryWidgetStore.getInt(PINNED_WIDGET_PREFERENCES)
+
+            }
+
+        }
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -82,6 +90,23 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         }
     }
 
+    private fun syncLatestBatteryState(context: Context) {
+        val filter = IntentFilter().apply {
+            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
+        }
+        val status = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(
+                null, filter, Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            context.registerReceiver(null, filter)
+        } ?: Intent()
+        val myDevice = MyDevice.fromIntent(status)
+        MainScope().launch(Dispatchers.IO) {
+            batteryStateRepository.setMyDevice(myDevice)
+        }
+    }
+
     companion object {
         val BATTERY_ACTIONS = listOf(
             Intent.ACTION_BATTERY_CHANGED,
@@ -99,5 +124,6 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
             BluetoothDevice.ACTION_ACL_CONNECTED
         )
         const val PINNED_WIDGET_DEFAULT_ID = -11
+        val PINNED_WIDGET_PREFERENCES = intPreferencesKey("request_pinned_widget_id")
     }
 }

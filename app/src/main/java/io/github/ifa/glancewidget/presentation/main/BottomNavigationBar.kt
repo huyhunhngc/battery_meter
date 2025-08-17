@@ -55,7 +55,6 @@ fun BottomNavigationBar(
         MainScreenTab.entries.forEach { tab ->
             val isSelected = tab == currentTab
             NavigationBarItem(
-                modifier = Modifier.padding(1.dp),
                 label = {
                     Text(
                         text = stringResource(id = tab.label),

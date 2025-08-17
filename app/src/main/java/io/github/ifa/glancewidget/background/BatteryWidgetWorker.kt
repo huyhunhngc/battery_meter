@@ -1,14 +1,16 @@
 package io.github.ifa.glancewidget.background
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
+import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.utils.getExtraBatteryInformation
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
@@ -22,9 +24,17 @@ class BatteryWidgetWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            val batteryStatus = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let {
-                context.registerReceiver(null, it)
+            val filter = IntentFilter().apply {
+                (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
             }
+            val batteryStatus = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.registerReceiver(
+                    null, filter, Context.RECEIVER_NOT_EXPORTED
+                )
+            } else {
+                context.registerReceiver(null, filter)
+            }
+
             val myDevice = batteryStatus?.let { MyDevice.fromIntent(it) } ?: return Result.failure()
             batteryStateRepository.setMyDevice(myDevice)
             context.updateBatteryWidget()
