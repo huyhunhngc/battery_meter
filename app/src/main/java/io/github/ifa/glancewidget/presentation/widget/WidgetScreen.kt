@@ -182,7 +182,6 @@ private fun WidgetScreen(
         if (isShowAddWidgetBottomSheet) {
             AddWidgetBottomSheet(
                 uiState = uiState,
-                padding = padding,
                 onDisMiss = onDisMissBottomSheet,
                 onClickAddWidget = onClickAddWidget
             )
