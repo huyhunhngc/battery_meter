@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.glance.battery.component
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.WidgetSetting
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun CircleBatteryWidget(
     battery: BatteryData?,
@@ -37,7 +39,7 @@ fun CircleBatteryWidget(
     }
     val charging by rememberUpdatedState(newValue = isCharging)
     val connectedDevices by remember(connectedDevice, sizeWidget) {
-        derivedStateOf { connectedDevice.ifEmpty { List(3) { BonedDevice() } }.take(sizeWidget.itemOnSizeForCircle()) }
+        derivedStateOf { connectedDevice.take(sizeWidget.itemOnSizeForCircle()) }
     }
     val scaleTextSize = remember(sizeWidget) {
         if (sizeWidget == WidgetSetting.Type.Large || sizeWidget == WidgetSetting.Type.Wide) {
@@ -65,6 +67,7 @@ fun CircleBatteryWidget(
                 percent = percent,
                 isCharging = charging,
                 scaleTextSize = scaleTextSize,
+                transparency = if (transparent) 0f else 1f,
                 modifier = GlanceModifier.defaultWeight()
             )
             connectedDevices.forEach {
@@ -73,6 +76,7 @@ fun CircleBatteryWidget(
                     percent = it.batteryInPercentage,
                     isCharging = false,
                     scaleTextSize = scaleTextSize,
+                    transparency = if (transparent) 0f else 1f,
                     modifier = GlanceModifier.defaultWeight()
                 )
             }

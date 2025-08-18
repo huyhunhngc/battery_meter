@@ -97,7 +97,10 @@ fun LanguageSetting(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .padding(bottom = 12.dp)
+                        .padding(horizontal = 16.dp)
+                        .height(56.dp)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(16.dp))
                         .clickable {
                             openBottomSheet.value = false
                             scope.launch { sheetState.hide() }
@@ -112,7 +115,7 @@ fun LanguageSetting(
                         color = if (language == selectedLanguage) {
                             MaterialTheme.colorScheme.primary
                         } else {
-                            MaterialTheme.colorScheme.onSurface
+                            MaterialTheme.colorScheme.secondary
                         }
                     )
                     Spacer(modifier = Modifier.weight(1f))

@@ -10,6 +10,7 @@ import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.domain.BatteryUseCase
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
+import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ChartRecord
@@ -89,9 +90,13 @@ class WidgetViewModel @Inject constructor(
         _setupWidgetId.value = PINNED_WIDGET_DEFAULT_ID
     }
 
-    fun saveTransparentSettings(isTransparent: Boolean, appWidgetId: Int) {
+    fun setWidgetSetting(params: AddWidgetParams, appWidgetId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            batteryStateRepository.saveWidgetTransparentSetting(isTransparent, appWidgetId)
+            batteryStateRepository.saveWidgetInitialSetting(
+                appWidgetId = appWidgetId,
+                isTransparent = params.isTransparent,
+                widgetStyle = params.widgetStyle
+            )
         }
     }
 

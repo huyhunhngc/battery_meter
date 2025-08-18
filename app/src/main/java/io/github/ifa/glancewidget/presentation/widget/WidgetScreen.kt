@@ -58,6 +58,7 @@ import io.github.ifa.glancewidget.presentation.widget.component.MeasurementWarni
 import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.appPadding
+import io.github.ifa.glancewidget.utils.addWidget
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.requestToPinWidget
 import kotlinx.coroutines.launch
@@ -104,7 +105,10 @@ internal fun WidgetScreen(
                     viewModel.hideBottomSheet()
                 }
             } else {
-                viewModel.saveTransparentSettings(params.isTransparent, uiState.setupWidgetId)
+                viewModel.setWidgetSetting(
+                    appWidgetId = uiState.setupWidgetId,
+                    params = params
+                )
                 activity?.addWidget(uiState.setupWidgetId)
             }
         },
@@ -119,14 +123,6 @@ internal fun WidgetScreen(
             }
         }
     )
-}
-
-fun Activity.addWidget(appWidgetId: Int) {
-    val resultValue = Intent().apply {
-        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-    }
-    setResult(RESULT_OK, resultValue)
-    finish()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

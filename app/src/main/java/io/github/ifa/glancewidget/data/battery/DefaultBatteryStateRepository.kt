@@ -86,16 +86,16 @@ class DefaultBatteryStateRepository(
         )
     }
 
-    @Deprecated("Use saveWidgetTransparencySetting")
-    override suspend fun saveWidgetTransparentSetting(isTransparent: Boolean, appWidgetId: Int) {
+    override suspend fun saveWidgetInitialSetting(
+        appWidgetId: Int,
+        isTransparent: Boolean,
+        widgetStyle: WidgetSetting.Style
+    ) {
         saveWidgetSettings(appWidgetId) {
-            it.copy(isTransparent = isTransparent)
-        }
-    }
-
-    override suspend fun saveWidgetInitialSetting(transparency: Float, appWidgetId: Int) {
-        saveWidgetSettings(appWidgetId) {
-            it.copy(transparency = transparency)
+            it.copy(
+                isTransparent = isTransparent,
+                style = widgetStyle,
+            )
         }
     }
 

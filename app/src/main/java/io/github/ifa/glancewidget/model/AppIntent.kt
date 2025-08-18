@@ -11,4 +11,6 @@ object AppExtra {
     const val SHOW_PAIRED_DEVICES = "show_paired_devices"
     const val SYNC_THEME = "sync_theme"
     const val SYNC_THEME_COLOR = "sync_theme_color"
+    const val WIDGET_STYLE = "widget_style"
+    const val WIDGET_TRANSPARENT = "transparent"
 }

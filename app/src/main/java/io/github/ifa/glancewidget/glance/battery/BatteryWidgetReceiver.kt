@@ -16,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
+import io.github.ifa.glancewidget.model.AppExtra
 import io.github.ifa.glancewidget.model.AppIntent
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.WidgetSetting
@@ -24,6 +25,7 @@ import io.github.ifa.glancewidget.utils.setInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,12 +57,25 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == "ACTION_PINNED_SUCCESS") {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val deviceName = intent.getStringExtra("EXTRA_DEVICE_ADDRESS")
-            MainScope().launch {
+        if (intent.action == AppIntent.ACTION_PINNED_WIDGET_SUCCESS) {
+            val widgetStyle = WidgetSetting.Style.fromOrdinal(
+                intent.getIntExtra(AppExtra.WIDGET_STYLE, 0)
+            )
+            val isTransparent = intent.getBooleanExtra(
+                AppExtra.WIDGET_TRANSPARENT, false
+            )
+            MainScope().launch(Dispatchers.IO) {
                 val appWidgetId = context.batteryWidgetStore.getInt(PINNED_WIDGET_PREFERENCES)
-
+                    ?: return@launch
+                batteryStateRepository.saveWidgetInitialSetting(
+                    appWidgetId = appWidgetId,
+                    isTransparent = isTransparent,
+                    widgetStyle = widgetStyle
+                )
+                val glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId)
+                withContext(Dispatchers.Main) {
+                    glanceAppWidget.update(context, glanceId)
+                }
             }
 
         }
