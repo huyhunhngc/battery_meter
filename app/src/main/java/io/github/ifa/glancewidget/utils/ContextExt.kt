@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.utils
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.AppOpsManager
 import android.app.AppOpsManager.OPSTR_GET_USAGE_STATS
 import android.app.LocaleManager
@@ -33,6 +34,7 @@ import io.github.ifa.glancewidget.model.ExtraBatteryInfo
 import io.github.ifa.glancewidget.utils.Constants.MAX_DESIGN_CAPACITY
 import io.github.ifa.glancewidget.utils.Constants.MIN_DESIGN_CAPACITY
 import androidx.core.graphics.createBitmap
+import io.github.ifa.glancewidget.service.BatteryStatusService
 
 @SuppressLint("MissingPermission")
 fun Context.getPairedDevices(): List<BonedDevice> {
@@ -172,4 +174,24 @@ fun Context.getInstalledApps(): List<String> {
     intent.addCategory(Intent.CATEGORY_LAUNCHER)
     val resolvedApps = packageManager.queryIntentActivities(intent, flags).map { it.toString() }
     return installedApps + resolvedApps
+}
+
+fun Context.isMyServiceRunning(serviceClass: Class<*>): Boolean {
+    val manager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager ?: return false
+    for (service in manager.getRunningServices(Int.Companion.MAX_VALUE)) {
+        if (serviceClass.name == service.service.className) {
+            return true
+        }
+    }
+    return false
+}
+
+fun Context.startBatteryStatus() {
+    val intent = Intent(this, BatteryStatusService::class.java)
+    startForegroundService(intent)
+}
+
+fun Context.stopBatteryStatus() {
+    val intent = Intent(this, BatteryStatusService::class.java)
+    stopService(intent)
 }

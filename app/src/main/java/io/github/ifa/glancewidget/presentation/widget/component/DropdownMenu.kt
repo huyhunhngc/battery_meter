@@ -53,12 +53,6 @@ internal fun DropdownMenu(
                     contentDescription = null
                 )
             },
-            trailingIcon = {
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = null
-                )
-            },
             text = {
                 Text(
                     stringResource(id = R.string.add_pinned_widget),

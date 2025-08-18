@@ -6,7 +6,7 @@
     <string name="battery_status">バッテリーの状態</string>
     <string name="connected_devices">接続されたデバイス</string>
     <string name="battery_information">追加情報</string>
-    <string name="add_your_widget">ウィジェットをホーム画面に追加</string>
+    <string name="add_your_widget">ウィジェットを選択</string>
     <string name="add_widget">ウィジェットを追加</string>
     <string name="show_transparent">透明なウィジェットを使用する</string>
     <string name="temperature">温度</string>

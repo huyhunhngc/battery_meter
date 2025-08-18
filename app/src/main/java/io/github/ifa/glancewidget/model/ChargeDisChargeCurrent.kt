@@ -26,6 +26,15 @@ data class ChargeDisChargeCurrent(
         return dischargeCurrents.size != 1 && dischargeCurrents.size < collectionWarning
     }
 
+    fun getMeasurementProgress(): Float {
+        val totalMeasurements = chargeCurrents.size + dischargeCurrents.size
+        if (totalMeasurements == 0) return 0f
+        val currentMeasurements =
+            chargeCurrents.count { it != -1 } + dischargeCurrents.count { it != -1 }
+        val progress = (currentMeasurements.toFloat() / DEFAULT_MAX_COLLECT_CURRENT) * 100f
+        return progress
+    }
+
     enum class ChargeSpeed {
         NORMAL, FAST, TURBO, DISCHARGING
     }

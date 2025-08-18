@@ -10,7 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.ifa.glancewidget.background.ServiceWorker
 import io.github.ifa.glancewidget.broadcast.BatteryAppMonitor
 import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
@@ -19,6 +24,7 @@ import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
 import io.github.ifa.glancewidget.utils.AppPermissions
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,6 +49,7 @@ class MainActivity : ComponentActivity() {
                 BatteryApp(startDestination = mainScreenRoute)
             }
         }
+        startServiceWorker()
     }
 
     override fun onStart() {
@@ -89,5 +96,17 @@ class MainActivity : ComponentActivity() {
         } else {
             registerReceiver(batteryAppMonitor, filter)
         }
+    }
+
+    private fun startServiceWorker() {
+        val workManager = WorkManager.getInstance(this)
+        val request = PeriodicWorkRequestBuilder<ServiceWorker>(
+            16, TimeUnit.MINUTES
+        ).build()
+        workManager.enqueueUniquePeriodicWork(
+            "ServiceWorker",
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
     }
 }

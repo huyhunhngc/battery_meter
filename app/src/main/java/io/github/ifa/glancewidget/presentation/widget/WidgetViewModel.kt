@@ -36,6 +36,7 @@ class WidgetViewModel @Inject constructor(
         val bonnedDeviceSettings: BonnedDeviceSettings
     ) {
         val showMeasurementWarning = batteryOverall.chargeDisChargeCurrent.showMeasurementWarning()
+        val measurementProgress = batteryOverall.chargeDisChargeCurrent.getMeasurementProgress()
     }
 
     private val _setupWidgetId = MutableStateFlow(INVALID_APPWIDGET_ID)

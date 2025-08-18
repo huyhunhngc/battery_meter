@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,24 +29,23 @@ import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 
 @Composable
-fun MeasurementWarning() {
-    Spacer(modifier = Modifier.height(16.dp))
+fun MeasurementWarning(
+    progress: Float = 0f,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.errorContainer)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(16.dp),
 
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            imageVector = Icons.Default.Warning,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.error),
-            contentDescription = "premium",
+        CircularProgressIndicator(
+            progress = { progress / 100f },
             modifier = Modifier
-                .size(24.dp)
-                .fillMaxHeight()
+                .size(32.dp),
+            strokeWidth = 4.dp,
         )
         Column(
             modifier = Modifier.padding(start = 16.dp),
@@ -53,15 +53,15 @@ fun MeasurementWarning() {
         ) {
             Text(
                 text = stringResource(id = R.string.measurement_in_progress),
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.error,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
                 text = stringResource(id = R.string.measurement_in_progress_description),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -70,5 +70,7 @@ fun MeasurementWarning() {
 @Preview
 @Composable
 fun MeasurementWarningPreview() {
-    MeasurementWarning()
+    MeasurementWarning(
+        90f
+    )
 }
