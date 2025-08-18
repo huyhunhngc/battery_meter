@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
 import io.github.ifa.glancewidget.service.BatteryStatusService
@@ -36,7 +38,7 @@ import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilitySco
 const val mainScreenRoute = "main_screen_route"
 
 fun NavGraphBuilder.mainTabScreens(
-    mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
+    mainNavGraph: NavGraphBuilder.(NavController) -> Unit,
 ) {
     composable(mainScreenRoute) {
         CompositionLocalProvider(
@@ -53,11 +55,14 @@ fun NavGraphBuilder.mainTabScreens(
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
+    mainNavGraph: NavGraphBuilder.(NavController) -> Unit,
 ) {
     val mainTabNavController = rememberNavController()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val colorScheme = MaterialTheme.colorScheme
+    val navBackStackEntry by mainTabNavController.currentBackStackEntryAsState()
+    val currentTab = MainScreenTab.routeToTab(navBackStackEntry?.destination?.route)
     LaunchedEffect(uiState.shouldStartNotification) {
         if (uiState.shouldStartNotification) {
             context.startForegroundService(Intent(context, BatteryStatusService::class.java))
@@ -65,22 +70,23 @@ fun MainScreen(
             context.stopService(Intent(context, BatteryStatusService::class.java))
         }
     }
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = mainTabNavController)
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            mainScreenNavigation(
+                navController = mainTabNavController,
+                currentTab = currentTab,
+                colorScheme = colorScheme
+            )
         },
-        containerColor = MaterialTheme.colorScheme.surface,
-    ) { padding ->
+    ) {
         NavHost(
             navController = mainTabNavController,
             startDestination = widgetScreenRoute,
-            modifier = Modifier
-                .padding(bottom = 80.dp)
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },
         ) {
-            mainNavGraph(mainTabNavController, padding)
+            mainNavGraph(mainTabNavController)
         }
     }
 }

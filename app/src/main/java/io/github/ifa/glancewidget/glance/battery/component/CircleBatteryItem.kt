@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.glance.battery.component
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.createBitmap
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -23,13 +25,12 @@ import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.preview.ExperimentalGlancePreviewApi
-import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.model.DeviceType
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun CircleBatteryItem(
     deviceType: DeviceType,
@@ -131,7 +132,7 @@ private fun GlanceCanvas(
     modifier: GlanceModifier = GlanceModifier,
     nativeCanvas: CanvasInGlance.() -> Unit
 ) {
-    val bitmap = Bitmap.createBitmap(600, 600, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(600, 600)
     val canvas = CanvasInGlance(bitmap, 300f, 300f, 240f)
     nativeCanvas(canvas)
     Image(
@@ -144,25 +145,3 @@ private fun GlanceCanvas(
 
 class CanvasInGlance(bitmap: Bitmap, val x: Float, val y: Float, val radius: Float) :
     Canvas(bitmap)
-
-@OptIn(ExperimentalGlancePreviewApi::class)
-@Preview
-@Composable
-fun CircleBatteryItemPreview() {
-    CircleBatteryItem(
-        deviceType = DeviceType.PHONE,
-        percent = 100,
-        isCharging = true,
-    )
-}
-
-@OptIn(ExperimentalGlancePreviewApi::class)
-@Preview
-@Composable
-fun CircleBatteryItemPreview1() {
-    CircleBatteryItem(
-        deviceType = DeviceType.PHONE,
-        percent = 100,
-        isCharging = false,
-    )
-}
