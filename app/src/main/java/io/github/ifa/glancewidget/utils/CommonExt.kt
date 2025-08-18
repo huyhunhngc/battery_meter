@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.utils
 
 import android.Manifest
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.bluetooth.BluetoothDevice
@@ -19,6 +20,8 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
 import io.github.ifa.glancewidget.model.AddWidgetParams
+import io.github.ifa.glancewidget.model.AppExtra
+import io.github.ifa.glancewidget.model.AppIntent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -127,8 +130,9 @@ fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {
     val myProvider = ComponentName(applicationContext, BatteryWidgetReceiver::class.java)
     if (appWidgetManager.isRequestPinAppWidgetSupported) {
         val successIntent = Intent(applicationContext, BatteryWidgetReceiver::class.java).apply {
-            action = "ACTION_PINNED_SUCCESS"
-            putExtra("EXTRA_DEVICE_ADDRESS", "Huy's Device")
+            action = AppIntent.ACTION_PINNED_WIDGET_SUCCESS
+            putExtra(AppExtra.WIDGET_STYLE, params.widgetStyle.ordinal)
+            putExtra(AppExtra.WIDGET_TRANSPARENT, params.isTransparent)
         }
 
         val successCallback = PendingIntent.getBroadcast(
@@ -141,6 +145,14 @@ fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {
         return appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
     }
     return false
+}
+
+fun Activity.addWidget(appWidgetId: Int) {
+    val resultValue = Intent().apply {
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+    }
+    setResult(RESULT_OK, resultValue)
+    finish()
 }
 
 fun isSupportedDynamicColor(): Boolean {

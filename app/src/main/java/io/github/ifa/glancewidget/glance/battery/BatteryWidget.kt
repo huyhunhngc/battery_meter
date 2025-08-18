@@ -3,6 +3,7 @@ package io.github.ifa.glancewidget.glance.battery
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -15,6 +16,7 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.updateAll
 import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.glance.battery.component.CircleBatteryWidget
+import io.github.ifa.glancewidget.glance.battery.component.HorizontalBatteryWidget
 import io.github.ifa.glancewidget.glance.battery.ui.PixelBatteryTheme
 import io.github.ifa.glancewidget.glance.helper.getSettingByGlance
 import io.github.ifa.glancewidget.model.BatteryData
@@ -48,7 +50,11 @@ class BatteryWidget : GlanceAppWidget() {
                 themeTypeColor = settings.themeColor,
                 themeType = settings.theme
             ) {
-                Content(battery = battery, setting = setting, showPairedDevices = showPairedDevices)
+                Content(
+                    battery = battery,
+                    setting = setting,
+                    showPairedDevices = showPairedDevices
+                )
             }
         }
     }
@@ -116,14 +122,29 @@ class BatteryWidget : GlanceAppWidget() {
             setting?.isTransparent == true
         }
 
-        CircleBatteryWidget(
-            battery = battery,
-            percent = percent,
-            isCharging = isCharging,
-            isTransparent = isTransparent,
-            connectedDevice = connectedDevices,
-            sizeWidget = sizeWidget
-        )
+        val widgetStyle = remember(setting) {
+            setting?.style ?: WidgetSetting.Style.Horizontal
+        }
+
+        when (widgetStyle) {
+            WidgetSetting.Style.Horizontal -> HorizontalBatteryWidget(
+                battery = battery,
+                percent = percent,
+                isCharging = isCharging,
+                isTransparent = isTransparent,
+                connectedDevice = connectedDevices,
+                sizeWidget = sizeWidget
+            )
+            WidgetSetting.Style.Circle -> CircleBatteryWidget(
+                battery = battery,
+                percent = percent,
+                isCharging = isCharging,
+                isTransparent = isTransparent,
+                connectedDevice = connectedDevices,
+                sizeWidget = sizeWidget
+            )
+            else -> {}
+        }
     }
 
     companion object {

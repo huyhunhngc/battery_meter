@@ -9,7 +9,6 @@ import androidx.glance.layout.height
 import androidx.glance.layout.width
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget.Companion.PADDING
 import io.github.ifa.glancewidget.model.BonedDevice
-import io.github.ifa.glancewidget.model.WidgetSetting
 
 @Composable
 fun GridWrapItem(

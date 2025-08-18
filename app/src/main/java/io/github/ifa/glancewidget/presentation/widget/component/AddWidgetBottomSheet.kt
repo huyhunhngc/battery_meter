@@ -3,8 +3,10 @@ package io.github.ifa.glancewidget.presentation.widget.component
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -69,8 +71,10 @@ fun AddWidgetBottomSheet(
             Spacer(modifier = Modifier.height(16.dp))
             SelectedBox(
                 isSelected = widgetSelectionType == WidgetSelectionType.Horizontal,
-                modifier = Modifier.fillMaxWidth(),
-                onSelected = { widgetSelectionType = WidgetSelectionType.Horizontal }
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 24.dp),
+                onSelected = {
+                    widgetSelectionType = WidgetSelectionType.Horizontal
+                }
             ) {
                 with(uiState.batteryOverall.batteryData.myDevice) {
                     BatteryItem(
@@ -86,21 +90,8 @@ fun AddWidgetBottomSheet(
                 }
             }
             SelectedBox(
-                isSelected = widgetSelectionType == WidgetSelectionType.Circle,
-                modifier = Modifier.fillMaxWidth(),
-                onSelected = { widgetSelectionType = WidgetSelectionType.Circle }
-            ) {
-                with(uiState.batteryOverall.batteryData.myDevice) {
-                    CirCleBatteryItem(
-                        batteryLevel = level,
-                        isCharging = isCharging,
-                        deviceType = deviceType
-                    )
-                }
-            }
-            SelectedBox(
                 isSelected = widgetSelectionType == WidgetSelectionType.HorizontalTransparent,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 24.dp),
                 onSelected = {
                     widgetSelectionType = WidgetSelectionType.HorizontalTransparent
                 }
@@ -118,16 +109,52 @@ fun AddWidgetBottomSheet(
                     )
                 }
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SelectedBox(
+                    isSelected = widgetSelectionType == WidgetSelectionType.Circle,
+                    modifier = Modifier.weight(1f).padding(top = 16.dp, start = 24.dp),
+                    onSelected = { widgetSelectionType = WidgetSelectionType.Circle }
+                ) {
+                    with(uiState.batteryOverall.batteryData.myDevice) {
+                        CirCleBatteryItem(
+                            batteryLevel = level,
+                            isCharging = isCharging,
+                            deviceType = deviceType,
+                            transparent = false,
+                        )
+                    }
+                }
+                SelectedBox(
+                    isSelected = widgetSelectionType == WidgetSelectionType.CircleTransparent,
+                    modifier = Modifier.weight(1f).padding(top = 16.dp, end = 24.dp),
+                    onSelected = { widgetSelectionType = WidgetSelectionType.CircleTransparent }
+                ) {
+                    with(uiState.batteryOverall.batteryData.myDevice) {
+                        CirCleBatteryItem(
+                            batteryLevel = level,
+                            isCharging = isCharging,
+                            deviceType = deviceType,
+                            transparent = true,
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
                     onClickAddWidget(
                         AddWidgetParams(
-                            isTransparent = widgetSelectionType == WidgetSelectionType.HorizontalTransparent,
-                            widgetStyle = if (widgetSelectionType == WidgetSelectionType.Circle) {
-                                WidgetSetting.Style.Circle
-                            } else {
-                                WidgetSetting.Style.Horizontal
+                            isTransparent = widgetSelectionType.isTransparent(),
+                            widgetStyle = when (widgetSelectionType) {
+                                WidgetSelectionType.Circle,
+                                WidgetSelectionType.CircleTransparent -> WidgetSetting.Style.Circle
+                                WidgetSelectionType.Horizontal,
+                                WidgetSelectionType.HorizontalTransparent -> WidgetSetting.Style.Horizontal
                             }
                         )
                     )
@@ -148,7 +175,10 @@ fun AddWidgetBottomSheet(
 }
 
 enum class WidgetSelectionType {
-    Circle, Horizontal, HorizontalTransparent
+    Circle, CircleTransparent, Horizontal, HorizontalTransparent;
+     fun isTransparent(): Boolean {
+         return this == HorizontalTransparent || this == CircleTransparent
+     }
 }
 
 @Composable
@@ -165,11 +195,10 @@ private fun SelectedBox(
     val borderColor = if (isSelected) {
         MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+        MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
     }
     Box(
         modifier = modifier
-            .padding(vertical = 16.dp, horizontal = 24.dp)
             .border(
                 width = borderWidth.dp,
                 color = borderColor,

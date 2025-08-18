@@ -109,7 +109,7 @@ fun CircleBatteryItem(
                 Text(
                     text = percent.toString(),
                     style = TextStyle(
-                        color = GlanceTheme.colors.primary,
+                        color = if (transparency == 0f) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.primary,
                         fontSize = (9 * scaleTextSize).sp
                     ),
                     fontWeight = FontWeight.Bold,
