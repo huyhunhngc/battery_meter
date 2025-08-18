@@ -5,17 +5,12 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.widget.RemoteViews
-import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.BatteryMeterNotification
 import io.github.ifa.glancewidget.model.MyDevice
-import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.service.BatteryStatusService.Companion.SERVICE_ID
 import javax.inject.Inject
 
@@ -34,9 +29,7 @@ class NotificationHandler @Inject constructor(
 
     fun createStartMonitorNotification(myDevice: MyDevice?): Notification {
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW
+            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW
         )
         createChannelIfAbsent(channel)
         return createBatteryMonitorNotification(
@@ -54,9 +47,7 @@ class NotificationHandler @Inject constructor(
         notification: BatteryMeterNotification
     ) {
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW
+            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW
         )
         createChannelIfAbsent(channel)
         val notification = createBatteryMonitorNotification(
@@ -89,14 +80,11 @@ class NotificationHandler @Inject constructor(
             context.getString(R.string.settings),
             BatteryStatusService.createOpenBatteryStatusSettingsIntent(context, channelId)
         )
-        return Notification.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_charger)
+        return Notification.Builder(context, channelId).setSmallIcon(R.drawable.ic_charger)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setStyle(Notification.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
-            .setCustomBigContentView(notificationLayoutExpanded)
-            .addAction(action)
-            .setOngoing(true)
+            .setCustomBigContentView(notificationLayoutExpanded).addAction(action).setOngoing(true)
             .build()
     }
 
@@ -106,18 +94,15 @@ class NotificationHandler @Inject constructor(
             setTextViewText(R.id.battery_level, "${batteryNotificationData.level}%")
             setTextViewText(R.id.temperature, batteryNotificationData.temperatureDisplay)
             setTextViewText(
-                R.id.charge_status,
-                context.getString(batteryNotificationData.chargeDisplay)
+                R.id.charge_status, context.getString(batteryNotificationData.chargeDisplay)
             )
             val remainTime = if (batteryNotificationData.isCharging == true) {
                 context.getString(
-                    R.string.remain_time_charging,
-                    batteryNotificationData.remainChargeTime
+                    R.string.remain_time_charging, batteryNotificationData.remainChargeTime
                 )
             } else {
                 context.getString(
-                    R.string.remain_time_battery,
-                    batteryNotificationData.remainBatteryTime
+                    R.string.remain_time_battery, batteryNotificationData.remainBatteryTime
                 )
             }
             setTextViewText(R.id.remain_time, remainTime)
@@ -136,7 +121,7 @@ class NotificationHandler @Inject constructor(
         val temperatureDisplay = temperature?.formatTemperature() ?: "--"
         val chargeDisplay = if (isCharging == true) R.string.charging else R.string.discharging
         val levelIcon = if (isCharging == true) {
-            when((level ?: 0) * 7 / 100) {
+            when ((level ?: 0) * 7 / 100) {
                 0 -> R.drawable.ic_battery_charging_10
                 1 -> R.drawable.ic_battery_charging_20
                 2 -> R.drawable.ic_battery_charging_30
@@ -161,6 +146,7 @@ class NotificationHandler @Inject constructor(
             }
         }
     }
+
     companion object {
         const val NOTIFICATION_ID = 1001
         const val NOTIFICATION_CHANNEL_ID = "battery_status_channel"

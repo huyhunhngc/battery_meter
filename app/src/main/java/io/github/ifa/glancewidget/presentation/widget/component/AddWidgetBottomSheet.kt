@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
@@ -54,7 +55,9 @@ fun AddWidgetBottomSheet(
     onDisMiss: () -> Unit,
     onClickAddWidget: (AddWidgetParams) -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     val scope = rememberCoroutineScope()
     var isTransparentSelected by remember { mutableStateOf(false) }
 
@@ -62,7 +65,8 @@ fun AddWidgetBottomSheet(
         onDismissRequest = {
             onDisMiss()
             scope.launch { sheetState.hide() }
-        }, sheetState = sheetState
+        },
+        sheetState = sheetState
     ) {
         Text(
             text = stringResource(id = R.string.add_your_widget),
@@ -78,6 +82,15 @@ fun AddWidgetBottomSheet(
         ) {
             Spacer(modifier = Modifier.height(32.dp))
             with(uiState.batteryOverall.batteryData.myDevice) {
+                CirCleBatteryItem(
+                    batteryLevel = level,
+                    isCharging = isCharging,
+                    deviceType = deviceType,
+                    onClick = { /* Handle click if needed */ }
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            with(uiState.batteryOverall.batteryData.myDevice) {
                 BatteryItem(
                     deviceType = deviceType,
                     percent = level,
@@ -85,45 +98,45 @@ fun AddWidgetBottomSheet(
                     deviceName = "",
                     isTransparent = isTransparentSelected,
                     modifier = Modifier
-                        .height(100.dp)
-                        .fillMaxWidth(0.8f)
+                        .height(90.dp)
+                        .fillMaxWidth(0.7f)
                 )
             }
-            if (uiState.setupWidgetId != PINNED_WIDGET_DEFAULT_ID) {
-                Row(
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(16.dp)
+                    .clickable { isTransparentSelected = !isTransparentSelected },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                IconToggleButton(
+                    checked = isTransparentSelected,
+                    onCheckedChange = { isTransparentSelected = !isTransparentSelected },
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(16.dp)
-                        .clickable { isTransparentSelected = !isTransparentSelected },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                        .size(20.dp)
+                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                        .clip(CircleShape)
                 ) {
-                    IconToggleButton(
-                        checked = isTransparentSelected,
-                        onCheckedChange = { isTransparentSelected = !isTransparentSelected },
-                        modifier = Modifier
-                            .size(20.dp)
-                            .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                            .clip(CircleShape)
+                    AnimatedVisibility(
+                        visible = isTransparentSelected, enter = scaleIn(), exit = scaleOut()
                     ) {
-                        AnimatedVisibility(
-                            visible = isTransparentSelected, enter = scaleIn(), exit = scaleOut()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.CheckCircle,
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Filled.CheckCircle,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                        )
                     }
-                    Text(
-                        text = stringResource(id = R.string.show_transparent),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
                 }
+                Text(
+                    text = stringResource(id = R.string.show_transparent),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
+
             Spacer(modifier = Modifier.height(32.dp))
             Button(
                 onClick = {
@@ -135,10 +148,15 @@ fun AddWidgetBottomSheet(
                     )
                 },
                 modifier = Modifier
-                    .fillMaxWidth(0.85f)
+                    .fillMaxWidth(0.9f)
                     .padding(16.dp)
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Text(text = stringResource(id = R.string.add_widget))
+                Text(
+                    text = stringResource(id = R.string.add_widget),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
         }
     }

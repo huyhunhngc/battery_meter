@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.accompanist.permission)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.compose.adaptive.suite)
     implementation(libs.play.services.oss.licenses)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.work.runtime)

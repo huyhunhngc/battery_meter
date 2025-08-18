@@ -70,7 +70,7 @@ fun AppNavHost(
 private fun NavGraphBuilder.mainScreen(
     navController: NavHostController,
 ) {
-    mainTabScreens { navMainController, paddingValues ->
+    mainTabScreens { navMainController ->
         widgetScreen(onOpenWattsDetailScreen = navController::navigateToWattsDetailScreen)
         appUsageScreen()
         settingsScreen(
