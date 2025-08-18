@@ -41,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.presentation.widget.WidgetViewModel
@@ -51,7 +50,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddWidgetBottomSheet(
     uiState: WidgetViewModel.WidgetScreenUiState,
-    padding: PaddingValues,
     onDisMiss: () -> Unit,
     onClickAddWidget: (AddWidgetParams) -> Unit,
 ) {
