@@ -160,7 +160,10 @@ private fun WidgetScreen(
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            batteryMeasurementWarning(uiState.showMeasurementWarning)
+            batteryMeasurementWarning(
+                showMeasurementWarning = uiState.showMeasurementWarning,
+                progress = uiState.measurementProgress
+            )
             batteryOverall(
                 batteryDataWrapper = uiState.batteryOverall,
                 chartTrackingData = uiState.chartTrackingData,
@@ -223,14 +226,17 @@ private fun Appbar(
 }
 
 private fun LazyListScope.batteryMeasurementWarning(
-    showMeasurementWarning: Boolean
+    showMeasurementWarning: Boolean,
+    progress: Float = 0f,
 ) {
     item {
         AnimatedVisibility(
             visible = showMeasurementWarning,
             enter = slideInVertically(),
         ) {
-            MeasurementWarning()
+            MeasurementWarning(
+                progress = progress,
+            )
         }
     }
 }

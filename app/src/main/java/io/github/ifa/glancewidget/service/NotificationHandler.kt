@@ -29,7 +29,7 @@ class NotificationHandler @Inject constructor(
 
     fun createStartMonitorNotification(myDevice: MyDevice?): Notification {
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW
+            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
         )
         createChannelIfAbsent(channel)
         return createBatteryMonitorNotification(
@@ -47,7 +47,7 @@ class NotificationHandler @Inject constructor(
         notification: BatteryMeterNotification
     ) {
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW
+            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
         )
         createChannelIfAbsent(channel)
         val notification = createBatteryMonitorNotification(
@@ -80,11 +80,15 @@ class NotificationHandler @Inject constructor(
             context.getString(R.string.settings),
             BatteryStatusService.createOpenBatteryStatusSettingsIntent(context, channelId)
         )
-        return Notification.Builder(context, channelId).setSmallIcon(R.drawable.ic_charger)
-            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+        return Notification.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_charger)
+            .setBadgeIconType(Notification.BADGE_ICON_SMALL)
             .setStyle(Notification.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
-            .setCustomBigContentView(notificationLayoutExpanded).addAction(action).setOngoing(true)
+            .setCustomBigContentView(notificationLayoutExpanded)
+            .addAction(action)
+            .setOngoing(true)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
             .build()
     }
 

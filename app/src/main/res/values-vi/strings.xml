@@ -6,7 +6,7 @@
     <string name="battery_status">Trạng thái pin</string>
     <string name="connected_devices">Thiết bị được kết nối</string>
     <string name="battery_information">Thông tin bổ sung</string>
-    <string name="add_your_widget">Thêm tiện ích của bạn vào màn hình chính</string>
+    <string name="add_your_widget">Lựa chọn tiện ích</string>
     <string name="add_widget">Thêm tiện ích</string>
     <string name="show_transparent">Sử dụng tiện ích trong suốt</string>
     <string name="temperature">Nhiệt độ</string>

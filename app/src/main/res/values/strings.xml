@@ -10,7 +10,7 @@
     <string name="battery_status">Battery Status</string>
     <string name="connected_devices">Connected Devices</string>
     <string name="battery_information">Extra Information</string>
-    <string name="add_your_widget">Add Your Widget to Home Screen</string>
+    <string name="add_your_widget">Choose widget</string>
     <string name="add_widget">Add Widget</string>
     <string name="show_transparent">Use Transparent Widget</string>
     <string name="temperature">Temperature</string>

@@ -1,7 +1,6 @@
 package io.github.ifa.glancewidget.presentation.main
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -28,8 +27,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.presentation.widget.widgetScreenRoute
-import io.github.ifa.glancewidget.service.BatteryStatusService
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
+import io.github.ifa.glancewidget.utils.startBatteryStatus
+import io.github.ifa.glancewidget.utils.stopBatteryStatus
 
 const val mainScreenRoute = "main_screen_route"
 
@@ -61,9 +61,9 @@ fun MainScreen(
     val currentTab = MainScreenTab.routeToTab(navBackStackEntry?.destination?.route)
     LaunchedEffect(uiState.shouldStartNotification) {
         if (uiState.shouldStartNotification) {
-            context.startForegroundService(Intent(context, BatteryStatusService::class.java))
+            context.startBatteryStatus()
         } else {
-            context.stopService(Intent(context, BatteryStatusService::class.java))
+            context.stopBatteryStatus()
         }
     }
     NavigationSuiteScaffold(

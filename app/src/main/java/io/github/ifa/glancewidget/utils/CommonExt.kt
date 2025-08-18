@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -62,7 +61,7 @@ suspend inline fun <reified T> DataStore<Preferences>.getObject(
     return fromJson(string)
 }
 
-suspend inline fun  DataStore<Preferences>.setBoolean(
+suspend inline fun DataStore<Preferences>.setBoolean(
     key: Preferences.Key<Boolean>, value: Boolean
 ) {
     edit {
@@ -83,7 +82,8 @@ suspend inline fun DataStore<Preferences>.getInt(
 ): Int? {
     return data.map { it[key] }.firstOrNull()
 }
-inline fun <reified T: Serializable> Intent.getSerializable(key: String?): T? {
+
+inline fun <reified T : Serializable> Intent.getSerializable(key: String?): T? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getSerializableExtra(key, T::class.java)
     } else {

@@ -110,6 +110,11 @@ internal fun SettingsScreen(
 //            item {
 //                LaunchPremiumSession(onOpenGoPremiumScreen = onOpenGoPremiumScreen)
 //            }
+            if (!isAppCompatLocaleDeprecated()) {
+                item {
+                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                }
+            }
             item {
                 ThemeSetting(
                     onSelectTheme = { theme ->
@@ -144,11 +149,6 @@ internal fun SettingsScreen(
                         onSetShowPairedDevice(enabled)
                     }
                 )
-            }
-            if (!isAppCompatLocaleDeprecated()) {
-                item {
-                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-                }
             }
 
             item {

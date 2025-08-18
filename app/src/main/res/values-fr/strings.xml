@@ -6,7 +6,7 @@
     <string name="battery_status">État de la batterie</string>
     <string name="connected_devices">Appareils connectés</string>
     <string name="battery_information">Informations supplémentaires</string>
-    <string name="add_your_widget">Ajoutez votre widget à l\'écran d\'accueil</string>
+    <string name="add_your_widget">Choisissez un widget</string>
     <string name="add_widget">Ajouter un widget</string>
     <string name="show_transparent">Utiliser un widget transparent</string>
     <string name="temperature">Température</string>
@@ -88,7 +88,7 @@
     <string name="today">Aujourd\'hui</string>
     <string name="yesterday">Hier</string>
     <string name="last_seven_day">7D</string>
-    <string name="app_usage">Utilisation de l\'application</string>
+    <string name="app_usage">Utilisation</string>
     <string name="allow">Autoriser</string>
     <string name="not_now">Pas maintenant</string>
     <string name="should_allow_app_usage">Accès à l\'utilisation des applications requis</string>
