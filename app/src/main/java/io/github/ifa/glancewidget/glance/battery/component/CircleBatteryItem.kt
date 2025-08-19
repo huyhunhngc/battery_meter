@@ -1,12 +1,14 @@
 package io.github.ifa.glancewidget.glance.battery.component
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,6 +19,8 @@ import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -28,7 +32,10 @@ import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.utils.Constants.ANDROID_SETTING_PACKAGE
+import io.github.ifa.glancewidget.utils.Constants.BLUETOOTH_SETTING_CLASS
 
 @SuppressLint("RestrictedApi")
 @Composable
@@ -50,8 +57,16 @@ fun CircleBatteryItem(
     val iconColor = onBackgroundColor.getColor(context)
         .copy(alpha = if (deviceType == DeviceType.OTHER) 0.2f else 1.0f)
 
+    val action = remember(deviceType) {
+        if (deviceType == DeviceType.PHONE) {
+            actionStartActivity<MainActivity>()
+        } else {
+            actionStartActivity(ComponentName(ANDROID_SETTING_PACKAGE, BLUETOOTH_SETTING_CLASS))
+        }
+    }
+
     Box(
-        modifier = modifier,
+        modifier = modifier.clickable(action),
         contentAlignment = Alignment.TopCenter,
     ) {
         GlanceCanvas(modifier = GlanceModifier.fillMaxSize()) {

@@ -61,7 +61,12 @@ suspend inline fun <reified T> DataStore<Preferences>.getObject(
     key: Preferences.Key<String>
 ): T? {
     val string = data.map { it[key] }.firstOrNull() ?: return null
-    return fromJson(string)
+    return try {
+        fromJson(string)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }
 
 suspend inline fun DataStore<Preferences>.setBoolean(

@@ -36,7 +36,6 @@ class WidgetViewModel @Inject constructor(
         val chartTrackingData: ChartRecord,
         val bonnedDeviceSettings: BonnedDeviceSettings
     ) {
-        val showMeasurementWarning = batteryOverall.chargeDisChargeCurrent.showMeasurementWarning()
         val measurementProgress = batteryOverall.chargeDisChargeCurrent.getMeasurementProgress()
     }
 
