@@ -30,8 +30,8 @@
     <string name="over_voltage_status">과전압</string>
     <string name="cold_status">저온</string>
     <string name="unknown_status">알 수 없음</string>
-    <string name="remain_time_charging">충전 남은 시간: %s</string>
-    <string name="remain_time_battery">배터리 남은 시간: %s</string>
+    <string name="remain_time_charging">충전 남은 시간</string>
+    <string name="remain_time_battery">배터리 남은 시간</string>
     <string name="follow_system">시스템 따라가기</string>
     <string name="dark_theme">다크</string>
     <string name="light_theme">라이트</string>
@@ -95,4 +95,6 @@
     <string name="cpu_time">총 CPU</string>
     <string name="cpu_foreground">포그라운드 CPU</string>
     <string name="usage_time">사용 시간 (시간)</string>
+    <string name="force_reload">"강제 새로고침"</string>
+    <string name="bluetooth_device_setting">Bluetooth 페어링된 기기. 위젯에서 숨기거나 표시하려면 전환하세요</string>
 </resources>

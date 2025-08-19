@@ -64,7 +64,7 @@ fun BatteryItem(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(if (!isTransparent) MaterialTheme.colorScheme.background else Color.Transparent)
-            .padding(8.dp)
+            .padding(if (isTransparent) 0.dp else 8.dp)
     ) {
         Spacer(
             modifier = Modifier
@@ -79,7 +79,7 @@ fun BatteryItem(
                 .fillMaxHeight()
                 .fillMaxWidth(animatePercentFloat.value)
                 .align(Alignment.CenterStart)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
                 .background(MaterialTheme.colorScheme.inversePrimary)
         )
 

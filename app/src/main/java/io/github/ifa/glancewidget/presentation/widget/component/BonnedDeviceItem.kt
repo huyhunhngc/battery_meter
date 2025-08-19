@@ -36,7 +36,6 @@ fun BonedDeviceItem(
     modifier: Modifier = Modifier,
     showInWidget: Boolean = true,
     onShowInWidgetChanged: (String, Boolean) -> Unit,
-    onItemClick: (BonedDevice) -> Unit,
 ) {
         Column(
             modifier = modifier.padding(vertical = 8.dp)
@@ -91,7 +90,8 @@ fun BonedDeviceItem(
                     description = device.address,
                     isCharging = false,
                     isTransparent = true,
-                    isShowLargeLevel = true
+                    isShowLargeLevel = true,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
         }
@@ -109,7 +109,6 @@ fun BonedDeviceItemPreview() {
             batteryInMinutes = 0,
             deviceType = DeviceType.OTHER
         ),
-        onItemClick = {},
         onShowInWidgetChanged = { _, _ -> },
         showInWidget = false
     )

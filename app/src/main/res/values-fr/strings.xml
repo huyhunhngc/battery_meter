@@ -31,8 +31,8 @@
     <string name="over_voltage_status">Surtension</string>
     <string name="cold_status">Froid</string>
     <string name="unknown_status">Inconnu</string>
-    <string name="remain_time_charging">Temps de charge restant: %s</string>
-    <string name="remain_time_battery">Temps restant de la batterie: %s</string>
+    <string name="remain_time_charging">Temps de charge restant</string>
+    <string name="remain_time_battery">Temps restant de la batterie</string>
     <string name="follow_system">Suivre le système</string>
     <string name="dark_theme">Sombre</string>
     <string name="light_theme">Clair</string>
@@ -96,4 +96,6 @@
     <string name="cpu_time">CPU total</string>
     <string name="cpu_foreground">CPU premier plan</string>
     <string name="usage_time">Utilisation (heures)</string>
+    <string name="force_reload">"Recharger de force"</string>
+    <string name="bluetooth_device_setting">Appareils Bluetooth appairés. Basculer pour masquer ou afficher dans le widget</string>
 </resources>

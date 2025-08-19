@@ -5,10 +5,10 @@ import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -71,75 +70,122 @@ fun BatteryOverall(
     val powerPercentage = remember(power) {
         power.toFloat() / extraBatteryInfo.maxWattsChargeInput
     }
-    val remainTime = if (myDevice.isCharging && myDevice.level < 100) {
-        stringResource(
-            id = R.string.remain_time_charging,
-            batteryDataWrapper.remainChargeTime
-        )
+    val context = LocalContext.current
+    val remainTimeLabel = if (myDevice.isCharging && myDevice.level < 100) {
+        stringResource(id = R.string.remain_time_charging)
     } else {
-        stringResource(
-            id = R.string.remain_time_battery,
-            batteryDataWrapper.remainBatteryTime
-        )
+        stringResource(id = R.string.remain_time_battery)
+    }
+    val remainTime = if (myDevice.isCharging && myDevice.level < 100) {
+        batteryDataWrapper.remainChargeTime(context)
+    } else {
+        batteryDataWrapper.remainBatteryTime(context)
     }
 
-    FlowRow(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(containerColorAlpha60)
-            .padding(8.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Header(Modifier.fillMaxWidth())
-        BatteryItem(
-            deviceType = myDevice.deviceType,
-            percent = myDevice.level,
-            isCharging = myDevice.isCharging,
-            deviceName = myDevice.name,
-            isShowLargeLevel = true,
-            description = remainTime,
-            isTransparent = true,
+        Row(
             modifier = Modifier
                 .height(100.dp)
-                .fillMaxWidth()
-        )
-        WattsMonitor(
-            modifier = Modifier
-                .padding(8.dp)
-                .size(120.dp)
-                .clickable {
-                    onOpenWattsDetailScreen(
-                        WattsDetailDestination(
-                            power = power.toFloat(),
-                            powerPercentage = powerPercentage
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            BatteryItem(
+                deviceType = myDevice.deviceType,
+                percent = myDevice.level,
+                isCharging = myDevice.isCharging,
+                deviceName = myDevice.name,
+                isShowLargeLevel = true,
+                isTransparent = true,
+                modifier = Modifier.weight(55f)
+            )
+            CurrentAndChargingMonitor(
+                modifier = Modifier.weight(45f),
+                isCharging = myDevice.isCharging,
+                chargeType = myDevice.chargeType,
+                chargeCurrent = extraBatteryInfo.getChargeDisChargeCurrent(myDevice.isCharging)
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            WattsMonitor(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clickable {
+                        onOpenWattsDetailScreen(
+                            WattsDetailDestination(
+                                power = power.toFloat(),
+                                powerPercentage = powerPercentage
+                            )
                         )
+                    },
+                power = power.toFloat(),
+                powerPercentage = powerPercentage
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = remainTimeLabel,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                )
+                Text(
+                    text = remainTime,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_timelapse),
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                },
-            power = power.toFloat(),
-            powerPercentage = powerPercentage
-        )
-        CurrentAndChargingMonitor(
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f),
-            isCharging = myDevice.isCharging,
-            chargeType = myDevice.chargeType,
-            chargeCurrent = extraBatteryInfo.getChargeDisChargeCurrent(myDevice.isCharging)
-        )
-        TemperatureMonitor(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(0.48f),
-            temperature = myDevice.temperature,
-            temperatureTracking = chartTrackingData.temperatures
-        )
-        VoltageMonitor(
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f),
-            voltage = myDevice.voltage,
-            voltageTracking = chartTrackingData.voltages
-        )
+                }
+
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TemperatureMonitor(
+                modifier = Modifier.weight(1f),
+                temperature = myDevice.temperature,
+                temperatureTracking = chartTrackingData.temperatures
+            )
+            VoltageMonitor(
+                modifier = Modifier.weight(1f),
+                voltage = myDevice.voltage,
+                voltageTracking = chartTrackingData.voltages
+            )
+        }
+
     }
 }
 
@@ -325,20 +371,20 @@ private fun LineChart(
     val lineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f)
     CartesianChartHost(
         chart =
-        rememberCartesianChart(
-            rememberLineCartesianLayer(
-                LineCartesianLayer.LineProvider.series(
-                    LineCartesianLayer.rememberLine(
-                        remember(lineColor) { LineCartesianLayer.LineFill.single(fill(lineColor)) }
-                    )
+            rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    LineCartesianLayer.LineProvider.series(
+                        LineCartesianLayer.rememberLine(
+                            remember(lineColor) { LineCartesianLayer.LineFill.single(fill(lineColor)) }
+                        )
+                    ),
+                    rangeProvider = remember {
+                        CartesianLayerRangeProvider.fixed(minY = minY, maxY = maxY)
+                    },
+                    pointSpacing = 1.dp
                 ),
-                rangeProvider = remember {
-                    CartesianLayerRangeProvider.fixed(minY = minY, maxY = maxY)
-                },
-                pointSpacing = 1.dp
+                marker = marker,
             ),
-            marker = marker,
-        ),
         modelProducer = modelProducer,
         modifier = modifier,
         zoomState = rememberVicoZoomState(zoomEnabled = false),

@@ -106,6 +106,7 @@ fun AddWidgetBottomSheet(
                         modifier = Modifier
                             .height(96.dp)
                             .fillMaxWidth(0.78f)
+                            .padding(4.dp)
                     )
                 }
             }

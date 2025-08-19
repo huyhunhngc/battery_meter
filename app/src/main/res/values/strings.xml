@@ -37,8 +37,8 @@
     <string name="over_voltage_status">Over Voltage</string>
     <string name="cold_status">Cold</string>
     <string name="unknown_status">Unknown</string>
-    <string name="remain_time_charging">Charging Time Remaining: %s</string>
-    <string name="remain_time_battery">Battery Time Remaining: %s</string>
+    <string name="remain_time_charging">Charging time remaining</string>
+    <string name="remain_time_battery">Battery time remaining</string>
     <string name="follow_system">Follow System</string>
     <string name="dark_theme">Dark</string>
     <string name="light_theme">Light</string>
@@ -102,4 +102,6 @@
     <string name="cpu_time">CPU total</string>
     <string name="cpu_foreground">CPU foreground</string>
     <string name="usage_time">Usage (hours)</string>
+    <string name="force_reload">"Force Reload"</string>
+    <string name="bluetooth_device_setting">Bluetooth paired devices. Toggle to hide or show in widget</string>
 </resources>

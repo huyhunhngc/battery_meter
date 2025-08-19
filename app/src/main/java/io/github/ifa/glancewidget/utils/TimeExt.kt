@@ -1,15 +1,30 @@
 package io.github.ifa.glancewidget.utils
 
-fun Long.toHHMM(): String {
+import android.content.Context
+import android.icu.text.MeasureFormat
+import android.icu.util.Measure
+import android.icu.util.MeasureUnit
+import io.github.ifa.glancewidget.R
+import java.util.Locale
+
+fun Long.toLocaleDuration(context: Context): String {
+    if (this < 0) return ""
+
     val timeInSeconds = this / 1000
-    val hours =  when(val hours = timeInSeconds / 3600) {
-        0L -> null
-        in 1..9 -> "0$hours hrs"
-        else -> "$hours hrs"
+    val hours = (timeInSeconds / 3600).toInt()
+    val minutes = ((timeInSeconds % 3600) / 60).toInt()
+
+    val hoursString = if (hours > 0) {
+        context.resources.getQuantityString(R.plurals.hours_format, hours, hours)
+    } else {
+        null
     }
-    val minutes = when(val minutes = (timeInSeconds % 3600) / 60) {
-        in 0..9 -> "0$minutes mins"
-        else -> "$minutes mins"
+
+    val minutesString = if (minutes > 0) {
+        context.resources.getQuantityString(R.plurals.minutes_format, minutes, minutes)
+    } else {
+        null
     }
-    return listOfNotNull(hours, minutes).joinToString(" ")
+
+    return listOfNotNull(hoursString, minutesString).joinToString(" ")
 }
