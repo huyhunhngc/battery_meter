@@ -33,6 +33,7 @@ class MonitorUseCase @Inject constructor(
         batteryData = batteryData.copy(
             batteryConnectedDevices = pairedDevices.ifEmpty { batteryData.batteryConnectedDevices })
         batteryStateRepository.setBatteryData(batteryData)
+
     }
 
     suspend fun updateBatteryDevice(myDevice: MyDevice) {

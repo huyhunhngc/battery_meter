@@ -4,6 +4,8 @@
     <string name="french_language" translatable="false">Français</string>
     <string name="vietnamese_language" translatable="false">Tiếng Việt</string>
     <string name="japanese_language" translatable="false">日本語</string>
+    <string name="spanish_language" translatable="false">Español</string>
+    <string name="korean_language" translatable="false">한국어</string>
     <string name="widget_tab">Monitor</string>
     <string name="about_tab">About</string>
     <string name="settings">Settings</string>

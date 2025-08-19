@@ -3,7 +3,6 @@ package io.github.ifa.glancewidget.presentation.settings.component
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -100,12 +99,16 @@ fun LanguageSetting(
                         .padding(bottom = 12.dp)
                         .padding(horizontal = 16.dp)
                         .height(56.dp)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(16.dp))
                         .clickable {
                             openBottomSheet.value = false
                             scope.launch { sheetState.hide() }
                             onSelectLanguage(language)
                         }
+                        .background(
+                            MaterialTheme.colorScheme.surfaceContainerHigh,
+                            RoundedCornerShape(16.dp)
+                        )
                         .padding(horizontal = 24.dp),
                 ) {
                     Text(

@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.presentation.about
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.utils.buildUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,7 @@ class AboutViewModel @Inject constructor() : ViewModel() {
     data class AboutScreenUiState(
         val appVersion: String = "",
     )
-    private val _appVersion = MutableStateFlow("")
+    private val _appVersion = MutableStateFlow( "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
 
     val uiState: StateFlow<AboutScreenUiState> = buildUiState(_appVersion) { appVersion ->
         AboutScreenUiState(appVersion)
