@@ -28,7 +28,9 @@ class NotificationHandler @Inject constructor(
 
     fun createStartMonitorNotification(myDevice: MyDevice?): Notification {
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_LOW
         )
         createChannelIfAbsent(channel)
         return createBatteryMonitorNotification(
@@ -46,7 +48,9 @@ class NotificationHandler @Inject constructor(
         notification: BatteryMeterNotification
     ) {
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_LOW
         )
         createChannelIfAbsent(channel)
         val notification = createBatteryMonitorNotification(

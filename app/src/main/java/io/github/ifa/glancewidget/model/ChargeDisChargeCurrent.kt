@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.model
 
+import android.util.Log
 import io.github.ifa.glancewidget.utils.Constants.DEFAULT_MAX_COLLECT_CURRENT
 import kotlinx.serialization.Serializable
 
@@ -18,12 +19,6 @@ data class ChargeDisChargeCurrent(
             ChargeSpeed.DISCHARGING -> dischargeCurrents.average().toInt()
         }
         return if (chargeCurrent == -1) current else chargeCurrent
-    }
-
-    fun showMeasurementWarning(): Boolean {
-        val collectionWarning = DEFAULT_MAX_COLLECT_CURRENT / 2
-        if (chargeCurrents.size != 1 && chargeCurrents.size < collectionWarning) return true
-        return dischargeCurrents.size != 1 && dischargeCurrents.size < collectionWarning
     }
 
     fun getMeasurementProgress(): Float {
