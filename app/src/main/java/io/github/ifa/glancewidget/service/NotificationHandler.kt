@@ -6,7 +6,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.widget.RemoteViews
-import androidx.core.app.NotificationCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.BatteryMeterNotification
@@ -101,13 +100,9 @@ class NotificationHandler @Inject constructor(
                 R.id.charge_status, context.getString(batteryNotificationData.chargeDisplay)
             )
             val remainTime = if (batteryNotificationData.isCharging == true) {
-                context.getString(
-                    R.string.remain_time_charging, batteryNotificationData.remainChargeTime
-                )
+                "${context.getString(R.string.remain_time_charging)} ${batteryNotificationData.remainChargeTime}"
             } else {
-                context.getString(
-                    R.string.remain_time_battery, batteryNotificationData.remainBatteryTime
-                )
+                "${context.getString(R.string.remain_time_battery)} ${batteryNotificationData.remainBatteryTime}"
             }
             setTextViewText(R.id.remain_time, remainTime)
             setImageViewResource(R.id.battery_icon, batteryNotificationData.levelIcon)
@@ -152,7 +147,6 @@ class NotificationHandler @Inject constructor(
     }
 
     companion object {
-        const val NOTIFICATION_ID = 1001
         const val NOTIFICATION_CHANNEL_ID = "battery_status_channel"
         const val NOTIFICATION_CHANNEL_NAME = "Battery Status"
     }

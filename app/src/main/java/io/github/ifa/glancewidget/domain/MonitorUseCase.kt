@@ -1,5 +1,7 @@
 package io.github.ifa.glancewidget.domain
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.ifa.glancewidget.model.BatteryData
 import io.github.ifa.glancewidget.model.BatteryMeterNotification
 import io.github.ifa.glancewidget.model.BonedDevice
@@ -11,6 +13,7 @@ class MonitorUseCase @Inject constructor(
     private val batteryStateRepository: BatteryStateRepository,
     private val appSettingsRepository: AppSettingsRepository,
     private val batteryUseCase: BatteryUseCase,
+    @ApplicationContext private val context: Context
 ) {
     private val lock = Object()
     var batteryData: BatteryData = BatteryData.initial()
@@ -52,8 +55,8 @@ class MonitorUseCase @Inject constructor(
             BatteryMeterNotification(
                 batteryLevel = batteryWrapper.batteryData.myDevice.level,
                 isCharging = batteryWrapper.batteryData.myDevice.isCharging,
-                remainBatteryTime = batteryWrapper.remainBatteryTime,
-                remainChargeTime = batteryWrapper.remainChargeTime,
+                remainBatteryTime = batteryWrapper.remainBatteryTime(context),
+                remainChargeTime = batteryWrapper.remainChargeTime(context),
                 temperature = batteryWrapper.batteryData.myDevice.temperature
             )
         } else {

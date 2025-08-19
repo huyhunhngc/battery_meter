@@ -30,8 +30,8 @@
     <string name="over_voltage_status">Sobretensión</string>
     <string name="cold_status">Frío</string>
     <string name="unknown_status">Desconocido</string>
-    <string name="remain_time_charging">Tiempo restante de carga: %s</string>
-    <string name="remain_time_battery">Tiempo restante de batería: %s</string>
+    <string name="remain_time_charging">Tiempo restante de carga</string>
+    <string name="remain_time_battery">Tiempo restante de batería</string>
     <string name="follow_system">Seguir sistema</string>
     <string name="dark_theme">Oscuro</string>
     <string name="light_theme">Claro</string>
@@ -95,4 +95,6 @@
     <string name="cpu_time">CPU total</string>
     <string name="cpu_foreground">CPU en primer plano</string>
     <string name="usage_time">Uso (horas)</string>
+    <string name="force_reload">"Recargar Forzado"</string>
+    <string name="bluetooth_device_setting">Dispositivos Bluetooth emparejados. Alternar para ocultar o mostrar en el widget</string>
 </resources>

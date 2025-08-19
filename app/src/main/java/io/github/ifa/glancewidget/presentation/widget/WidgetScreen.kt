@@ -283,8 +283,7 @@ private fun LazyListScope.connectedDevices(
             BonedDeviceItem(
                 device = device,
                 showInWidget = showInWidget,
-                onShowInWidgetChanged = onShowInWidgetChanged,
-                onItemClick = {}
+                onShowInWidgetChanged = onShowInWidgetChanged
             )
         }
     }
