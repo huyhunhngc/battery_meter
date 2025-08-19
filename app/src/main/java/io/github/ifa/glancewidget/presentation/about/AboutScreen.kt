@@ -44,7 +44,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.utils.Constants.IFA_GITHUB_URL
@@ -134,7 +133,7 @@ internal fun AboutScreen(
                 style = MaterialTheme.typography.bodySmall,
                 text = stringResource(
                     id = R.string.version,
-                    "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+                    uiState.appVersion
                 ),
                 color = MaterialTheme.colorScheme.secondary
             )
@@ -188,10 +187,6 @@ internal fun AboutScreen(
                         .size(72.dp),
                     painter = painterResource(id = R.drawable.img_ifa_logo),
                     contentDescription = null
-                )
-                Text(
-                    text = "From IFA team with love ♥",
-                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }

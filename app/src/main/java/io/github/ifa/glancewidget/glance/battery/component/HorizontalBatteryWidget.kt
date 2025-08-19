@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget.glance.battery.component
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.model.WidgetSetting
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun HorizontalBatteryWidget(
     battery: BatteryData?,

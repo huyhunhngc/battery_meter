@@ -28,7 +28,7 @@ data class WidgetSetting(
                 Small -> 1
                 FullWidex1, Square -> 2
                 Wide -> 3
-                Tall, Large -> 4
+                Tall, Large -> 3
                 Default -> 1
                 else -> 1
             }

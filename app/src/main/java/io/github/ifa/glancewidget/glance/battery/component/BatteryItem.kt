@@ -58,7 +58,8 @@ fun BatteryItem(
             .clickable(action)
     ) {
         Row(
-            modifier = GlanceModifier.fillMaxSize()
+            modifier = GlanceModifier
+                .fillMaxSize()
                 .cornerRadiusCompat(20, GlanceTheme.colors.secondaryContainer)
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -150,18 +151,14 @@ fun Text(
 
 @Composable
 private fun RowScope.Segment(currentSegment: Int, percent: Int) {
-    Box(
-        modifier = GlanceModifier.defaultWeight().fillMaxHeight()
-    ) {
-        Row(modifier = GlanceModifier.fillMaxSize()) {
-            for (i in 1..SUPPORTED_ROW_ELEMENTS) {
-                val isFilled = i + currentSegment <= percent
-                Spacer(
-                    modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(
-                        if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.secondaryContainer
-                    )
+    Row(modifier = GlanceModifier.defaultWeight().fillMaxHeight()) {
+        for (i in 1..SUPPORTED_ROW_ELEMENTS) {
+            val isFilled = i + currentSegment <= percent
+            Spacer(
+                modifier = GlanceModifier.defaultWeight().fillMaxHeight().background(
+                    if (isFilled) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.secondaryContainer
                 )
-            }
+            )
         }
     }
 }

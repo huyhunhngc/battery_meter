@@ -23,7 +23,9 @@ data class AppSettings(
         ENGLISH("en"),
         FRENCH("fr"),
         VIETNAMESE("vi"),
-        JAPANESE("ja");
+        JAPANESE("ja"),
+        KOREAN("ko"),
+        SPANISH("es");
 
         fun displayNameResId(): Int {
             return when (this) {
@@ -32,19 +34,12 @@ data class AppSettings(
                 VIETNAMESE -> R.string.vietnamese_language
                 JAPANESE -> R.string.japanese_language
                 DEFAULT -> R.string.follow_system
+                KOREAN -> R.string.korean_language
+                SPANISH -> R.string.spanish_language
             }
         }
 
         companion object {
-            fun region(code: String): String {
-                return when (code) {
-                    VIETNAMESE.code -> "VN"
-                    JAPANESE.code -> "JP"
-                    FRENCH.code -> "FR"
-                    ENGLISH.code -> "US"
-                    else -> ""
-                }
-            }
             fun fromCode(code: String): Language {
                 return entries.find { it.code == code } ?: DEFAULT
             }
