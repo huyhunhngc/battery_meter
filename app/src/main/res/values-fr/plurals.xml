@@ -7,5 +7,6 @@
     <plurals name="minutes_format">
         <item quantity="one">%d minute</item>
         <item quantity="many">%d minutes</item>
+        <item quantity="other">%d minutes</item>
     </plurals>
 </resources>

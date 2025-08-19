@@ -133,6 +133,7 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         )
         val BLUETOOTH_STATE_ACTIONS = listOf(
             BluetoothAdapter.ACTION_STATE_CHANGED,
+            BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED,
             BluetoothDevice.ACTION_ACL_DISCONNECTED,
             BluetoothDevice.ACTION_ACL_CONNECTED
         )
