@@ -24,7 +24,6 @@ import io.github.ifa.glancewidget.utils.setObject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class DefaultBatteryStateRepository(
@@ -46,11 +45,10 @@ class DefaultBatteryStateRepository(
         val extraBattery = try {
             context.getExtraBatteryInformation()
         } catch (e: Exception) {
+            e.printStackTrace()
             ExtraBatteryInfo()
         }
-        return batteryDataStore.getExtraBatteryInformation(extraBattery)
-            .chunked(3)
-            .conflate()
+        return batteryDataStore.getExtraBatteryInformation(extraBattery).chunked(3).conflate()
             .map { it.average() }
     }
 
@@ -70,6 +68,7 @@ class DefaultBatteryStateRepository(
         val extraBatteryInfo = try {
             context.getExtraBatteryInformation()
         } catch (e: Exception) {
+            e.printStackTrace()
             ExtraBatteryInfo()
         }
         batteryDataStore.saveExtraBatteryInformation(extraBatteryInfo)
@@ -81,15 +80,12 @@ class DefaultBatteryStateRepository(
 
     override suspend fun changePairedDevicesVisibility(showPairedDevices: Boolean) {
         context.batteryWidgetStore.setBoolean(
-            BatteryWidget.SHOW_PAIRED_DEVICES,
-            showPairedDevices
+            BatteryWidget.SHOW_PAIRED_DEVICES, showPairedDevices
         )
     }
 
     override suspend fun saveWidgetInitialSetting(
-        appWidgetId: Int,
-        isTransparent: Boolean,
-        widgetStyle: WidgetSetting.Style
+        appWidgetId: Int, isTransparent: Boolean, widgetStyle: WidgetSetting.Style
     ) {
         saveWidgetSettings(appWidgetId) {
             it.copy(
@@ -106,8 +102,7 @@ class DefaultBatteryStateRepository(
             ChargeDisChargeCurrent.ChargeSpeed.FAST -> {
                 chargeDisChargeCurrent.copy(
                     fastChargeCurrents = chargeDisChargeCurrent.fastChargeCurrents.addUpTo(
-                        DEFAULT_MAX_COLLECT_CURRENT,
-                        chargeCurrent
+                        DEFAULT_MAX_COLLECT_CURRENT, chargeCurrent
                     )
                 )
             }
@@ -115,8 +110,7 @@ class DefaultBatteryStateRepository(
             ChargeDisChargeCurrent.ChargeSpeed.TURBO -> {
                 chargeDisChargeCurrent.copy(
                     turboChargeCurrents = chargeDisChargeCurrent.turboChargeCurrents.addUpTo(
-                        DEFAULT_MAX_COLLECT_CURRENT,
-                        chargeCurrent
+                        DEFAULT_MAX_COLLECT_CURRENT, chargeCurrent
                     )
                 )
             }
@@ -124,8 +118,7 @@ class DefaultBatteryStateRepository(
             ChargeDisChargeCurrent.ChargeSpeed.NORMAL -> {
                 chargeDisChargeCurrent.copy(
                     chargeCurrents = chargeDisChargeCurrent.chargeCurrents.addUpTo(
-                        DEFAULT_MAX_COLLECT_CURRENT,
-                        chargeCurrent
+                        DEFAULT_MAX_COLLECT_CURRENT, chargeCurrent
                     )
                 )
             }
@@ -133,8 +126,7 @@ class DefaultBatteryStateRepository(
             ChargeDisChargeCurrent.ChargeSpeed.DISCHARGING -> {
                 chargeDisChargeCurrent.copy(
                     dischargeCurrents = chargeDisChargeCurrent.dischargeCurrents.addUpTo(
-                        DEFAULT_MAX_COLLECT_CURRENT * 4,
-                        chargeCurrent
+                        DEFAULT_MAX_COLLECT_CURRENT * 4, chargeCurrent
                     )
                 )
             }
@@ -165,15 +157,13 @@ class DefaultBatteryStateRepository(
         if (!shouldSave) return
         batteryDataStore.saveChartRecord(
             ChartRecord(
-                temperatures = temperatures.takeLast(100),
-                voltages = voltages.takeLast(100)
+                temperatures = temperatures.takeLast(100), voltages = voltages.takeLast(100)
             )
         )
     }
 
     private suspend fun saveWidgetSettings(
-        appWidgetId: Int,
-        onAppliedNewSetting: (WidgetSetting) -> WidgetSetting
+        appWidgetId: Int, onAppliedNewSetting: (WidgetSetting) -> WidgetSetting
     ) {
         val widgetSettings = batteryDataStore.getWidgetSettings()
         val savedSetting = widgetSettings.settings[appWidgetId] ?: WidgetSetting()

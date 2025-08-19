@@ -6,6 +6,7 @@
     </plurals>
     <plurals name="minutes_format">
         <item quantity="one">%d minuto</item>
-        <item quantity="many">%d minutos</item>
+        <item quantity="many">%d minuto</item>
+        <item quantity="other">%d minutos</item>
     </plurals>
 </resources>

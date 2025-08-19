@@ -55,7 +55,8 @@ class BatteryAppMonitor : BroadcastReceiver() {
                 }
 
                 AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED -> {
-                    val showPairedDevices = intent.getBooleanExtra(AppExtra.SHOW_PAIRED_DEVICES, true)
+                    val showPairedDevices =
+                        intent.getBooleanExtra(AppExtra.SHOW_PAIRED_DEVICES, true)
                     monitorUseCase.changePairedDevicesVisibility(showPairedDevices)
                 }
 

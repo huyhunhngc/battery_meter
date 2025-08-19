@@ -3,13 +3,13 @@ package io.github.ifa.glancewidget.glance.battery
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
@@ -36,7 +36,10 @@ class BatteryWidget : GlanceAppWidget() {
             val data by batteryWidgetStore.data.collectAsState(initial)
             val widgetSettingsJson by rememberUpdatedState(data?.get(WIDGET_PREFERENCES))
             val batteryJson by rememberUpdatedState(data?.get(BATTERY_PREFERENCES))
-            val showPairedDevices by rememberUpdatedState(data?.get(SHOW_PAIRED_DEVICES) == true)
+            val showPairedDevices by rememberUpdatedState(data?.get(SHOW_PAIRED_DEVICES) != false)
+            val hiddenDevices by rememberUpdatedState(
+                data?.get(DEVICE_HIDDEN_BY_ADDRESS) ?: emptySet()
+            )
             val battery = remember(batteryJson) {
                 fromJson<BatteryData>(batteryJson)
             }
@@ -53,6 +56,7 @@ class BatteryWidget : GlanceAppWidget() {
                 Content(
                     battery = battery,
                     setting = setting,
+                    hiddenDevices = hiddenDevices,
                     showPairedDevices = showPairedDevices
                 )
             }
@@ -101,6 +105,7 @@ class BatteryWidget : GlanceAppWidget() {
     private fun Content(
         battery: BatteryData?,
         setting: WidgetSetting?,
+        hiddenDevices: Set<String> = emptySet(),
         showPairedDevices: Boolean = false
     ) {
         val percent = battery?.myDevice?.level ?: 100
@@ -112,7 +117,8 @@ class BatteryWidget : GlanceAppWidget() {
 
         val connectedDevices = remember(battery, showPairedDevices) {
             if (showPairedDevices) {
-                battery?.batteryConnectedDevices?.distinctBy { it.address }.orEmpty()
+                battery?.batteryConnectedDevices?.distinctBy { it.address }
+                    ?.filter { it.address !in hiddenDevices }.orEmpty()
             } else {
                 emptyList()
             }
@@ -135,6 +141,7 @@ class BatteryWidget : GlanceAppWidget() {
                 connectedDevice = connectedDevices,
                 sizeWidget = sizeWidget
             )
+
             WidgetSetting.Style.Circle -> CircleBatteryWidget(
                 battery = battery,
                 percent = percent,
@@ -143,6 +150,7 @@ class BatteryWidget : GlanceAppWidget() {
                 connectedDevice = connectedDevices,
                 sizeWidget = sizeWidget
             )
+
             else -> {}
         }
     }
@@ -151,6 +159,7 @@ class BatteryWidget : GlanceAppWidget() {
         val BATTERY_PREFERENCES = stringPreferencesKey("batteryData")
         val WIDGET_PREFERENCES = stringPreferencesKey("widgetSetting")
         val SHOW_PAIRED_DEVICES = booleanPreferencesKey("showPairedDevices")
+        val DEVICE_HIDDEN_BY_ADDRESS = stringSetPreferencesKey("deviceHiddenByAddress")
         val PADDING = 8.dp
     }
 }

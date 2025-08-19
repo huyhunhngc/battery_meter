@@ -1,7 +1,7 @@
 package io.github.ifa.glancewidget.presentation.widget.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,47 +39,63 @@ fun BonedDeviceItem(
     showInWidget: Boolean = true,
     onShowInWidgetChanged: (String, Boolean) -> Unit,
 ) {
-        Column(
-            modifier = modifier.padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(containerColorAlpha60)
-                .padding(8.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+    Column(
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(containerColorAlpha60)
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+
             ) {
-                Text(
-                    modifier = Modifier.widthIn(max = 150.dp),
-                    text = device.name,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
+            if (device.batteryInPercentage <= 0) {
+                Image(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(end = 8.dp),
+                    painter = painterResource(device.deviceType.icon),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                 )
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            }
+            Text(
+                modifier = Modifier.widthIn(max = 150.dp),
+                text = device.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (device.batteryInPercentage > 0) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_widgets),
                         contentDescription = "widget",
                         modifier = Modifier,
                         tint = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Switch(
-                        checked = showInWidget,
-                        onCheckedChange = {
-                            onShowInWidgetChanged(device.address, it)
-                        },
-                    )
                 }
-
+                Spacer(modifier = Modifier.width(8.dp))
+                Switch(
+                    checked = showInWidget,
+                    onCheckedChange = {
+                        onShowInWidgetChanged(device.address, it)
+                    },
+                )
             }
 
+        }
+        if (device.batteryInPercentage > 0) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -85,7 +103,7 @@ fun BonedDeviceItem(
             ) {
                 BatteryItem(
                     deviceType = device.deviceType,
-                    percent = device.batteryInPercentage.coerceAtLeast(0),
+                    percent = device.batteryInPercentage,
                     deviceName = device.name,
                     description = device.address,
                     isCharging = false,
@@ -95,6 +113,7 @@ fun BonedDeviceItem(
                 )
             }
         }
+    }
 
 }
 

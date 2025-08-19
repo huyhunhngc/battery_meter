@@ -1,7 +1,9 @@
 package io.github.ifa.glancewidget.data.appsettings
 
 import android.content.Context
+import io.github.ifa.glancewidget.data.batteryWidgetStore
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
+import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ThemeType
@@ -55,6 +57,25 @@ class DefaultAppSettingsRepository(
                 showInWidget = showInWidget
             )
         )
+        try {
+            context.batteryWidgetStore.updateData { preferences ->
+                val currentHiddenDevices =
+                    preferences[BatteryWidget.DEVICE_HIDDEN_BY_ADDRESS] ?: emptySet()
+                if (showInWidget) {
+                    preferences.toMutablePreferences().apply {
+                        this[BatteryWidget.DEVICE_HIDDEN_BY_ADDRESS] =
+                            currentHiddenDevices - macAddress
+                    }
+                } else {
+                    preferences.toMutablePreferences().apply {
+                        this[BatteryWidget.DEVICE_HIDDEN_BY_ADDRESS] =
+                            (currentHiddenDevices + macAddress).distinct().toSet()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun getBondedDevices(): Flow<BonnedDeviceSettings> {

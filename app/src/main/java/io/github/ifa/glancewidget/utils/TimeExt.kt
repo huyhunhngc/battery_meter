@@ -1,11 +1,7 @@
 package io.github.ifa.glancewidget.utils
 
 import android.content.Context
-import android.icu.text.MeasureFormat
-import android.icu.util.Measure
-import android.icu.util.MeasureUnit
 import io.github.ifa.glancewidget.R
-import java.util.Locale
 
 fun Long.toLocaleDuration(context: Context): String {
     if (this < 0) return ""
@@ -15,13 +11,17 @@ fun Long.toLocaleDuration(context: Context): String {
     val minutes = ((timeInSeconds % 3600) / 60).toInt()
 
     val hoursString = if (hours > 0) {
-        context.resources.getQuantityString(R.plurals.hours_format, hours, hours)
+        kotlin.runCatching {
+            context.resources.getQuantityString(R.plurals.hours_format, hours, hours)
+        }.getOrNull()
     } else {
         null
     }
 
     val minutesString = if (minutes > 0) {
-        context.resources.getQuantityString(R.plurals.minutes_format, minutes, minutes)
+        kotlin.runCatching {
+            context.resources.getQuantityString(R.plurals.minutes_format, minutes, minutes)
+        }.getOrNull()
     } else {
         null
     }
