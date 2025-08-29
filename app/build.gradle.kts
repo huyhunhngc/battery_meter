@@ -10,8 +10,8 @@ plugins {
 
 val versionMajor = 1
 val versionMinor = 1
-val versionPatch = 4
-val versionIncrement = 8
+val versionPatch = 7
+val versionIncrement = 11
 
 android {
     namespace = "io.github.ifa.glancewidget"
@@ -70,6 +70,9 @@ android {
         language {
             enableSplit = false
         }
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 
