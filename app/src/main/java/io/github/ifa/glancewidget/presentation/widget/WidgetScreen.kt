@@ -157,7 +157,7 @@ private fun WidgetScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             batteryMeasurementWarning(
-                showMeasurementWarning = uiState.measurementProgress == 100f,
+                showMeasurementWarning = uiState.measurementProgress < 100f,
                 progress = uiState.measurementProgress
             )
             batteryOverall(

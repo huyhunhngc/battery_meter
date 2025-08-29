@@ -83,7 +83,7 @@ private fun AppUsageScreenContent(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             AnimatedTextTopAppBar(
-                title = stringResource(id = MainScreenTab.AppUsage.label),
+                title = "",
                 scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = {

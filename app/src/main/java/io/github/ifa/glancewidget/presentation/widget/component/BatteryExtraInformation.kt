@@ -48,7 +48,7 @@ fun BatteryExtraInformation(
     val myDevice = batteryDataWrapper.batteryData.myDevice
     val batteryHealth = batteryDataWrapper.batteryHealth
     val extraBatteryInfo = batteryDataWrapper.extraBatteryInfo
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(true) }
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 90f else 0f, label = ""
     )
