@@ -17,3 +17,5 @@ local.properties
 /.kotlin/errors/
 GEMINI.md
 *.jks
+/app/release/app-release.aab
+/app/lint-baseline.xml
