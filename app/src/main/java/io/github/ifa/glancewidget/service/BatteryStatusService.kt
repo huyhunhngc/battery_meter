@@ -69,6 +69,7 @@ class BatteryStatusService : Service() {
     override fun onDestroy() {
         unregisterReceiver(batteryMonitor)
         scope.cancel()
+        stopForeground(STOP_FOREGROUND_DETACH)
         super.onDestroy()
     }
 

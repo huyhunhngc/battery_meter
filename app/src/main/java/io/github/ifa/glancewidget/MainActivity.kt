@@ -33,7 +33,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-        requestPermissions()
         enableEdgeToEdge()
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
@@ -47,17 +46,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        requestPermissions()
         viewModel.startBatteryMonitoring()
     }
 
     override fun onStop() {
         super.onStop()
         viewModel.stopBatteryMonitoring()
-    }
-
-    override fun onDestroy() {
         unregisterReceiver(batteryAppMonitor)
-        super.onDestroy()
     }
 
     private fun requestPermissions() {
