@@ -15,7 +15,7 @@ import io.github.ifa.glancewidget.broadcast.BatteryAppMonitor
 import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BATTERY_ACTIONS
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.BLUETOOTH_STATE_ACTIONS
-import io.github.ifa.glancewidget.presentation.main.mainScreenRoute
+import io.github.ifa.glancewidget.features.main.mainScreenRoute
 import io.github.ifa.glancewidget.utils.AppPermissions
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
