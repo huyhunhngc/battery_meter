@@ -24,16 +24,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import io.github.ifa.glancewidget.presentation.about.aboutScreen
-import io.github.ifa.glancewidget.presentation.about.aboutScreenRoute
-import io.github.ifa.glancewidget.presentation.appusage.appUsageScreen
-import io.github.ifa.glancewidget.presentation.gopro.goPremiumScreen
-import io.github.ifa.glancewidget.presentation.gopro.goPremiumScreenRoute
-import io.github.ifa.glancewidget.presentation.main.mainTabScreens
-import io.github.ifa.glancewidget.presentation.settings.settingsScreen
-import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.navigateToWattsDetailScreen
-import io.github.ifa.glancewidget.presentation.widget.wattsmonitor.wattsDetailScreen
-import io.github.ifa.glancewidget.presentation.widget.widgetScreen
+import io.github.ifa.glancewidget.features.about.aboutScreen
+import io.github.ifa.glancewidget.features.about.aboutScreenRoute
+import io.github.ifa.glancewidget.features.appusage.appUsageScreen
+import io.github.ifa.glancewidget.features.gopro.goPremiumScreen
+import io.github.ifa.glancewidget.features.gopro.goPremiumScreenRoute
+import io.github.ifa.glancewidget.features.main.mainTabScreens
+import io.github.ifa.glancewidget.features.settings.settingsScreen
+import io.github.ifa.glancewidget.features.widget.wattsmonitor.navigateToWattsDetailScreen
+import io.github.ifa.glancewidget.features.widget.wattsmonitor.wattsDetailScreen
+import io.github.ifa.glancewidget.features.widget.widgetScreen
 import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope
 import io.github.ifa.glancewidget.utils.navigateUrl
 
