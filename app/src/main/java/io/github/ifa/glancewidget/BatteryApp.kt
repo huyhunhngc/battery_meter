@@ -1,5 +1,6 @@
 package io.github.ifa.glancewidget
 
+import android.app.Activity
 import android.graphics.Color
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -12,11 +13,14 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -47,21 +51,12 @@ fun BatteryApp(
 
     val colorScheme = rememberColorScheme(isDarkTheme, settings.themeColor)
     val navController: NavHostController = rememberNavController()
-    val activity = LocalActivity.current as? ComponentActivity
-    val systemBarStyle by remember(isDarkTheme) {
-        derivedStateOf {
-            if (isDarkTheme) {
-                SystemBarStyle.dark(Color.TRANSPARENT)
-            } else {
-                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
-            }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDarkTheme
         }
-    }
-    LaunchedEffect(systemBarStyle) {
-        activity?.enableEdgeToEdge(
-            statusBarStyle = systemBarStyle,
-            navigationBarStyle = systemBarStyle
-        )
     }
     val appColorScheme = rememberAppColorScheme(isDarkTheme, colorScheme)
     AppTheme(

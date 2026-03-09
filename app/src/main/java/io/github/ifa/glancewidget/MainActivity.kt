@@ -34,9 +34,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         enableEdgeToEdge()
-        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            window.isNavigationBarContrastEnforced = false
-        }
         setContent {
             repositoryProvider.Provide {
                 BatteryApp(startDestination = mainScreenRoute)

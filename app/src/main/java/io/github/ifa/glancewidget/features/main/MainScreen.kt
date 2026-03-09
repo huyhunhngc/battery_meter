@@ -10,8 +10,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.features.widget.widgetScreenRoute
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
@@ -57,8 +57,6 @@ fun MainScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
-    val navBackStackEntry by mainTabNavController.currentBackStackEntryAsState()
-    val currentTab = MainScreenTab.routeToTab(navBackStackEntry?.destination?.route)
     LaunchedEffect(uiState.shouldStartNotification) {
         if (uiState.shouldStartNotification) {
             context.startBatteryStatus()
@@ -66,15 +64,15 @@ fun MainScreen(
             context.stopBatteryStatus()
         }
     }
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            mainScreenNavigation(
+    Scaffold(
+        bottomBar = {
+            FloatBottomBar(
                 navController = mainTabNavController,
-                currentTab = currentTab,
                 colorScheme = colorScheme
             )
-        },
-    ) {
+        }
+    ) { contentPadding ->
+        contentPadding
         NavHost(
             navController = mainTabNavController,
             startDestination = widgetScreenRoute,
