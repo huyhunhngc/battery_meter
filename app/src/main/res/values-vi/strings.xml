@@ -33,7 +33,7 @@
     <string name="unknown_status">Không xác định</string>
     <string name="remain_time_charging">Thời gian sạc còn lại</string>
     <string name="remain_time_battery">Thời gian pin còn lại</string>
-    <string name="follow_system">Theo dõi hệ thống</string>
+    <string name="follow_system">Hệ thống</string>
     <string name="dark_theme">Tối</string>
     <string name="light_theme">Sáng</string>
     <string name="theme">Chủ đề</string>

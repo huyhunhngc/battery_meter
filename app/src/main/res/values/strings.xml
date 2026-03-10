@@ -39,7 +39,7 @@
     <string name="unknown_status">Unknown</string>
     <string name="remain_time_charging">Charging time remaining</string>
     <string name="remain_time_battery">Battery time remaining</string>
-    <string name="follow_system">Follow System</string>
+    <string name="follow_system">System</string>
     <string name="dark_theme">Dark</string>
     <string name="light_theme">Light</string>
     <string name="theme">Theme</string>

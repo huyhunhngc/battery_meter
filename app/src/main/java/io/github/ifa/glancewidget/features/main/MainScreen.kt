@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,7 @@ import io.github.ifa.glancewidget.utils.stopBatteryStatus
 const val mainScreenRoute = "main_screen_route"
 
 fun NavGraphBuilder.mainTabScreens(
-    mainNavGraph: NavGraphBuilder.(NavController) -> Unit,
+    mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
 ) {
     composable(mainScreenRoute) {
         CompositionLocalProvider(
@@ -51,7 +52,7 @@ fun NavGraphBuilder.mainTabScreens(
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    mainNavGraph: NavGraphBuilder.(NavController) -> Unit,
+    mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
 ) {
     val mainTabNavController = rememberNavController()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,7 +73,6 @@ fun MainScreen(
             )
         }
     ) { contentPadding ->
-        contentPadding
         NavHost(
             navController = mainTabNavController,
             startDestination = widgetScreenRoute,
@@ -80,7 +80,7 @@ fun MainScreen(
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },
         ) {
-            mainNavGraph(mainTabNavController)
+            mainNavGraph(mainTabNavController, contentPadding)
         }
     }
 }

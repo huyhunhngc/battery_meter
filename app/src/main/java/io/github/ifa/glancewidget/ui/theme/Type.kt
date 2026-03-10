@@ -8,52 +8,72 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import io.github.ifa.glancewidget.R
 
-internal val interLightFont = Font(R.font.interlight, FontWeight.Light)
-internal val interRegularFont = Font(R.font.interregular, FontWeight.Normal)
-internal val interMediumFont = Font(R.font.intermedium, FontWeight.Medium)
-internal val interSemiBoldFont = Font(R.font.intersemibold, FontWeight.SemiBold)
-internal val interBoldFont = Font(R.font.interbold, FontWeight.Bold)
-
-val interFont: FontFamily = FontFamily(
-    interLightFont,
-    interRegularFont,
-    interMediumFont,
-    interSemiBoldFont,
-    interBoldFont
-)
+val googleFlex400 = FontFamily(Font(R.font.google_sans_flex_400))
+val googleFlex600 = FontFamily(Font(R.font.google_sans_flex_600))
+val TYPOGRAPHY = Typography()
 
 object Type {
     val typography = Typography(
-        headlineLarge = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 32.sp
-        ), headlineMedium = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 28.sp
-        ), headlineSmall = TextStyle(
-            fontFamily = interFont,
-            fontWeight = FontWeight.Medium,
-            fontSize = 22.sp,
-            letterSpacing = 0.15.sp
-        ), titleLarge = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 20.sp
-        ), titleMedium = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 16.sp
-        ), titleSmall = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 14.sp
-        ), bodyLarge = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 16.sp
-        ), bodyMedium = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 14.sp
-        ), bodySmall = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
-        ), labelLarge = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
-        ), labelMedium = TextStyle(
-            fontFamily = interFont, fontWeight = FontWeight.Medium, fontSize = 12.sp
-        ), labelSmall = TextStyle(
-            fontFamily = interFont,
-            fontWeight = FontWeight.Medium,
-            fontSize = 10.sp,
-            letterSpacing = 1.5.sp
+        displayLarge = TYPOGRAPHY.displayLarge.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        displayMedium = TYPOGRAPHY.displayMedium.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        displaySmall = TYPOGRAPHY.displaySmall.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        headlineLarge = TYPOGRAPHY.headlineLarge.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        headlineMedium = TYPOGRAPHY.headlineMedium.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        headlineSmall = TYPOGRAPHY.headlineSmall.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        titleLarge = TYPOGRAPHY.titleLarge.copy(
+            fontFamily = googleFlex400,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        titleMedium = TYPOGRAPHY.titleMedium.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        titleSmall = TYPOGRAPHY.titleSmall.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        bodyLarge = TYPOGRAPHY.bodyLarge.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        bodyMedium = TYPOGRAPHY.bodyMedium.copy(
+            fontFamily = googleFlex400,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        bodySmall = TYPOGRAPHY.bodySmall.copy(
+            fontFamily = googleFlex400,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        labelLarge = TYPOGRAPHY.labelLarge.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        labelMedium = TYPOGRAPHY.labelMedium.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
+        ),
+        labelSmall = TYPOGRAPHY.labelSmall.copy(
+            fontFamily = googleFlex600,
+            fontFeatureSettings = "ss02, dlig"
         )
     )
+
 }

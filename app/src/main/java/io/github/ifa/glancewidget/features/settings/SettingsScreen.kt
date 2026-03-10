@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.features.settings
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,22 +44,33 @@ import io.github.ifa.glancewidget.utils.navigateUrl
 const val settingsScreenRoute = "settings_screen_route"
 
 fun NavGraphBuilder.settingsScreen(
+    contentPadding: PaddingValues,
     onOpenAboutScreen: () -> Unit,
     onOpenGoPremiumScreen: () -> Unit
 ) {
     composable(settingsScreenRoute) {
-        SettingsScreen(onOpenAboutScreen = onOpenAboutScreen, onOpenGoPremiumScreen = onOpenGoPremiumScreen)
+        SettingsScreen(
+            contentPadding = contentPadding,
+            onOpenAboutScreen = onOpenAboutScreen,
+            onOpenGoPremiumScreen = onOpenGoPremiumScreen
+        )
     }
 }
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutScreen: () -> Unit, onOpenGoPremiumScreen: () -> Unit) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel = hiltViewModel(),
+    contentPadding: PaddingValues,
+    onOpenAboutScreen: () -> Unit,
+    onOpenGoPremiumScreen: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     SettingsScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        contentPadding = contentPadding,
         onOpenAboutScreen = onOpenAboutScreen,
         onOpenGoPremiumScreen = onOpenGoPremiumScreen,
         onSelectTheme = viewModel::setThemeType,
@@ -74,6 +86,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onOpenAboutSc
 internal fun SettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
+    contentPadding: PaddingValues,
     onOpenAboutScreen: () -> Unit,
     onOpenGoPremiumScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
@@ -101,6 +114,7 @@ internal fun SettingsScreen(
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         LazyColumn(
+            contentPadding = contentPadding,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)

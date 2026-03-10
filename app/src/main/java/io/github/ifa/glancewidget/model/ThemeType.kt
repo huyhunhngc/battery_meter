@@ -10,13 +10,13 @@ enum class ThemeType {
 
 enum class ThemeTypeColor(val code: Int) {
     System(0xFF386239.toInt()),
-    Spotify(0xFF375938.toInt()),
-    FlowerBlue(0xFF769CDF.toInt()),
-    MidnightPurple(0xFF220050.toInt()),
-    FireRed(0xFFB33B15.toInt()),
+    Spotify(0xFF20665D.toInt()),
+    FlowerBlue(0xFF1E6470.toInt()),
+    MidnightPurple(0xFF764F77.toInt()),
+    FireRed(0xFF854B56.toInt()),
     Brown(0xFF965141.toInt()),
-    AutumnYellow(0xFFFFDE3F.toInt()),
-    OliverGreen(0xFF63A002.toInt()),
+    AutumnYellow(0xFF71581B.toInt()),
+    OliverGreen(0xFF3F653C.toInt()),
     MintyOrange(0xFFFF9800.toInt());
 
     val next: ThemeTypeColor

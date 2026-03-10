@@ -1,20 +1,13 @@
 package io.github.ifa.glancewidget
 
 import android.app.Activity
-import android.graphics.Color
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
-import androidx.activity.compose.LocalActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -29,6 +22,7 @@ import io.github.ifa.glancewidget.domain.localAppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
+import io.github.ifa.glancewidget.navigation.AppNavHost
 import io.github.ifa.glancewidget.ui.theme.AppColorScheme
 import io.github.ifa.glancewidget.ui.theme.AppTheme
 import io.github.ifa.glancewidget.ui.theme.Type

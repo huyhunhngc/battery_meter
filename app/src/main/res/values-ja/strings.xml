@@ -33,7 +33,7 @@
     <string name="unknown_status">不明</string>
     <string name="remain_time_charging">充電残り時間</string>
     <string name="remain_time_battery">バッテリー残り時間</string>
-    <string name="follow_system">フォローシステム</string>
+    <string name="follow_system">システム</string>
     <string name="dark_theme">ダーク</string>
     <string name="light_theme">ライト</string>
     <string name="theme">テーマ</string>

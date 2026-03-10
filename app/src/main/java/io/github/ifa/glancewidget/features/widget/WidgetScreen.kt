@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -63,16 +64,21 @@ import kotlinx.coroutines.launch
 const val widgetScreenRoute = "widget_screen_route"
 
 fun NavGraphBuilder.widgetScreen(
+    contentPadding: PaddingValues,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
     composable(widgetScreenRoute) {
-        WidgetScreen(onOpenWattsDetailScreen = onOpenWattsDetailScreen)
+        WidgetScreen(
+            onOpenWattsDetailScreen = onOpenWattsDetailScreen,
+            contentPadding = contentPadding,
+        )
     }
 }
 
 @Composable
 internal fun WidgetScreen(
     viewModel: WidgetViewModel = hiltViewModel(),
+    contentPadding: PaddingValues,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -89,6 +95,7 @@ internal fun WidgetScreen(
     WidgetScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        contentPadding = contentPadding,
         isShowAddWidgetBottomSheet = showBottomSheet,
         onOpenWattsDetailScreen = onOpenWattsDetailScreen,
         onDisMissBottomSheet = viewModel::hideBottomSheet,
@@ -127,6 +134,7 @@ internal fun WidgetScreen(
 private fun WidgetScreen(
     uiState: WidgetViewModel.WidgetScreenUiState,
     snackbarHostState: SnackbarHostState,
+    contentPadding: PaddingValues,
     isShowAddWidgetBottomSheet: Boolean = false,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
@@ -147,6 +155,7 @@ private fun WidgetScreen(
         },
     ) { padding ->
         LazyColumn(
+            contentPadding = contentPadding,
             modifier = Modifier
                 .appPadding()
                 .fillMaxSize()

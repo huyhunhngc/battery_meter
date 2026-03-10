@@ -55,18 +55,18 @@ import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.AnimatedThemeDu
 import io.github.ifa.glancewidget.ui.theme.LocalDynamicAnimatedTheme
 import io.github.ifa.glancewidget.utils.findActivity
 
-const val goPremiumScreenRoute = "go_pro_screen_route"
+const val paywallPremiumScreenRoute = "go_pro_screen_route"
 
-fun NavGraphBuilder.goPremiumScreen(
+fun NavGraphBuilder.paywallPremiumScreen(
     onNavigationIconClick: () -> Unit,
 ) {
-    composable(goPremiumScreenRoute) {
-        GoPremiumScreen(onNavigationIconClick = onNavigationIconClick)
+    composable(paywallPremiumScreenRoute) {
+        PaywallPremiumScreen(onNavigationIconClick = onNavigationIconClick)
     }
 }
 
 @Composable
-fun GoPremiumScreen(
+fun PaywallPremiumScreen(
     viewModel: GoPremiumViewModel = hiltViewModel(),
     onNavigationIconClick: () -> Unit,
 ) {
@@ -75,7 +75,7 @@ fun GoPremiumScreen(
     val activity = context.findActivity()
     DynamicAnimatedTheme {
         PremiumPlan.Provide(premiumPlans = uiState.premiumPlanData) {
-            GoPremiumScreen(
+            PaywallPremiumScreen(
                 uiState = uiState,
                 onSelectYearlyPlan = { planId ->
                     viewModel.processSubscription(planId) { params ->
@@ -99,7 +99,7 @@ fun GoPremiumScreen(
 }
 
 @Composable
-private fun GoPremiumScreen(
+private fun PaywallPremiumScreen(
     uiState: GoPremiumViewModel.GoPremiumUiState,
     onSelectYearlyPlan: (String) -> Unit,
     onSelectLifetimePlan: (String) -> Unit,

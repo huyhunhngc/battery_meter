@@ -5,94 +5,112 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.google.android.material.color.utilities.CorePalette
-import com.google.android.material.color.utilities.Scheme
+import com.google.android.material.color.utilities.Hct
+import com.google.android.material.color.utilities.MaterialDynamicColors
+import com.google.android.material.color.utilities.SchemeTonalSpot
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 
 @SuppressLint("RestrictedApi")
 fun getLightScheme(argb: Int = ThemeTypeColor.entries.first().code): ColorScheme {
-    val scheme = Scheme.light(argb)
-    val core = CorePalette.of(argb)
+    val hct = Hct.fromInt(argb)
+    val scheme = SchemeTonalSpot(hct, false, 0.0)
+    val dynamicColors = MaterialDynamicColors()
     return lightColorScheme(
-        primary = Color(scheme.primary),
-        onPrimary = Color(scheme.onPrimary),
-        primaryContainer = Color(scheme.primaryContainer),
-        onPrimaryContainer = Color(scheme.onPrimaryContainer),
-        secondary = Color(scheme.secondary),
-        onSecondary = Color(scheme.onSecondary),
-        secondaryContainer = Color(scheme.secondaryContainer),
-        onSecondaryContainer = Color(scheme.onSecondaryContainer),
-        tertiary = Color(scheme.tertiary),
-        onTertiary = Color(scheme.onTertiary),
-        tertiaryContainer = Color(scheme.tertiaryContainer),
-        onTertiaryContainer = Color(scheme.onTertiaryContainer),
-        error = Color(scheme.error),
-        errorContainer = Color(scheme.errorContainer),
-        onError = Color(scheme.onError),
-        onErrorContainer = Color(scheme.onErrorContainer),
-        background = Color(core.n1.tone(98)),
-        onBackground = Color(scheme.onBackground),
-        surface = Color(core.n1.tone(98)),
-        onSurface = Color(scheme.onSurface),
-        surfaceContainerLowest = Color(core.n1.tone(100)),
-        surfaceBright = Color(core.n1.tone(98)),
-        surfaceContainerLow = Color(core.n1.tone(96)),
-        surfaceContainer = Color(core.n1.tone(94)),
-        surfaceContainerHigh = Color(core.n1.tone(92)),
-        surfaceContainerHighest = Color(core.n1.tone(90)),
-        surfaceDim = Color(core.n1.tone(87)),
-        surfaceVariant = Color(scheme.surfaceVariant),
-        onSurfaceVariant = Color(scheme.onSurfaceVariant),
-        outline = Color(scheme.outline),
-        outlineVariant = Color(scheme.outlineVariant),
-        scrim = Color(scheme.scrim),
-        inversePrimary = Color(scheme.inversePrimary),
-        inverseSurface = Color(scheme.inverseSurface),
-        inverseOnSurface = Color(scheme.inverseOnSurface),
-        surfaceTint = Color(scheme.primary),
+        primary = Color(dynamicColors.primary().getArgb(scheme)),
+        onPrimary = Color(dynamicColors.onPrimary().getArgb(scheme)),
+        primaryContainer = Color(dynamicColors.primaryContainer().getArgb(scheme)),
+        onPrimaryContainer = Color(dynamicColors.onPrimaryContainer().getArgb(scheme)),
+
+        secondary = Color(dynamicColors.secondary().getArgb(scheme)),
+        onSecondary = Color(dynamicColors.onSecondary().getArgb(scheme)),
+        secondaryContainer = Color(dynamicColors.secondaryContainer().getArgb(scheme)),
+        onSecondaryContainer = Color(dynamicColors.onSecondaryContainer().getArgb(scheme)),
+
+        tertiary = Color(dynamicColors.tertiary().getArgb(scheme)),
+        onTertiary = Color(dynamicColors.onTertiary().getArgb(scheme)),
+        tertiaryContainer = Color(dynamicColors.tertiaryContainer().getArgb(scheme)),
+        onTertiaryContainer = Color(dynamicColors.onTertiaryContainer().getArgb(scheme)),
+
+        error = Color(dynamicColors.error().getArgb(scheme)),
+        onError = Color(dynamicColors.onError().getArgb(scheme)),
+        errorContainer = Color(dynamicColors.errorContainer().getArgb(scheme)),
+        onErrorContainer = Color(dynamicColors.onErrorContainer().getArgb(scheme)),
+
+        background = Color(dynamicColors.background().getArgb(scheme)),
+        onBackground = Color(dynamicColors.onBackground().getArgb(scheme)),
+        surface = Color(dynamicColors.surface().getArgb(scheme)),
+        onSurface = Color(dynamicColors.onSurface().getArgb(scheme)),
+        surfaceVariant = Color(dynamicColors.surfaceVariant().getArgb(scheme)),
+        onSurfaceVariant = Color(dynamicColors.onSurfaceVariant().getArgb(scheme)),
+
+        outline = Color(dynamicColors.outline().getArgb(scheme)),
+        outlineVariant = Color(dynamicColors.outlineVariant().getArgb(scheme)),
+        scrim = Color(dynamicColors.scrim().getArgb(scheme)),
+        inversePrimary = Color(dynamicColors.inversePrimary().getArgb(scheme)),
+        inverseSurface = Color(dynamicColors.inverseSurface().getArgb(scheme)),
+        inverseOnSurface = Color(dynamicColors.inverseOnSurface().getArgb(scheme)),
+
+        surfaceBright = Color(dynamicColors.surfaceBright().getArgb(scheme)),
+        surfaceDim = Color(dynamicColors.surfaceDim().getArgb(scheme)),
+        surfaceContainer = Color(dynamicColors.surfaceContainer().getArgb(scheme)),
+        surfaceContainerLow = Color(dynamicColors.surfaceContainerLow().getArgb(scheme)),
+        surfaceContainerLowest = Color(dynamicColors.surfaceContainerLowest().getArgb(scheme)),
+        surfaceContainerHigh = Color(dynamicColors.surfaceContainerHigh().getArgb(scheme)),
+        surfaceContainerHighest = Color(dynamicColors.surfaceContainerHighest().getArgb(scheme)),
     )
 }
 
 @SuppressLint("RestrictedApi")
-fun getDarkScheme(argb: Int = ThemeTypeColor.entries.first().code): ColorScheme {
-    val scheme = Scheme.dark(argb)
-    val core = CorePalette.of(argb)
+fun getDarkScheme(
+    argb: Int = ThemeTypeColor.entries.first().code,
+    isAmoled: Boolean = false,
+): ColorScheme {
+    val hct = Hct.fromInt(argb)
+    val scheme = SchemeTonalSpot(hct, true, 0.0)
+    val dynamicColors = MaterialDynamicColors()
+
     return darkColorScheme(
-        primary = Color(scheme.primary),
-        onPrimary = Color(scheme.onPrimary),
-        primaryContainer = Color(scheme.primaryContainer),
-        onPrimaryContainer = Color(scheme.onPrimaryContainer),
-        secondary = Color(scheme.secondary),
-        onSecondary = Color(scheme.onSecondary),
-        secondaryContainer = Color(scheme.secondaryContainer),
-        onSecondaryContainer = Color(scheme.onSecondaryContainer),
-        tertiary = Color(scheme.tertiary),
-        onTertiary = Color(scheme.onTertiary),
-        tertiaryContainer = Color(scheme.tertiaryContainer),
-        onTertiaryContainer = Color(scheme.onTertiaryContainer),
-        error = Color(scheme.error),
-        onError = Color(scheme.onError),
-        errorContainer = Color(scheme.errorContainer),
-        onErrorContainer = Color(scheme.onErrorContainer),
-        background = Color(core.n1.tone(6)),
-        onBackground = Color(scheme.onBackground),
-        surface = Color(core.n1.tone(6)),
-        onSurface = Color(scheme.onSurface),
-        surfaceBright = Color(core.n2.tone(24)),
-        surfaceContainerHighest = Color(core.n2.tone(24)),
-        surfaceContainerHigh = Color(core.n2.tone(17)),
-        surfaceContainer = Color(core.n2.tone(12)),
-        surfaceContainerLow = Color(core.n2.tone(10)),
-        surfaceDim = Color(core.n2.tone(6)),
-        surfaceContainerLowest = Color(core.n2.tone(4)),
-        surfaceVariant = Color(scheme.surfaceVariant),
-        onSurfaceVariant = Color(scheme.onSurfaceVariant),
-        outline = Color(scheme.outline),
-        outlineVariant = Color(scheme.outlineVariant),
-        scrim = Color(scheme.scrim),
-        inversePrimary = Color(scheme.inversePrimary),
-        inverseSurface = Color(scheme.inverseSurface),
-        inverseOnSurface = Color(scheme.inverseOnSurface),
-        surfaceTint = Color(scheme.primary),
+        primary = Color(dynamicColors.primary().getArgb(scheme)),
+        onPrimary = Color(dynamicColors.onPrimary().getArgb(scheme)),
+        primaryContainer = Color(dynamicColors.primaryContainer().getArgb(scheme)),
+        onPrimaryContainer = Color(dynamicColors.onPrimaryContainer().getArgb(scheme)),
+
+        secondary = Color(dynamicColors.secondary().getArgb(scheme)),
+        onSecondary = Color(dynamicColors.onSecondary().getArgb(scheme)),
+        secondaryContainer = Color(dynamicColors.secondaryContainer().getArgb(scheme)),
+        onSecondaryContainer = Color(dynamicColors.onSecondaryContainer().getArgb(scheme)),
+
+        tertiary = Color(dynamicColors.tertiary().getArgb(scheme)),
+        onTertiary = Color(dynamicColors.onTertiary().getArgb(scheme)),
+        tertiaryContainer = Color(dynamicColors.tertiaryContainer().getArgb(scheme)),
+        onTertiaryContainer = Color(dynamicColors.onTertiaryContainer().getArgb(scheme)),
+
+        error = Color(dynamicColors.error().getArgb(scheme)),
+        onError = Color(dynamicColors.onError().getArgb(scheme)),
+        errorContainer = Color(dynamicColors.errorContainer().getArgb(scheme)),
+        onErrorContainer = Color(dynamicColors.onErrorContainer().getArgb(scheme)),
+
+        background = if (isAmoled) Color.Black else Color(dynamicColors.background().getArgb(scheme)),
+        onBackground = if (isAmoled) Color.White else Color(dynamicColors.onBackground().getArgb(scheme)),
+        surface = if (isAmoled) Color.Black else Color(dynamicColors.surface().getArgb(scheme)),
+        onSurface = if (isAmoled) Color.White else Color(dynamicColors.onSurface().getArgb(scheme)),
+
+        surfaceBright = Color(dynamicColors.surfaceBright().getArgb(scheme)),
+        surfaceDim = if (isAmoled) Color.Black else Color(dynamicColors.surfaceDim().getArgb(scheme)),
+        surfaceContainer = Color(dynamicColors.surfaceContainer().getArgb(scheme)),
+        surfaceContainerLow = Color(dynamicColors.surfaceContainerLow().getArgb(scheme)),
+        surfaceContainerLowest = if (isAmoled) Color.Black else Color(dynamicColors.surfaceContainerLowest().getArgb(scheme)),
+        surfaceContainerHigh = Color(dynamicColors.surfaceContainerHigh().getArgb(scheme)),
+        surfaceContainerHighest = Color(dynamicColors.surfaceContainerHighest().getArgb(scheme)),
+
+        surfaceVariant = Color(dynamicColors.surfaceVariant().getArgb(scheme)),
+        onSurfaceVariant = Color(dynamicColors.onSurfaceVariant().getArgb(scheme)),
+        outline = Color(dynamicColors.outline().getArgb(scheme)),
+        outlineVariant = Color(dynamicColors.outlineVariant().getArgb(scheme)),
+        scrim = Color(dynamicColors.scrim().getArgb(scheme)),
+        inversePrimary = Color(dynamicColors.inversePrimary().getArgb(scheme)),
+        inverseSurface = Color(dynamicColors.inverseSurface().getArgb(scheme)),
+        inverseOnSurface = Color(dynamicColors.inverseOnSurface().getArgb(scheme)),
+        surfaceTint = Color(dynamicColors.primary().getArgb(scheme))
     )
 }

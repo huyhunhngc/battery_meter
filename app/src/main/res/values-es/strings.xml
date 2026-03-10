@@ -32,7 +32,7 @@
     <string name="unknown_status">Desconocido</string>
     <string name="remain_time_charging">Tiempo restante de carga</string>
     <string name="remain_time_battery">Tiempo restante de batería</string>
-    <string name="follow_system">Seguir sistema</string>
+    <string name="follow_system">Sistema</string>
     <string name="dark_theme">Oscuro</string>
     <string name="light_theme">Claro</string>
     <string name="theme">Tema</string>
