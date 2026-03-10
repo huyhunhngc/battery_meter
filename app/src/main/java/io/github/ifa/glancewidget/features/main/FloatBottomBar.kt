@@ -61,24 +61,15 @@ import io.github.ifa.glancewidget.features.widget.widgetScreenRoute
 enum class MainScreenTab(
     val route: String,
     @param:StringRes val label: Int,
-    @DrawableRes val selectedIcon: Int,
-    @DrawableRes val icon: Int,
+    @param:DrawableRes val selectedIcon: Int,
+    @param:DrawableRes val icon: Int,
 ) {
     Widget(
-        widgetScreenRoute, R.string.widget_tab, R.drawable.ic_widgets_filled, R.drawable.ic_widgets
+        widgetScreenRoute, R.string.widget_tab, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
     ),
-
-    //    AppUsage(
-//        appUsageScreenRoute, R.string.app_usage, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
-//    ),
     Settings(
         settingsScreenRoute, R.string.settings, R.drawable.ic_setting_filled, R.drawable.ic_settings
     );
-
-    companion object {
-        fun indexOf(tab: MainScreenTab): Int = entries.indexOf(tab)
-        fun routeToTab(route: String?): MainScreenTab = entries.find { it.route == route } ?: Widget
-    }
 }
 
 @OptIn(

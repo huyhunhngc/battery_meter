@@ -6,6 +6,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.BatteryMeterNotification
@@ -30,8 +32,10 @@ class NotificationHandler @Inject constructor(
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW
-        )
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        }
         createChannelIfAbsent(channel)
         return createBatteryMonitorNotification(
             batteryNotificationData = BatteryNotificationData(
@@ -50,8 +54,10 @@ class NotificationHandler @Inject constructor(
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW
-        )
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        }
         createChannelIfAbsent(channel)
         val notification = createBatteryMonitorNotification(
             batteryNotificationData = BatteryNotificationData(
@@ -71,27 +77,32 @@ class NotificationHandler @Inject constructor(
         batteryNotificationData: BatteryNotificationData
     ): Notification {
         val packageName = context.packageName
-        val notificationLayout =
-            RemoteViews(packageName, R.layout.layout_notification_battery_small)
-        val notificationLayoutExpanded =
-            RemoteViews(packageName, R.layout.layout_notification_battery_large)
+        val notificationLayout = RemoteViews(packageName, R.layout.layout_notification_battery_small)
+        val notificationLayoutExpanded = RemoteViews(packageName, R.layout.layout_notification_battery_large)
+
         notificationLayout.applyData(batteryNotificationData)
         notificationLayoutExpanded.applyData(batteryNotificationData)
+
         val channelId = batteryNotificationData.channelId
-        val action = Notification.Action(
+
+        val action = NotificationCompat.Action.Builder(
             R.drawable.ic_settings,
             context.getString(R.string.settings),
             BatteryStatusService.createOpenBatteryStatusSettingsIntent(context, channelId)
-        )
-        return Notification.Builder(context, channelId)
+        ).build()
+
+        return NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_charger)
-            .setBadgeIconType(Notification.BADGE_ICON_SMALL)
-            .setStyle(Notification.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
             .setCustomBigContentView(notificationLayoutExpanded)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .addAction(action)
             .setOngoing(true)
-            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setShowWhen(false)
+            .setSilent(true)
+            .setRequestPromotedOngoing(true)
+            .setVisibility(VISIBILITY_PUBLIC)
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .build()
     }
 
