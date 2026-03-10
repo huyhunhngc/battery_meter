@@ -86,7 +86,7 @@ fun BatteryOverall(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(containerColorAlpha60)
+            .background(MaterialTheme.colorScheme.background)
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

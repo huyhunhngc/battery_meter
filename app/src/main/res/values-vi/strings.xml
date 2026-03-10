@@ -98,4 +98,5 @@
     <string name="usage_time">Sử dụng (giờ)</string>
     <string name="force_reload">"Tải lại"</string>
     <string name="bluetooth_device_setting">Thiết bị Bluetooth đã ghép nối. Chuyển đổi để ẩn hoặc hiển thị trong tiện ích</string>
+    <string name="battery">Pin</string>
 </resources>

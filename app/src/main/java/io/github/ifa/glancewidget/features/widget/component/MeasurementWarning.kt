@@ -29,7 +29,7 @@ fun MeasurementWarning(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
 
         verticalAlignment = Alignment.CenterVertically

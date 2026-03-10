@@ -28,6 +28,7 @@ import io.github.ifa.glancewidget.ui.theme.AppTheme
 import io.github.ifa.glancewidget.ui.theme.Type
 import io.github.ifa.glancewidget.ui.theme.getDarkScheme
 import io.github.ifa.glancewidget.ui.theme.getLightScheme
+import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
 
 @Composable
@@ -58,7 +59,9 @@ fun BatteryApp(
         typography = Type.typography,
         appColorScheme = appColorScheme
     ) {
-        Surface {
+        Surface(
+            color = topBarColors.containerColor
+        ) {
             AppNavHost(
                 navController = navController,
                 startDestination = startDestination,

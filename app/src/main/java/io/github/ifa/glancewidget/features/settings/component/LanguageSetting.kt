@@ -30,8 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.features.settings.SettingsViewModel
+import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.ui.component.TextWithImage
 import io.github.ifa.glancewidget.ui.component.appPadding
 import kotlinx.coroutines.launch
@@ -55,7 +55,7 @@ fun LanguageSetting(
             .appPadding()
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.background)
             .clickable {
                 if (openBottomSheet.value) {
                     scope.launch { sheetState.hide() }
@@ -64,7 +64,8 @@ fun LanguageSetting(
                     scope.launch { sheetState.show() }
                 }
             }
-            .padding(16.dp)) {
+            .padding(16.dp),
+    ) {
         TextWithImage(
             text = stringResource(R.string.language),
             image = painterResource(id = R.drawable.ic_language),

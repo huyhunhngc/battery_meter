@@ -97,4 +97,5 @@
     <string name="usage_time">Uso (horas)</string>
     <string name="force_reload">"Recargar Forzado"</string>
     <string name="bluetooth_device_setting">Dispositivos Bluetooth emparejados. Alternar para ocultar o mostrar en el widget</string>
+    <string name="battery">Batería</string>
 </resources>

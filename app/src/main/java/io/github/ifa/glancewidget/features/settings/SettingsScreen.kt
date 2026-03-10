@@ -7,18 +7,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,6 +42,7 @@ import io.github.ifa.glancewidget.features.settings.component.NotificationSettin
 import io.github.ifa.glancewidget.features.settings.component.OtherSession
 import io.github.ifa.glancewidget.features.settings.component.ThemeSetting
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
+import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.Constants.IFA_LICENSES_URL
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
@@ -46,13 +54,11 @@ const val settingsScreenRoute = "settings_screen_route"
 fun NavGraphBuilder.settingsScreen(
     contentPadding: PaddingValues,
     onOpenAboutScreen: () -> Unit,
-    onOpenGoPremiumScreen: () -> Unit
 ) {
     composable(settingsScreenRoute) {
         SettingsScreen(
             contentPadding = contentPadding,
             onOpenAboutScreen = onOpenAboutScreen,
-            onOpenGoPremiumScreen = onOpenGoPremiumScreen
         )
     }
 }
@@ -62,7 +68,6 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
     contentPadding: PaddingValues,
     onOpenAboutScreen: () -> Unit,
-    onOpenGoPremiumScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -72,7 +77,6 @@ fun SettingsScreen(
         snackbarHostState = snackbarHostState,
         contentPadding = contentPadding,
         onOpenAboutScreen = onOpenAboutScreen,
-        onOpenGoPremiumScreen = onOpenGoPremiumScreen,
         onSelectTheme = viewModel::setThemeType,
         onSelectThemeColor = viewModel::setThemeTypeColor,
         onSelectLanguage = viewModel::setLanguage,
@@ -81,14 +85,13 @@ fun SettingsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun SettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
     onOpenAboutScreen: () -> Unit,
-    onOpenGoPremiumScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
     onSelectThemeColor: (ThemeTypeColor) -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
@@ -106,24 +109,32 @@ internal fun SettingsScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            AnimatedTextTopAppBar(
-                title = stringResource(id = MainScreenTab.Settings.label),
-                scrollBehavior = scrollBehavior
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = MainScreenTab.Settings.label),
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                subtitle = {},
+                titleHorizontalAlignment = Alignment.CenterHorizontally,
+                scrollBehavior = scrollBehavior,
+                colors = topBarColors
             )
         },
+        containerColor = topBarColors.containerColor,
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
         LazyColumn(
-            contentPadding = contentPadding,
+            contentPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding()),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-//            item {
-//                LaunchPremiumSession(onOpenGoPremiumScreen = onOpenGoPremiumScreen)
-//            }
             if (!isAppCompatLocaleDeprecated()) {
                 item {
                     LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)

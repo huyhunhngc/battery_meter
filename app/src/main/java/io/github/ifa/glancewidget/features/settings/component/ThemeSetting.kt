@@ -12,12 +12,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,17 +45,17 @@ fun ThemeSetting(
         image = painterResource(id = R.drawable.ic_palette),
         modifier = Modifier.appPadding()
     )
-    Spacer(modifier = Modifier.height(16.dp))
     SwitchWithDescription(
+        modifier = Modifier
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp)),
         label = stringResource(id = R.string.sync_color_scheme_with_widget),
         description = stringResource(id = R.string.sync_color_scheme_with_widget_description),
         onCheckedChange = scope@{ checked ->
             syncEnabled = checked
         },
         checked = syncEnabled,
-        modifier = Modifier.appPadding()
     )
-    Spacer(modifier = Modifier.height(16.dp))
     LazyVerticalGrid(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier

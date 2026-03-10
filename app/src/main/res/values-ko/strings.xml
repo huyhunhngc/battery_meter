@@ -97,4 +97,5 @@
     <string name="usage_time">사용 시간 (시간)</string>
     <string name="force_reload">"강제 새로고침"</string>
     <string name="bluetooth_device_setting">Bluetooth 페어링된 기기. 위젯에서 숨기거나 표시하려면 전환하세요</string>
+    <string name="battery">배터리</string>
 </resources>

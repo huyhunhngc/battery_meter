@@ -104,4 +104,5 @@
     <string name="usage_time">Usage (hours)</string>
     <string name="force_reload">"Force Reload"</string>
     <string name="bluetooth_device_setting">Bluetooth paired devices. Toggle to hide or show in widget</string>
+    <string name="battery">Battery</string>
 </resources>

@@ -98,4 +98,5 @@
     <string name="usage_time">使用時間（時間）</string>
     <string name="force_reload">"強制リロード"</string>
     <string name="bluetooth_device_setting">Bluetoothペアリングデバイス。ウィジェットで非表示または表示を切り替えます。</string>
+    <string name="battery">バッテリー</string>
 </resources>

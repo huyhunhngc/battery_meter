@@ -1,6 +1,5 @@
 package io.github.ifa.glancewidget.features.settings.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,17 +30,13 @@ fun ThemeSettingItem(
     onSelectTheme: (ThemeType) -> Unit,
     selected: Boolean,
 ) {
-    val selectedAlpha = if (selected) 1.0f else 0.5f
-    val textColor = MaterialTheme.colorScheme.primary.copy(alpha = selectedAlpha)
     Surface(
         onClick = { onSelectTheme(themeType) },
-        shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(
-            width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = selectedAlpha)
-        ),
+        shape = RoundedCornerShape(16.dp),
         modifier = modifier.height(90.dp).fillMaxWidth(),
         tonalElevation = if (selected) 6.dp else 0.dp,
-        contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = selectedAlpha)
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
+        contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
     ) {
         Box {
             Column(
@@ -49,7 +44,7 @@ fun ThemeSettingItem(
                 modifier = Modifier.align(Alignment.Center)
             ) {
                 Icon(
-                    themeType.themeIcon(), contentDescription = null, tint = textColor
+                    themeType.themeIcon(), contentDescription = null
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
@@ -57,7 +52,6 @@ fun ThemeSettingItem(
                     textAlign = TextAlign.Center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = textColor,
                     style = MaterialTheme.typography.labelLarge
                 )
             }

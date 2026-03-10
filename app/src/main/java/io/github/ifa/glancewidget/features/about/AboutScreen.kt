@@ -121,7 +121,7 @@ internal fun AboutScreen(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .size(72.dp),
-                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                painter = painterResource(id = R.mipmap.ic_launcher_monochrome),
                 contentDescription = "app icon"
             )
             Text(

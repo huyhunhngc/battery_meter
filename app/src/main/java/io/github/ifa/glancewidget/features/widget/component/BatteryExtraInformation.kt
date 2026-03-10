@@ -82,7 +82,7 @@ fun BatteryExtraInformation(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clip(RoundedCornerShape(cornerRadius))
-                .background(containerColorAlpha60)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
         ) {
             SessionText(
@@ -124,7 +124,7 @@ private fun InformationRow(@StringRes key: Int, value: String) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

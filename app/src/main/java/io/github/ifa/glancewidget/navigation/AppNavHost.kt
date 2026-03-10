@@ -60,7 +60,6 @@ private fun NavGraphBuilder.mainScreen(
         settingsScreen(
             contentPadding = contentPadding,
             onOpenAboutScreen = navController::navigateToAboutScreen,
-            onOpenGoPremiumScreen = navController::navigateToGoPremiumScreen
         )
     }
 }
