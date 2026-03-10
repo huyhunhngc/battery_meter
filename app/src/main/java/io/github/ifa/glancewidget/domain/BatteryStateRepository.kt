@@ -14,7 +14,9 @@ interface BatteryStateRepository {
     @Composable
     fun battery(): BatteryData
     fun batteryFlow(): Flow<BatteryData>
+    suspend fun batteryData(): BatteryData
     fun extraBatteryFlow(): Flow<ExtraBatteryInfo>
+    suspend fun extraBattery(): ExtraBatteryInfo
     fun chargeCurrentFlow(): Flow<ChargeDisChargeCurrent>
     fun chartRecordFlow(): Flow<ChartRecord>
     suspend fun chargeCurrent(): ChargeDisChargeCurrent

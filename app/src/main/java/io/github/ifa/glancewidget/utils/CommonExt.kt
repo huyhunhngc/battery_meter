@@ -205,8 +205,11 @@ fun BroadcastReceiver.goAsyncCoroutine(
 ) {
     val pendingResult = goAsync()
     coroutineScope.launch(dispatcher) {
-        block()
-        pendingResult.finish()
+        try {
+            block()
+        } finally {
+            pendingResult.finish()
+        }
     }
 }
 

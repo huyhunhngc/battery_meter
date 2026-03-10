@@ -62,7 +62,11 @@
         <service
             android:name=".service.BatteryStatusService"
             android:foregroundServiceType="specialUse"
-            android:exported="false" />
+            android:exported="false">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Required to keep the battery running in the background" />
+        </service>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

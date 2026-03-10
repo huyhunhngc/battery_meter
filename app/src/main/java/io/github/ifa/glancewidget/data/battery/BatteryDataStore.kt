@@ -37,6 +37,14 @@ class BatteryDataStore(
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun getBatteryData(): BatteryData {
+        return dataStore.getObject<BatteryData>(BATTERY_PREFERENCES) ?: BatteryData.initial()
+    }
+
+    suspend fun getExtraBatteryData(default: ExtraBatteryInfo): ExtraBatteryInfo {
+        return dataStore.getObject<ExtraBatteryInfo>(EXTRA_BATTERY_PREFERENCES) ?: default
+    }
+
     suspend fun saveExtraBatteryInformation(extraBatteryInfo: ExtraBatteryInfo) {
         dataStore.setObject(EXTRA_BATTERY_PREFERENCES, extraBatteryInfo)
     }

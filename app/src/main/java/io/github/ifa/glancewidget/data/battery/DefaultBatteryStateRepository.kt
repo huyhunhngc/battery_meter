@@ -41,6 +41,10 @@ class DefaultBatteryStateRepository(
         return batteryDataStore.get()
     }
 
+    override suspend fun batteryData(): BatteryData {
+        return batteryDataStore.getBatteryData()
+    }
+
     override fun extraBatteryFlow(): Flow<ExtraBatteryInfo> {
         val extraBattery = try {
             context.getExtraBatteryInformation()
@@ -48,8 +52,18 @@ class DefaultBatteryStateRepository(
             e.printStackTrace()
             ExtraBatteryInfo()
         }
-        return batteryDataStore.getExtraBatteryInformation(extraBattery).chunked(3).conflate()
+        return batteryDataStore.getExtraBatteryInformation(extraBattery).chunked(2).conflate()
             .map { it.average() }
+    }
+
+    override suspend fun extraBattery(): ExtraBatteryInfo {
+        val extraBattery = try {
+            context.getExtraBatteryInformation()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ExtraBatteryInfo()
+        }
+        return batteryDataStore.getExtraBatteryData(extraBattery)
     }
 
     override suspend fun chargeCurrent(): ChargeDisChargeCurrent {
