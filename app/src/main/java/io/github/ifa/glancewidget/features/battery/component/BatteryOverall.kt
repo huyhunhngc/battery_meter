@@ -16,9 +16,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,12 +53,13 @@ import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
+import io.github.ifa.glancewidget.ui.component.AnimatedCounter
 import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BatteryOverall(
     modifier: Modifier = Modifier,
@@ -83,13 +89,26 @@ fun BatteryOverall(
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.background)
-            .padding(8.dp),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Header(Modifier.fillMaxWidth())
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            FilledTonalIconButton(
+                onClick = {
+                    context.startActivity(Intent(Intent.ACTION_POWER_USAGE_SUMMARY))
+                },
+                modifier = Modifier.width(52.dp).height(32.dp).align(Alignment.BottomEnd)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_monitoring),
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = null
+                )
+            }
+        }
+
         Row(
             modifier = Modifier
                 .height(100.dp)
@@ -120,7 +139,9 @@ fun BatteryOverall(
         ) {
             WattsMonitor(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(140.dp)
+                    .clip(MaterialTheme.shapes.largeIncreased)
+                    .background(MaterialTheme.colorScheme.background)
                     .clickable {
                         onOpenWattsDetailScreen(
                             WattsDetailDestination(
@@ -135,9 +156,9 @@ fun BatteryOverall(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .height(140.dp)
+                    .clip(MaterialTheme.shapes.largeIncreased)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -188,31 +209,7 @@ fun BatteryOverall(
     }
 }
 
-@Composable
-private fun Header(
-    modifier: Modifier
-) {
-    val context = LocalContext.current
-    Row(modifier = modifier) {
-        SessionText(
-            text = stringResource(id = R.string.battery_status),
-            modifier = Modifier.padding(8.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(
-            onClick = {
-                context.startActivity(Intent(Intent.ACTION_POWER_USAGE_SUMMARY))
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_monitoring),
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = null
-            )
-        }
-    }
-}
-
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CurrentAndChargingMonitor(
     modifier: Modifier,
@@ -229,18 +226,18 @@ private fun CurrentAndChargingMonitor(
     Box(
         modifier = modifier
             .height(120.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(if (isCharging) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh)
+            .clip(MaterialTheme.shapes.largeIncreased)
+            .background(if (isCharging) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.background)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             ShortInformationRow(
                 key = stringResource(id = if (isCharging) R.string.charging else R.string.discharging),
                 value = chargeType.type
             )
-            Text(
-                text = chargeCurrent.toString(),
+            AnimatedCounter(
+                count = chargeCurrent,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.tertiary
             )
             Text(
@@ -268,6 +265,7 @@ private fun CurrentAndChargingMonitor(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun TemperatureMonitor(
     modifier: Modifier,
@@ -284,8 +282,8 @@ private fun TemperatureMonitor(
     }
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .aspectRatio(1.0f)
+            .clip(MaterialTheme.shapes.largeIncreased)
+            .height(180.dp)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         LineChart(
@@ -313,6 +311,7 @@ private fun TemperatureMonitor(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @SuppressLint("DefaultLocale")
 @Composable
 private fun VoltageMonitor(
@@ -330,8 +329,8 @@ private fun VoltageMonitor(
     }
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .aspectRatio(1.0f)
+            .clip(MaterialTheme.shapes.largeIncreased)
+            .height(180.dp)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         LineChart(

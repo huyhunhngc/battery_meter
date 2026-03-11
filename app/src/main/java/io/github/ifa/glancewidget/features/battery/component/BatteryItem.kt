@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.ui.component.AnimatedCounter
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BatteryItem(
     modifier: Modifier = Modifier,
@@ -62,7 +66,7 @@ fun BatteryItem(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(MaterialTheme.shapes.largeIncreased)
             .background(if (!isTransparent) MaterialTheme.colorScheme.background else Color.Transparent)
             .padding(if (isTransparent) 0.dp else 8.dp)
     ) {
@@ -71,7 +75,6 @@ fun BatteryItem(
                 .fillMaxHeight()
                 .fillMaxWidth()
                 .align(Alignment.CenterStart)
-                .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.primaryContainer)
         )
         Spacer(
@@ -79,7 +82,6 @@ fun BatteryItem(
                 .fillMaxHeight()
                 .fillMaxWidth(animatePercentFloat.value)
                 .align(Alignment.CenterStart)
-                .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
                 .background(MaterialTheme.colorScheme.inversePrimary)
         )
 
@@ -103,10 +105,10 @@ fun BatteryItem(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val text = if (isActive) "$percent%" else "0%"
+                    val p = if (isActive) percent else 0
                     if (description.isNotEmpty()) {
                         ItemText(
-                            text = text,
+                            text = "$p%",
                             modifier = Modifier.padding(end = 4.dp)
                         )
                         Text(
@@ -117,7 +119,29 @@ fun BatteryItem(
                             color = MaterialTheme.colorScheme.primary
                         )
                     } else {
-                        ItemLargeText(text = text, modifier = Modifier.padding(end = 4.dp))
+                        if (p == 0) {
+                            CircularWavyProgressIndicator()
+                        } else {
+                            Row(
+                                modifier = Modifier.padding(end = 4.dp),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                AnimatedCounter(
+                                    count = p,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "%",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -167,19 +191,6 @@ private fun ItemText(text: String, modifier: Modifier = Modifier) {
         color = MaterialTheme.colorScheme.primary,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold
-    )
-}
-
-@Composable
-private fun ItemLargeText(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text = text,
-        modifier = modifier,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.headlineLarge,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary
     )
 }
 

@@ -51,9 +51,7 @@ import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
-import io.github.ifa.glancewidget.features.main.MainScreenTab
 import io.github.ifa.glancewidget.features.battery.component.AddWidgetBottomSheet
-import io.github.ifa.glancewidget.features.battery.component.BatteryExtraInformation
 import io.github.ifa.glancewidget.features.battery.component.BatteryOverall
 import io.github.ifa.glancewidget.features.battery.component.BonedDeviceItem
 import io.github.ifa.glancewidget.features.battery.component.ConnectedDevice
@@ -179,10 +177,6 @@ private fun BatteryMonitorScreen(
                 onOpenWattsDetailScreen = onOpenWattsDetailScreen,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
-            batteryExtraInformation(
-                batteryDataWrapper = uiState.batteryOverall,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
             connectedDevices(
                 modifier = Modifier.padding(bottom = 16.dp),
                 batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
@@ -277,14 +271,7 @@ private fun LazyListScope.batteryOverall(
     }
 }
 
-private fun LazyListScope.batteryExtraInformation(
-    modifier: Modifier = Modifier,
-    batteryDataWrapper: BatteryDataWrapper,
-) {
-    item {
-        BatteryExtraInformation(modifier, batteryDataWrapper)
-    }
-}
+
 
 private fun LazyListScope.connectedDevices(
     modifier: Modifier = Modifier,

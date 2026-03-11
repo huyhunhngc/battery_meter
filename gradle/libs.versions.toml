@@ -66,7 +66,6 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 appwidget-host = { module = "com.google.android.glance.tools:appwidget-host", version.ref = "appwidgetHost" }
 accompanist-permission = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }

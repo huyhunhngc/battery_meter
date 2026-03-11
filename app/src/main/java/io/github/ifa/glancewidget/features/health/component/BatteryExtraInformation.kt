@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.battery.component
+package io.github.ifa.glancewidget.features.health.component
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize

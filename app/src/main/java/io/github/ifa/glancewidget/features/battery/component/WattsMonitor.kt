@@ -40,8 +40,6 @@ fun WattsMonitor(
     }
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.background)
     ) {
         CircleProgressBar(
             modifier = sharedModifier.fillMaxSize().padding(8.dp),
