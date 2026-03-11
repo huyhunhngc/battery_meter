@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -27,10 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.BonedDevice
 import io.github.ifa.glancewidget.model.DeviceType
-import io.github.ifa.glancewidget.ui.theme.containerColorAlpha60
 
 @Composable
 fun BonedDeviceItem(
@@ -79,7 +79,7 @@ fun BonedDeviceItem(
             ) {
                 if (device.batteryInPercentage > 0) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_widgets),
+                        imageVector = Icons.Rounded.Widgets,
                         contentDescription = "widget",
                         modifier = Modifier,
                         tint = MaterialTheme.colorScheme.primary

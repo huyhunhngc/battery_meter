@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.gopro
+package io.github.ifa.glancewidget.features.paywall
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

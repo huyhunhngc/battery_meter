@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget
+package io.github.ifa.glancewidget.features.battery
 
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
@@ -52,15 +52,14 @@ import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.features.main.MainScreenTab
-import io.github.ifa.glancewidget.features.widget.component.AddWidgetBottomSheet
-import io.github.ifa.glancewidget.features.widget.component.BatteryExtraInformation
-import io.github.ifa.glancewidget.features.widget.component.BatteryOverall
-import io.github.ifa.glancewidget.features.widget.component.BonedDeviceItem
-import io.github.ifa.glancewidget.features.widget.component.ConnectedDevice
-import io.github.ifa.glancewidget.features.widget.component.DropdownMenu
-import io.github.ifa.glancewidget.features.widget.component.MeasurementWarning
-import io.github.ifa.glancewidget.features.widget.wattsmonitor.WattsDetailDestination
-import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
+import io.github.ifa.glancewidget.features.battery.component.AddWidgetBottomSheet
+import io.github.ifa.glancewidget.features.battery.component.BatteryExtraInformation
+import io.github.ifa.glancewidget.features.battery.component.BatteryOverall
+import io.github.ifa.glancewidget.features.battery.component.BonedDeviceItem
+import io.github.ifa.glancewidget.features.battery.component.ConnectedDevice
+import io.github.ifa.glancewidget.features.battery.component.DropdownMenu
+import io.github.ifa.glancewidget.features.battery.component.MeasurementWarning
+import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.addWidget
@@ -68,14 +67,14 @@ import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.requestToPinWidget
 import kotlinx.coroutines.launch
 
-const val widgetScreenRoute = "widget_screen_route"
+const val batteryMonitorScreenRoute = "battery_monitor_screen_route"
 
-fun NavGraphBuilder.widgetScreen(
+fun NavGraphBuilder.batteryMonitorScreen(
     contentPadding: PaddingValues,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
-    composable(widgetScreenRoute) {
-        WidgetScreen(
+    composable(batteryMonitorScreenRoute) {
+        BatteryMonitorScreen(
             onOpenWattsDetailScreen = onOpenWattsDetailScreen,
             contentPadding = contentPadding,
         )
@@ -83,8 +82,8 @@ fun NavGraphBuilder.widgetScreen(
 }
 
 @Composable
-internal fun WidgetScreen(
-    viewModel: WidgetViewModel = hiltViewModel(),
+internal fun BatteryMonitorScreen(
+    viewModel: BatteryMonitorViewModel = hiltViewModel(),
     contentPadding: PaddingValues,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
@@ -99,7 +98,7 @@ internal fun WidgetScreen(
         val intent = activity?.intent ?: return@LaunchedEffect
         viewModel.controlExtras(intent)
     }
-    WidgetScreen(
+    BatteryMonitorScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         contentPadding = contentPadding,
@@ -138,8 +137,8 @@ internal fun WidgetScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WidgetScreen(
-    uiState: WidgetViewModel.WidgetScreenUiState,
+private fun BatteryMonitorScreen(
+    uiState: BatteryMonitorViewModel.BatteryMonitorScreenUiState,
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
     isShowAddWidgetBottomSheet: Boolean = false,
@@ -187,7 +186,7 @@ private fun WidgetScreen(
             connectedDevices(
                 modifier = Modifier.padding(bottom = 16.dp),
                 batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
-                batteryDeviceSettings = uiState.bonnedDeviceSettings,
+                batteryDeviceSettings = uiState.bonedDeviceSettings,
                 onShowInWidgetChanged = onShowInWidgetChanged
             )
         }
@@ -219,13 +218,7 @@ private fun Appbar(
                 color = MaterialTheme.colorScheme.onSurface
             )
         },
-        subtitle = {
-            Text(
-                text = stringResource(id = MainScreenTab.Widget.label),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.secondary
-            )
-        },
+        subtitle = {},
         titleHorizontalAlignment = Alignment.CenterHorizontally,
         scrollBehavior = scrollBehavior,
         colors = topBarColors,

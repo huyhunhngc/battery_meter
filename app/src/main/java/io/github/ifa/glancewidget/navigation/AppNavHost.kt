@@ -9,12 +9,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import io.github.ifa.glancewidget.features.about.aboutScreen
 import io.github.ifa.glancewidget.features.appusage.appUsageScreen
-import io.github.ifa.glancewidget.features.gopro.paywallPremiumScreen
+import io.github.ifa.glancewidget.features.paywall.paywallPremiumScreen
 import io.github.ifa.glancewidget.features.main.mainTabScreens
 import io.github.ifa.glancewidget.features.settings.settingsScreen
-import io.github.ifa.glancewidget.features.widget.wattsmonitor.navigateToWattsDetailScreen
-import io.github.ifa.glancewidget.features.widget.wattsmonitor.wattsDetailScreen
-import io.github.ifa.glancewidget.features.widget.widgetScreen
+import io.github.ifa.glancewidget.features.battery.wattsmonitor.navigateToWattsDetailScreen
+import io.github.ifa.glancewidget.features.battery.wattsmonitor.wattsDetailScreen
+import io.github.ifa.glancewidget.features.battery.batteryMonitorScreen
+import io.github.ifa.glancewidget.features.health.healthScreen
 import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope
 import io.github.ifa.glancewidget.utils.navigateUrl
 
@@ -52,9 +53,12 @@ private fun NavGraphBuilder.mainScreen(
     navController: NavHostController,
 ) {
     mainTabScreens { navMainController, contentPadding ->
-        widgetScreen(
+        batteryMonitorScreen(
             contentPadding = contentPadding,
             onOpenWattsDetailScreen = navController::navigateToWattsDetailScreen
+        )
+        healthScreen(
+            contentPadding = contentPadding
         )
         appUsageScreen()
         settingsScreen(

@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing

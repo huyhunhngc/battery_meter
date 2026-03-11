@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -47,9 +47,8 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
-import io.github.ifa.glancewidget.features.widget.wattsmonitor.WattsDetailDestination
+import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.SessionText
-import io.github.ifa.glancewidget.ui.theme.containerColorAlpha60
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

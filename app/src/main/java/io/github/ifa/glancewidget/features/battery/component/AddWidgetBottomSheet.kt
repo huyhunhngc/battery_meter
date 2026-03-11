@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.border
@@ -34,13 +34,13 @@ import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.WidgetSetting
-import io.github.ifa.glancewidget.features.widget.WidgetViewModel
+import io.github.ifa.glancewidget.features.battery.BatteryMonitorViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddWidgetBottomSheet(
-    uiState: WidgetViewModel.WidgetScreenUiState,
+    uiState: BatteryMonitorViewModel.BatteryMonitorScreenUiState,
     onDisMiss: () -> Unit,
     onClickAddWidget: (AddWidgetParams) -> Unit,
 ) {

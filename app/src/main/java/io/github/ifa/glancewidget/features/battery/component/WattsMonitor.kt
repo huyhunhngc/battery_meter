@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import io.github.ifa.glancewidget.features.widget.wattsmonitor.WattsDetailDestination
+import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.CircleProgressBar
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope

@@ -11,7 +11,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -27,7 +26,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.github.ifa.glancewidget.features.widget.widgetScreenRoute
+import io.github.ifa.glancewidget.features.battery.batteryMonitorScreenRoute
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 import io.github.ifa.glancewidget.utils.startBatteryStatus
 import io.github.ifa.glancewidget.utils.stopBatteryStatus
@@ -67,7 +66,7 @@ fun MainScreen(
     }
     Scaffold(
         bottomBar = {
-            FloatBottomBar(
+            MainFloatBottomBar(
                 navController = mainTabNavController,
                 colorScheme = colorScheme
             )
@@ -75,7 +74,7 @@ fun MainScreen(
     ) { contentPadding ->
         NavHost(
             navController = mainTabNavController,
-            startDestination = widgetScreenRoute,
+            startDestination = batteryMonitorScreenRoute,
             modifier = Modifier.fillMaxSize(),
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },

@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.wattsmonitor
+package io.github.ifa.glancewidget.features.battery.wattsmonitor
 
 import androidx.annotation.Keep
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -38,7 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.features.widget.component.WattsMonitor
+import io.github.ifa.glancewidget.features.battery.component.WattsMonitor
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope
 import kotlinx.serialization.Serializable

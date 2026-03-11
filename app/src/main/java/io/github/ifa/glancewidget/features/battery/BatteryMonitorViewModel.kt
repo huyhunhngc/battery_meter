@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget
+package io.github.ifa.glancewidget.features.battery
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
@@ -24,16 +24,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WidgetViewModel @Inject constructor(
+class BatteryMonitorViewModel @Inject constructor(
     private val batteryStateRepository: BatteryStateRepository,
     private val appSettingsRepository: AppSettingsRepository,
     batteryUseCase: BatteryUseCase,
 ) : ViewModel() {
-    data class WidgetScreenUiState(
+    data class BatteryMonitorScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryOverall: BatteryDataWrapper,
         val chartTrackingData: ChartRecord,
-        val bonnedDeviceSettings: BonnedDeviceSettings
+        val bonedDeviceSettings: BonnedDeviceSettings
     ) {
         val measurementProgress = batteryOverall.chargeDisChargeCurrent.getMeasurementProgress()
     }
@@ -50,23 +50,23 @@ class WidgetViewModel @Inject constructor(
         initialValue = BatteryDataWrapper()
     )
 
-    private val _bonnedDeviceSettings = appSettingsRepository.getBondedDevices().stateIn(
+    private val _bonedDeviceSettings = appSettingsRepository.getBondedDevices().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = BonnedDeviceSettings()
     )
 
-    val uiState: StateFlow<WidgetScreenUiState> = buildUiState(
+    val uiState: StateFlow<BatteryMonitorScreenUiState> = buildUiState(
         _setupWidgetId,
         _batteryDataWrapper,
         _chartTrackingData,
-        _bonnedDeviceSettings
-    ) { setupWidgetId, batteryDataWrapper, chartTrackingData, bonnedDeviceSettings ->
-        WidgetScreenUiState(
+        _bonedDeviceSettings
+    ) { setupWidgetId, batteryDataWrapper, chartTrackingData, bonedDeviceSettings ->
+        BatteryMonitorScreenUiState(
             setupWidgetId = setupWidgetId,
             batteryOverall = batteryDataWrapper,
             chartTrackingData = chartTrackingData,
-            bonnedDeviceSettings =bonnedDeviceSettings
+            bonedDeviceSettings =bonedDeviceSettings
         )
     }
 

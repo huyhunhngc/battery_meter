@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.gopro
+package io.github.ifa.glancewidget.features.paywall
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GoPremiumViewModel @Inject constructor(
+class PaywallPremiumViewModel @Inject constructor(
     private val playBillingRepository: PlayBillingRepository,
     private val premiumFeatureUseCase: PremiumFeatureUseCase,
     private val purchaseListener: PurchaseListener

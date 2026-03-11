@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

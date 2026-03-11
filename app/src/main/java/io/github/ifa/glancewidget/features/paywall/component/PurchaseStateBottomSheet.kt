@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.gopro.component
+package io.github.ifa.glancewidget.features.paywall.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,13 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.features.gopro.GoPremiumViewModel
+import io.github.ifa.glancewidget.features.paywall.PaywallPremiumViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PurchaseStateBottomSheet(
-    purchaseState: GoPremiumViewModel.GoPremiumUiState.PurchaseState,
+    purchaseState: PaywallPremiumViewModel.GoPremiumUiState.PurchaseState,
     padding: PaddingValues,
     onDismiss: () -> Unit,
 ) {

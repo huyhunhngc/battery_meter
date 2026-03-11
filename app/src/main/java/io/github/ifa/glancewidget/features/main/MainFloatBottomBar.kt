@@ -56,7 +56,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.window.core.layout.WindowSizeClass
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.features.settings.settingsScreenRoute
-import io.github.ifa.glancewidget.features.widget.widgetScreenRoute
+import io.github.ifa.glancewidget.features.battery.batteryMonitorScreenRoute
+import io.github.ifa.glancewidget.features.health.healthScreenRoute
 
 enum class MainScreenTab(
     val route: String,
@@ -65,10 +66,13 @@ enum class MainScreenTab(
     @param:DrawableRes val icon: Int,
 ) {
     Widget(
-        widgetScreenRoute, R.string.widget_tab, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
+        batteryMonitorScreenRoute, R.string.widget_tab, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
+    ),
+    Health(
+        healthScreenRoute, R.string.health, R.drawable.ic_heart_filled, R.drawable.ic_heart
     ),
     Settings(
-        settingsScreenRoute, R.string.settings, R.drawable.ic_setting_filled, R.drawable.ic_settings
+        settingsScreenRoute, R.string.settings, R.drawable.ic_settings_filled, R.drawable.ic_settings
     );
 }
 
@@ -76,7 +80,7 @@ enum class MainScreenTab(
     ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class
 )
 @Composable
-fun FloatBottomBar(
+fun MainFloatBottomBar(
     navController: NavController,
     colorScheme: ColorScheme
 ) {

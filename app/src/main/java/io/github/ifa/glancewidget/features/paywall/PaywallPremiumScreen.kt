@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.gopro
+package io.github.ifa.glancewidget.features.paywall
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -47,8 +47,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.features.gopro.component.PlanPremiumCard
-import io.github.ifa.glancewidget.features.gopro.component.PurchaseStateBottomSheet
+import io.github.ifa.glancewidget.features.paywall.component.PlanPremiumCard
+import io.github.ifa.glancewidget.features.paywall.component.PurchaseStateBottomSheet
 import io.github.ifa.glancewidget.ui.component.PagerIndicator
 import io.github.ifa.glancewidget.ui.theme.DynamicAnimatedTheme
 import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.AnimatedThemeDuration
@@ -67,7 +67,7 @@ fun NavGraphBuilder.paywallPremiumScreen(
 
 @Composable
 fun PaywallPremiumScreen(
-    viewModel: GoPremiumViewModel = hiltViewModel(),
+    viewModel: PaywallPremiumViewModel = hiltViewModel(),
     onNavigationIconClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -100,7 +100,7 @@ fun PaywallPremiumScreen(
 
 @Composable
 private fun PaywallPremiumScreen(
-    uiState: GoPremiumViewModel.GoPremiumUiState,
+    uiState: PaywallPremiumViewModel.GoPremiumUiState,
     onSelectYearlyPlan: (String) -> Unit,
     onSelectLifetimePlan: (String) -> Unit,
     hidePurchaseStateBottomSheet: () -> Unit,

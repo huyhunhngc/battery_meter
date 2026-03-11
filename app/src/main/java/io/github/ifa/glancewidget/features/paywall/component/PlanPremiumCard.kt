@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.gopro.component
+package io.github.ifa.glancewidget.features.paywall.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -35,9 +35,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.features.gopro.LocalPremiumPlan
-import io.github.ifa.glancewidget.features.gopro.PremiumPlanData
-import io.github.ifa.glancewidget.features.gopro.animateColor
+import io.github.ifa.glancewidget.features.paywall.LocalPremiumPlan
+import io.github.ifa.glancewidget.features.paywall.PremiumPlanData
+import io.github.ifa.glancewidget.features.paywall.animateColor
 import io.github.ifa.glancewidget.ui.component.TextWithIcon
 import io.github.ifa.glancewidget.ui.theme.LocalDynamicAnimatedTheme
 import kotlin.math.absoluteValue

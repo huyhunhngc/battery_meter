@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.wattsmonitor
+package io.github.ifa.glancewidget.features.battery.wattsmonitor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

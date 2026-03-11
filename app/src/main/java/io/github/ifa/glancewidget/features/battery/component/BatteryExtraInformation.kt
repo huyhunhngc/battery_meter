@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.widget.component
+package io.github.ifa.glancewidget.features.battery.component
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
 import io.github.ifa.glancewidget.ui.component.SessionText
-import io.github.ifa.glancewidget.ui.theme.containerColorAlpha60
 import io.github.ifa.glancewidget.utils.Constants.MAH_UNIT
 
 @Composable
