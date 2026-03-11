@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.features.battery.batteryMonitorScreenRoute
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
+import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.startBatteryStatus
 import io.github.ifa.glancewidget.utils.stopBatteryStatus
 
@@ -70,7 +71,8 @@ fun MainScreen(
                 navController = mainTabNavController,
                 colorScheme = colorScheme
             )
-        }
+        },
+        containerColor = topBarColors.containerColor
     ) { contentPadding ->
         NavHost(
             navController = mainTabNavController,

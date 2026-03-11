@@ -1,29 +1,21 @@
 package io.github.ifa.glancewidget.ui.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,15 +27,18 @@ fun SwitchWithDescription(
     description: String,
     checked: Boolean,
     icon: ImageVector? = null,
+    enabled: Boolean = true,
     onCheckedChange: (Boolean) -> Unit,
 ) {
     ListItem(
         modifier = modifier,
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
         leadingContent = {
             if (icon != null) {
                 Icon(
-                    imageVector = icon,
-                    contentDescription = label
+                    imageVector = icon, contentDescription = label
                 )
             }
         },
@@ -67,11 +62,13 @@ fun SwitchWithDescription(
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
+                enabled = enabled,
                 thumbContent = {
                     if (checked) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(SwitchDefaults.IconSize),
                         )
                     } else {
@@ -81,9 +78,9 @@ fun SwitchWithDescription(
                             modifier = Modifier.size(SwitchDefaults.IconSize),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -95,6 +92,5 @@ fun SwitchWithDescriptionPreview() {
         description = "Enable notifications with so long text to see how it looks like",
         checked = true,
         icon = Icons.Default.Notifications,
-        onCheckedChange = {}
-    )
+        onCheckedChange = {})
 }

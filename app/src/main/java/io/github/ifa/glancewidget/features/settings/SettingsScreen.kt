@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -38,16 +37,18 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.features.main.MainScreenTab
 import io.github.ifa.glancewidget.features.settings.component.LanguageSetting
-import io.github.ifa.glancewidget.features.settings.component.NotificationSetting
+import io.github.ifa.glancewidget.features.settings.component.WidgetSettings
 import io.github.ifa.glancewidget.features.settings.component.OtherSession
 import io.github.ifa.glancewidget.features.settings.component.ThemeSetting
-import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.Constants.IFA_LICENSES_URL
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
 import io.github.ifa.glancewidget.utils.navigateUrl
+import io.github.ifa.glancewidget.utils.syncShowPairedDevicesToWidget
+import io.github.ifa.glancewidget.utils.syncThemeColorToWidget
+import io.github.ifa.glancewidget.utils.syncThemeToWidget
 
 const val settingsScreenRoute = "settings_screen_route"
 
@@ -79,6 +80,7 @@ fun SettingsScreen(
         onOpenAboutScreen = onOpenAboutScreen,
         onSelectTheme = viewModel::setThemeType,
         onSelectThemeColor = viewModel::setThemeTypeColor,
+        onEnableBlackDark = viewModel::setEnableBlackDark,
         onSelectLanguage = viewModel::setLanguage,
         onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
         onSetShowPairedDevice = viewModel::onShowPairedDeviceChanged,
@@ -94,6 +96,7 @@ internal fun SettingsScreen(
     onOpenAboutScreen: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
     onSelectThemeColor: (ThemeTypeColor) -> Unit,
+    onEnableBlackDark: (Boolean) -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
@@ -144,33 +147,25 @@ internal fun SettingsScreen(
                 ThemeSetting(
                     onSelectTheme = { theme ->
                         onSelectTheme(theme)
-                        context.findActivity()?.sendBroadcast(Intent().apply {
-                            `package` = context.packageName
-                            action = AppIntent.ACTION_SYNC_THEME
-                            putExtra(AppExtra.SYNC_THEME, theme)
-                        })
+                        context.syncThemeToWidget(theme)
                     },
                     onSelectThemeColor = { themeColor ->
                         onSelectThemeColor(themeColor)
-                        context.findActivity()?.sendBroadcast(Intent().apply {
-                            `package` = context.packageName
-                            action = AppIntent.ACTION_SYNC_THEME_COLOR
-                            putExtra(AppExtra.SYNC_THEME_COLOR, themeColor)
-                        })
+                        context.syncThemeColorToWidget(themeColor)
+                    },
+                    onEnableBlackDark = {
+                        onEnableBlackDark(it)
                     },
                     uiState = uiState
                 )
             }
             item {
-                NotificationSetting(
+                WidgetSettings(
                     notificationSetting = uiState.notificationSetting,
+                    syncColorEnabled = uiState.syncColorEnabled,
                     onSetNotificationEnabled = onSetNotificationEnabled,
                     onSetShowPairedDevice = { enabled ->
-                        context.findActivity()?.sendBroadcast(Intent().apply {
-                            `package` = context.packageName
-                            action = AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED
-                            putExtra(AppExtra.SHOW_PAIRED_DEVICES, enabled)
-                        })
+                        context.syncShowPairedDevicesToWidget(enabled)
                         onSetShowPairedDevice(enabled)
                     }
                 )

@@ -44,7 +44,11 @@ fun BatteryApp(
         ThemeType.LIGHT_THEME -> false
     }
 
-    val colorScheme = rememberColorScheme(isDarkTheme, settings.themeColor)
+    val colorScheme = rememberColorScheme(
+        isDarkTheme = isDarkTheme,
+        themeColor = settings.themeColor,
+        isEnabledBlackDark = settings.isBlackDarkEnabled
+    )
     val navController: NavHostController = rememberNavController()
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -74,16 +78,17 @@ fun BatteryApp(
 @Composable
 fun rememberColorScheme(
     isDarkTheme: Boolean,
+    isEnabledBlackDark: Boolean,
     themeColor: ThemeTypeColor,
 ): ColorScheme {
     val context = LocalContext.current
     val colorScheme = if (themeColor == ThemeTypeColor.System && isSupportedDynamicColor()) {
         if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     } else {
-        if (isDarkTheme) getDarkScheme(themeColor.code) else getLightScheme(themeColor.code)
+        if (isDarkTheme) getDarkScheme(themeColor.code, isEnabledBlackDark) else getLightScheme(themeColor.code)
     }
 
-    return remember(isDarkTheme, themeColor) { colorScheme }
+    return remember(isDarkTheme, themeColor, isEnabledBlackDark) { colorScheme }
 }
 
 @Composable
@@ -109,7 +114,7 @@ fun rememberAppColorSchemeMap(
             AppColorScheme(
                 themeTypeColor = themeTypeColor,
                 colorScheme = if (isDarkTheme) {
-                    getDarkScheme(themeTypeColor.code)
+                    getDarkScheme(themeTypeColor.code, true)
                 } else {
                     getLightScheme(themeTypeColor.code)
                 }

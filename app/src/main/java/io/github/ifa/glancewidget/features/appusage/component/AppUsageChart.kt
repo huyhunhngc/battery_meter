@@ -51,6 +51,7 @@ import io.github.ifa.glancewidget.domain.UsageStatsWrapper
 import io.github.ifa.glancewidget.utils.timeMillisToHours
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.compose.ui.platform.LocalResources
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -65,7 +66,7 @@ fun AppUsageChart(
     val totalTimeForeground = remember(appUsageStats) {
         appUsageStats.map { it.usageStats?.totalTimeInForeground?.timeMillisToHours() ?: 0 }
     }
-    val context = LocalContext.current
+
     val columnColor = listOf(
         MaterialTheme.colorScheme.primary,
         MaterialTheme.colorScheme.inversePrimary
@@ -86,20 +87,20 @@ fun AppUsageChart(
         thickness = 16.dp,
         shape = CorneredShape.rounded(topLeftDp = 4f, topRightDp = 4f)
     )
-
-    val typeface = LocalContext.current.resources.getFont(R.font.googlesansregular)
+    val resources = LocalResources.current
+    val typeface = resources.getFont(R.font.google_sans_flex_400)
     val label = rememberTextComponent(
         typeface = Typeface.create(typeface, Typeface.BOLD),
         color = MaterialTheme.colorScheme.primary,
         minWidth = TextComponent.MinWidth.fixed(20f),
     )
     val legendColumnKeys = listOf(
-        context.getString(R.string.cpu_time),
-        context.getString(R.string.cpu_foreground)
+        resources.getString(R.string.cpu_time),
+        resources.getString(R.string.cpu_foreground)
     )
     Column(modifier = modifier) {
         Text(
-            text = context.getString(R.string.usage_time),
+            text = resources.getString(R.string.usage_time),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,

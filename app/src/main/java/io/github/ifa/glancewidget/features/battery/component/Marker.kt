@@ -24,10 +24,11 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.copyColor
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import io.github.ifa.glancewidget.R
+import androidx.compose.ui.platform.LocalResources
 
 @Composable
 internal fun rememberMarker(): CartesianMarker {
-    val typeface = LocalContext.current.resources.getFont(R.font.googlesansregular)
+    val typeface = LocalResources.current.getFont(R.font.google_sans_flex_400)
     val label = rememberTextComponent(
         typeface = Typeface.create(typeface, Typeface.BOLD),
         color = MaterialTheme.colorScheme.primary,

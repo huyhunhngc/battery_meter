@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.rounded.BatteryChargingFull
+import androidx.compose.material.icons.rounded.BluetoothConnected
+import androidx.compose.material.icons.rounded.Sync
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -39,8 +41,6 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.ui.component.AppAlertDialog
 import io.github.ifa.glancewidget.ui.component.SwitchWithDescription
-import io.github.ifa.glancewidget.ui.component.TextWithImage
-import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.utils.BluetoothPermissions
 import io.github.ifa.glancewidget.utils.checkPermissions
 import io.github.ifa.glancewidget.utils.isNotificationPermissionGranted
@@ -59,8 +59,9 @@ val ApplicationDetailsSettingsIntent by lazy {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun NotificationSetting(
+fun WidgetSettings(
     notificationSetting: AppSettings.NotificationSetting,
+    syncColorEnabled: Boolean,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
 ) {
@@ -70,6 +71,9 @@ fun NotificationSetting(
     }
     var showPairedDevice by remember(notificationSetting.showPairedDevices) {
         mutableStateOf(notificationSetting.showPairedDevices)
+    }
+    var syncEnabled by remember(syncColorEnabled) {
+        mutableStateOf(syncColorEnabled)
     }
 
     LifecycleResumeEffect(notificationSetting) {
@@ -96,30 +100,22 @@ fun NotificationSetting(
     if (dialogUiState.isOpen) {
         AppAlertDialog(
             onDismissRequest = {
-                dialogUiState = dialogUiState.close
-                dialogUiState.onDismissRequest()
-            },
+            dialogUiState = dialogUiState.close
+            dialogUiState.onDismissRequest()
+        },
             onConfirmation = {
                 dialogUiState = dialogUiState.close
                 dialogUiState.onConfirmation()
             },
             dialogTitle = stringResource(id = dialogUiState.title),
             dialogText = stringResource(
-                id = dialogUiState.text,
-                stringResource(id = R.string.app_name)
+                id = dialogUiState.text, stringResource(id = R.string.app_name)
             ),
             positiveButtonText = stringResource(id = dialogUiState.positiveButtonText),
             negativeButtonText = "",
             icon = dialogUiState.iconRes?.let { ImageVector.vectorResource(id = it) }
-                ?: dialogUiState.icon
-        )
+                ?: dialogUiState.icon)
     }
-
-    TextWithImage(
-        text = stringResource(R.string.notification_settings),
-        image = painterResource(id = R.drawable.ic_notifications),
-        modifier = Modifier.appPadding().padding(vertical = 16.dp)
-    )
 
     SwitchWithDescription(
         modifier = Modifier
@@ -127,6 +123,7 @@ fun NotificationSetting(
             .clip(RoundedCornerShape(16.dp)),
         label = stringResource(id = R.string.battery_alert),
         description = stringResource(id = R.string.battery_alert_desc),
+        icon = Icons.Rounded.BatteryChargingFull,
         onCheckedChange = scope@{ checked ->
             if (notificationPermission == null) {
                 onSetNotificationEnabled(checked)
@@ -148,8 +145,7 @@ fun NotificationSetting(
                         onConfirmation = {
                             onSetNotificationEnabled(true)
                             context.startActivity(NotificationSettingsIntent, null)
-                        }
-                    )
+                        })
                 }
             } else {
                 onSetNotificationEnabled(checked)
@@ -166,6 +162,7 @@ fun NotificationSetting(
             .clip(RoundedCornerShape(16.dp)),
         label = stringResource(id = R.string.show_paired_devices),
         description = stringResource(id = R.string.show_paired_devices_desc),
+        icon = Icons.Rounded.BluetoothConnected,
         onCheckedChange = checkedChange@{ checked ->
             showPairedDevice = checked
             if (!context.checkPermissions(BluetoothPermissions) && checked) {
@@ -185,14 +182,26 @@ fun NotificationSetting(
                         onConfirmation = {
                             onSetShowPairedDevice(true)
                             context.startActivity(ApplicationDetailsSettingsIntent, null)
-                        }
-                    )
+                        })
                 }
             } else {
                 onSetShowPairedDevice(checked)
             }
         },
         checked = showPairedDevice,
+    )
+
+    SwitchWithDescription(
+        modifier = Modifier
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        icon = Icons.Rounded.Sync,
+        label = stringResource(id = R.string.sync_color_scheme_with_widget),
+        description = stringResource(id = R.string.sync_color_scheme_with_widget_description),
+        onCheckedChange = scope@{ checked ->
+            syncEnabled = checked
+        },
+        checked = syncEnabled,
     )
 }
 
@@ -211,11 +220,11 @@ fun rememberNotificationPermissionState(
 
 data class SettingAlertDialogUiState(
     val isOpen: Boolean = false,
-    @StringRes val title: Int = R.string.need_to_grant_permission,
-    @StringRes val text: Int = R.string.grant_permission_bluetooth_guide,
-    @StringRes val positiveButtonText: Int = R.string.go_to_app_info,
-    val icon: ImageVector = Icons.Default.Warning,
-    @DrawableRes val iconRes: Int? = null,
+    @param:StringRes val title: Int = R.string.need_to_grant_permission,
+    @param:StringRes val text: Int = R.string.grant_permission_bluetooth_guide,
+    @param:StringRes val positiveButtonText: Int = R.string.go_to_app_info,
+    val icon: ImageVector = Icons.Rounded.Warning,
+    @param:DrawableRes val iconRes: Int? = null,
     val onDismissRequest: () -> Unit = {},
     val onConfirmation: () -> Unit = {},
 ) {

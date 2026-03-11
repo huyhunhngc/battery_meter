@@ -37,7 +37,7 @@ fun TextWithRightArrow(
             .clickable { onClick() }
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)

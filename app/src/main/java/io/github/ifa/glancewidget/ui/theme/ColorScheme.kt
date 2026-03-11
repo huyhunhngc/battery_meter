@@ -90,14 +90,14 @@ fun getDarkScheme(
         errorContainer = Color(dynamicColors.errorContainer().getArgb(scheme)),
         onErrorContainer = Color(dynamicColors.onErrorContainer().getArgb(scheme)),
 
-        background = if (isAmoled) Color.Black else Color(dynamicColors.background().getArgb(scheme)),
+        background = Color(dynamicColors.background().getArgb(scheme)),
         onBackground = if (isAmoled) Color.White else Color(dynamicColors.onBackground().getArgb(scheme)),
         surface = if (isAmoled) Color.Black else Color(dynamicColors.surface().getArgb(scheme)),
         onSurface = if (isAmoled) Color.White else Color(dynamicColors.onSurface().getArgb(scheme)),
 
         surfaceBright = Color(dynamicColors.surfaceBright().getArgb(scheme)),
         surfaceDim = if (isAmoled) Color.Black else Color(dynamicColors.surfaceDim().getArgb(scheme)),
-        surfaceContainer = Color(dynamicColors.surfaceContainer().getArgb(scheme)),
+        surfaceContainer = if (isAmoled) Color.Black else Color(dynamicColors.surfaceContainer().getArgb(scheme)),
         surfaceContainerLow = Color(dynamicColors.surfaceContainerLow().getArgb(scheme)),
         surfaceContainerLowest = if (isAmoled) Color.Black else Color(dynamicColors.surfaceContainerLowest().getArgb(scheme)),
         surfaceContainerHigh = Color(dynamicColors.surfaceContainerHigh().getArgb(scheme)),

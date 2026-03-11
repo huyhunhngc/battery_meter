@@ -18,8 +18,8 @@ fun PixelBatteryTheme(
 ) {
     val appColors = when (themeType) {
         ThemeType.LIGHT_THEME -> appLightColors()
-        ThemeType.DARK_THEME -> appDarkColors()
-        ThemeType.FOLLOW_SYSTEM -> dayNightColors()
+        ThemeType.DARK_THEME -> appDarkColors(false)
+        ThemeType.FOLLOW_SYSTEM -> dayNightColors(true)
     }
     val colors = appColors[themeTypeColor] ?: DynamicThemeColorProviders
     GlanceTheme(colors = colors, content = content)

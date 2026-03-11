@@ -78,6 +78,11 @@ class DefaultAppSettingsRepository(
         }
     }
 
+    override suspend fun saveEnableBlackDark(enabled: Boolean) {
+        val settings = appSettingDataStore.getSettings()
+        appSettingDataStore.saveSettings(settings.copy(isBlackDarkEnabled = enabled))
+    }
+
     override fun getBondedDevices(): Flow<BonnedDeviceSettings> {
         return appSettingDataStore.getBondedDevicesFlow()
     }

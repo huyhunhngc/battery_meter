@@ -25,6 +25,7 @@ class SettingsViewModel @Inject constructor(
         val themeColor: ThemeTypeColor = ThemeTypeColor.System,
         val language: AppSettings.Language? = null,
         val syncColorEnabled: Boolean = true,
+        val isBlackDarkEnabled: Boolean = false,
         val notificationSetting: AppSettings.NotificationSetting = AppSettings.NotificationSetting(),
     ) {
         val colorScheme = if (!isSupportedDynamicColor() && themeColor == ThemeTypeColor.System) {
@@ -45,6 +46,8 @@ class SettingsViewModel @Inject constructor(
                 theme = settings.theme,
                 themeColor = settings.themeColor,
                 language = settings.language,
+                syncColorEnabled = settings.syncColorEnabled,
+                isBlackDarkEnabled = settings.isBlackDarkEnabled,
                 notificationSetting = settings.notificationSetting,
             )
         }
@@ -64,6 +67,12 @@ class SettingsViewModel @Inject constructor(
     fun setLanguage(language: AppSettings.Language) {
         viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.saveLocaleLanguage(language)
+        }
+    }
+
+    fun setEnableBlackDark(enabled: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsRepository.saveEnableBlackDark(enabled)
         }
     }
 

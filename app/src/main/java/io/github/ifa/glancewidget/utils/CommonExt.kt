@@ -22,6 +22,8 @@ import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.AppExtra
 import io.github.ifa.glancewidget.model.AppIntent
+import io.github.ifa.glancewidget.model.ThemeType
+import io.github.ifa.glancewidget.model.ThemeTypeColor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -128,6 +130,45 @@ fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+fun Context.syncThemeToWidget(theme: ThemeType) {
+    findActivity()?.sendBroadcast(
+        Intent().apply {
+            `package` = packageName
+            action = AppIntent.ACTION_SYNC_THEME
+            putExtra(AppExtra.SYNC_THEME, theme)
+        }
+    )
+}
+
+fun Context.syncThemeColorToWidget(themeColor: ThemeTypeColor) {
+    findActivity()?.sendBroadcast(
+        Intent().apply {
+            `package` = packageName
+            action = AppIntent.ACTION_SYNC_THEME_COLOR
+            putExtra(AppExtra.SYNC_THEME_COLOR, themeColor)
+        }
+    )
+}
+
+fun Context.resetWidgetTheme() {
+    findActivity()?.sendBroadcast(
+        Intent().apply {
+            `package` = packageName
+            action = AppIntent.ACTION_RESET_THEME
+        }
+    )
+}
+
+fun Context.syncShowPairedDevicesToWidget(enabled: Boolean) {
+    findActivity()?.sendBroadcast(
+        Intent().apply {
+            `package` = packageName
+            action = AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED
+            putExtra(AppExtra.SHOW_PAIRED_DEVICES, enabled)
+        }
+    )
 }
 
 fun Context.requestToPinWidget(params: AddWidgetParams): Boolean {

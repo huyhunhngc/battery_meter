@@ -41,6 +41,7 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.features.battery.component.WattsMonitor
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope
+import io.github.ifa.glancewidget.ui.theme.topBarColors
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.wattsDetailScreen(
@@ -118,6 +119,7 @@ internal fun WattsDetailScreen(
                 scrollBehavior = scrollBehavior
             )
         },
+        containerColor = topBarColors.containerColor
     ) { innerPadding ->
         val boxModifier = if (sharedTransitionScope != null && animatedScope != null) {
             with(sharedTransitionScope) {

@@ -24,13 +24,6 @@ fun OtherSession(
     onOpenLicenseScreen: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit
 ) {
-    TextWithImage(
-        text = stringResource(R.string.other),
-        image = painterResource(id = R.drawable.ic_info),
-        modifier = Modifier
-            .appPadding()
-            .padding(bottom = 16.dp)
-    )
     Column(
         modifier = Modifier
             .appPadding()

@@ -69,7 +69,7 @@ enum class MainScreenTab(
         batteryMonitorScreenRoute, R.string.widget_tab, R.drawable.ic_analytics_filled, R.drawable.ic_analytics
     ),
     Health(
-        healthScreenRoute, R.string.health, R.drawable.ic_heart_filled, R.drawable.ic_heart
+        healthScreenRoute, R.string.health, R.drawable.ic_ecg_heart_filled, R.drawable.ic_ecg_heart
     ),
     Settings(
         settingsScreenRoute, R.string.settings, R.drawable.ic_settings_filled, R.drawable.ic_settings

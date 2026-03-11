@@ -74,6 +74,7 @@ fun BatteryItem(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
+                .clip(MaterialTheme.shapes.largeIncreased)
                 .align(Alignment.CenterStart)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         )
@@ -81,6 +82,7 @@ fun BatteryItem(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(animatePercentFloat.value)
+                .clip(MaterialTheme.shapes.largeIncreased)
                 .align(Alignment.CenterStart)
                 .background(MaterialTheme.colorScheme.inversePrimary)
         )

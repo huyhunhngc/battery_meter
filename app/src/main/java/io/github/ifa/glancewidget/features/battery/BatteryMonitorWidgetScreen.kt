@@ -1,21 +1,37 @@
 package io.github.ifa.glancewidget.features.battery
 
+import android.Manifest
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.ScreenLockPortrait
+import androidx.compose.material.icons.rounded.Widgets
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconToggleButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -34,8 +50,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +63,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.features.about.TonalButton
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
@@ -57,7 +76,9 @@ import io.github.ifa.glancewidget.features.battery.component.BonedDeviceItem
 import io.github.ifa.glancewidget.features.battery.component.ConnectedDevice
 import io.github.ifa.glancewidget.features.battery.component.DropdownMenu
 import io.github.ifa.glancewidget.features.battery.component.MeasurementWarning
+import io.github.ifa.glancewidget.features.battery.component.WidgetSelectionType
 import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
+import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.addWidget
@@ -133,7 +154,7 @@ internal fun BatteryMonitorScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun BatteryMonitorScreen(
     uiState: BatteryMonitorViewModel.BatteryMonitorScreenUiState,
@@ -148,12 +169,12 @@ private fun BatteryMonitorScreen(
     onForceReloadClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val haptic = LocalHapticFeedback.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             Appbar(
                 scrollBehavior = scrollBehavior,
-                onClickAddWidget = onRequestPiningWidget,
                 onForceReloadClick = onForceReloadClick
             )
         },
@@ -177,12 +198,66 @@ private fun BatteryMonitorScreen(
                 onOpenWattsDetailScreen = onOpenWattsDetailScreen,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
-            connectedDevices(
-                modifier = Modifier.padding(bottom = 16.dp),
-                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
-                batteryDeviceSettings = uiState.bonedDeviceSettings,
-                onShowInWidgetChanged = onShowInWidgetChanged
-            )
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilledTonalButton(
+                        onClick = onRequestPiningWidget,
+                        modifier = Modifier.weight(1f).height(80.dp),
+                        shape = MaterialTheme.shapes.largeIncreased
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Widgets,
+                            contentDescription = stringResource(id = R.string.add_widget)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(id = R.string.add_widget),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                    FilledIconToggleButton(
+                        onCheckedChange = { checked ->
+                            if (checked) haptic.performHapticFeedback(
+                                HapticFeedbackType.ToggleOn
+                            )
+                            else haptic.performHapticFeedback(
+                                HapticFeedbackType.ToggleOff
+                            )
+
+                        },
+                        checked = false,
+                        colors = IconButtonDefaults.filledIconToggleButtonColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        ),
+                        shapes = IconButtonDefaults.toggleableShapes(),
+                        modifier = Modifier.weight(1f).height(80.dp)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.ScreenLockPortrait,
+                                contentDescription = "AOD"
+                            )
+                            Text(
+                                text = "AOD",
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        }
+
+                    }
+                }
+            }
+//            connectedDevices(
+//                modifier = Modifier.padding(bottom = 16.dp),
+//                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
+//                batteryDeviceSettings = uiState.bonedDeviceSettings,
+//                onShowInWidgetChanged = onShowInWidgetChanged
+//            )
         }
 
         if (isShowAddWidgetBottomSheet) {
@@ -199,7 +274,6 @@ private fun BatteryMonitorScreen(
 @Composable
 private fun Appbar(
     scrollBehavior: TopAppBarScrollBehavior,
-    onClickAddWidget: () -> Unit,
     onForceReloadClick: () -> Unit,
 ) {
     var dropdownExpanded by remember { mutableStateOf(false) }
@@ -225,10 +299,6 @@ private fun Appbar(
             DropdownMenu(
                 expanded = dropdownExpanded,
                 onDismissRequest = { dropdownExpanded = false },
-                onAddWidgetClick = {
-                    onClickAddWidget()
-                    dropdownExpanded = false
-                },
                 onForceReloadClick = {
                     onForceReloadClick()
                     dropdownExpanded = false

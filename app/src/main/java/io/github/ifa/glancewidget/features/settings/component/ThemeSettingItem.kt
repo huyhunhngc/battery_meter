@@ -61,7 +61,7 @@ fun ThemeSettingItem(
 
 @Composable
 private fun ThemeType.themeIcon(): Painter = when (this) {
-    ThemeType.FOLLOW_SYSTEM -> painterResource(id = R.drawable.ic_contrast)
+    ThemeType.FOLLOW_SYSTEM -> painterResource(id = R.drawable.ic_brightness_auto)
     ThemeType.DARK_THEME -> painterResource(id = R.drawable.ic_dark_mode)
     ThemeType.LIGHT_THEME -> painterResource(id = R.drawable.ic_light_mode)
 }

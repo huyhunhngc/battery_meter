@@ -46,9 +46,9 @@ fun appLightColors(): Map<ThemeTypeColor, ColorProviders> {
 }
 
 @SuppressLint("RestrictedApi")
-fun appDarkColors(): Map<ThemeTypeColor, ColorProviders> {
+fun appDarkColors(isAmoled: Boolean = false): Map<ThemeTypeColor, ColorProviders> {
     return ThemeTypeColor.entries.filter { it != ThemeTypeColor.System }.associateWith {
-        val colorScheme = getDarkScheme(it.code)
+        val colorScheme = getDarkScheme(it.code, isAmoled)
         colorProviders(
             primary = ColorProvider(colorScheme.primary),
             onPrimary = ColorProvider(colorScheme.onPrimary),
@@ -76,15 +76,15 @@ fun appDarkColors(): Map<ThemeTypeColor, ColorProviders> {
             inverseOnSurface = ColorProvider(colorScheme.inverseOnSurface),
             inversePrimary = ColorProvider(colorScheme.inversePrimary),
             inverseSurface = ColorProvider(colorScheme.inverseSurface),
-            widgetBackground = ColorProvider(colorScheme.surfaceContainerLow)
+            widgetBackground = ColorProvider(colorScheme.surfaceContainer)
         )
     }
 }
 
-fun dayNightColors(): Map<ThemeTypeColor, ColorProviders> {
+fun dayNightColors(isAmoled: Boolean = false): Map<ThemeTypeColor, ColorProviders> {
     return ThemeTypeColor.entries.filter { it != ThemeTypeColor.System }.associateWith {
         val lightScheme = getLightScheme(it.code)
-        val darkScheme = getDarkScheme(it.code)
+        val darkScheme = getDarkScheme(it.code, isAmoled)
         colorProviders(
             primary = ColorProvider(lightScheme.primary, darkScheme.primary),
             onPrimary = ColorProvider(lightScheme.onPrimary, darkScheme.onPrimary),

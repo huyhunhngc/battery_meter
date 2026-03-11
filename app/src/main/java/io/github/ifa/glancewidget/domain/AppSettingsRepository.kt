@@ -17,6 +17,7 @@ interface AppSettingsRepository {
     suspend fun saveNotificationSetting(notificationSetting: AppSettings.NotificationSetting)
     suspend fun saveShowPairedDevicesSetting(showPairedDevices: Boolean)
     suspend fun saveBondedDeviceSetting(macAddress: String, showInWidget: Boolean)
+    suspend fun saveEnableBlackDark(enabled: Boolean)
     fun getBondedDevices(): Flow<BonnedDeviceSettings>
 }
 
