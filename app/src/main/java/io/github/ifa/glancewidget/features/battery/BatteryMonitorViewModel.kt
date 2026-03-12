@@ -33,7 +33,6 @@ class BatteryMonitorViewModel @Inject constructor(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryOverall: BatteryDataWrapper,
         val chartTrackingData: ChartRecord,
-        val bonedDeviceSettings: BonnedDeviceSettings
     ) {
         val measurementProgress = batteryOverall.chargeDisChargeCurrent.getMeasurementProgress()
     }
@@ -50,23 +49,15 @@ class BatteryMonitorViewModel @Inject constructor(
         initialValue = BatteryDataWrapper()
     )
 
-    private val _bonedDeviceSettings = appSettingsRepository.getBondedDevices().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = BonnedDeviceSettings()
-    )
-
     val uiState: StateFlow<BatteryMonitorScreenUiState> = buildUiState(
         _setupWidgetId,
         _batteryDataWrapper,
         _chartTrackingData,
-        _bonedDeviceSettings
-    ) { setupWidgetId, batteryDataWrapper, chartTrackingData, bonedDeviceSettings ->
+    ) { setupWidgetId, batteryDataWrapper, chartTrackingData ->
         BatteryMonitorScreenUiState(
             setupWidgetId = setupWidgetId,
             batteryOverall = batteryDataWrapper,
             chartTrackingData = chartTrackingData,
-            bonedDeviceSettings =bonedDeviceSettings
         )
     }
 

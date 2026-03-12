@@ -32,6 +32,7 @@ playServicesOssLicenses = "17.2.2"
 vicoCompose = "2.0.0-beta.1"
 workRuntimeKtx = "2.10.3"
 jetbrainsMaterial3 = "1.9.0-alpha04"
+adaptiveNavigation = "1.2.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -87,6 +88,7 @@ vico-core = { module = "com.patrykandpatrick.vico:core", version.ref = "vicoComp
 vico-views = { module = "com.patrykandpatrick.vico:views", version.ref = "vicoCompose" }
 #jetbrains
 jetbrains-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrainsMaterial3" }
+androidx-compose-adaptive-navigation = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "adaptiveNavigation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

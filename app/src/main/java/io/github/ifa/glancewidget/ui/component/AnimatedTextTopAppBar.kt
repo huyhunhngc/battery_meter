@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import io.github.ifa.glancewidget.ui.theme.topBarColors
 import androidx.compose.ui.unit.lerp as lerpUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,21 +26,18 @@ fun AnimatedTextTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
+    colors: TopAppBarColors = topBarColors,
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
-    val initialTextStyle = MaterialTheme.typography.headlineMedium.copy(
-        color = MaterialTheme.colorScheme.tertiary,
+    val initialTextStyle = MaterialTheme.typography.headlineLarge.copy(
+        fontWeight = FontWeight.Bold
     )
-    val scrolledTextStyle = MaterialTheme.typography.titleLarge.copy(
-        color = MaterialTheme.colorScheme.primary,
-    )
+    val scrolledTextStyle = MaterialTheme.typography.titleLarge
 
     val fraction = scrollBehavior?.state?.collapsedFraction ?: 0f
 
     val textStyle = TextStyle(
         fontSize = lerpUnit(initialTextStyle.fontSize, scrolledTextStyle.fontSize, fraction),
-        color = lerp(initialTextStyle.color, scrolledTextStyle.color, fraction),
         fontWeight = FontWeight.SemiBold,
         fontFamily = initialTextStyle.fontFamily
     )

@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -8,10 +10,16 @@ plugins {
     id("com.google.android.gms.oss-licenses-plugin")
 }
 
-val versionMajor = 1
-val versionMinor = 1
-val versionPatch = 8
-val versionIncrement = 11
+val versionMajor = 2
+val versionMinor = 0
+val versionPatch = 0
+val versionIncrement = 1
+
+val keystoreProperties = Properties()
+val keystoreFile: File? = rootProject.file("key.properties")
+if (keystoreFile?.exists() == true) {
+    keystoreProperties.load(keystoreFile.inputStream())
+}
 
 android {
     namespace = "io.github.ifa.glancewidget"
@@ -30,6 +38,15 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystoreProperties["RELEASE_STORE_FILE"] ?: "keystore/battery_meter.jks")
+            storePassword = keystoreProperties["RELEASE_STORE_PASSWORD"] as String?
+            keyAlias = keystoreProperties["RELEASE_KEY_ALIAS"] as String?
+            keyPassword = keystoreProperties["RELEASE_KEY_PASSWORD"] as String?
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
@@ -41,7 +58,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
             ndk {
                 debugSymbolLevel = "FULL"
             }
@@ -57,9 +74,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -126,6 +140,7 @@ dependencies {
     implementation(libs.jetbrains.material3)
 
     implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.compose.adaptive.navigation)
     kapt(libs.androidx.hilt.compiler)
     kapt(libs.dagger.hilt.android.compiler)
     kapt(libs.dagger.hilt.compiler)

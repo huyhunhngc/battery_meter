@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
     private val batteryStateRepository: BatteryStateRepository
 ) : ViewModel() {
     private var monitoringJob: Job? = null

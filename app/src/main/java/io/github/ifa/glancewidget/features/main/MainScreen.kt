@@ -17,14 +17,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,8 +26,6 @@ import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.features.battery.batteryMonitorScreenRoute
 import io.github.ifa.glancewidget.ui.localcomposition.LocalAnimatedVisibilityScope
 import io.github.ifa.glancewidget.ui.theme.topBarColors
-import io.github.ifa.glancewidget.utils.startBatteryStatus
-import io.github.ifa.glancewidget.utils.stopBatteryStatus
 
 const val mainScreenRoute = "main_screen_route"
 
@@ -44,9 +36,7 @@ fun NavGraphBuilder.mainTabScreens(
         CompositionLocalProvider(
             LocalAnimatedVisibilityScope provides this@composable,
         ) {
-            MainScreen(
-                mainNavGraph = mainNavGraph,
-            )
+            MainScreen(mainNavGraph = mainNavGraph)
         }
     }
 }
@@ -54,24 +44,16 @@ fun NavGraphBuilder.mainTabScreens(
 @SuppressLint("ImplicitSamInstance")
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
     mainNavGraph: NavGraphBuilder.(PaddingValues, SnackbarHostState) -> Unit,
 ) {
     val mainTabNavController = rememberNavController()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
     val snackbarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(uiState.shouldStartNotification) {
-        if (uiState.shouldStartNotification) {
-            context.startBatteryStatus()
-        }
-    }
     Scaffold(
         bottomBar = {
             MainFloatBottomBar(
                 navController = mainTabNavController,
-                colorScheme = colorScheme
+                colorScheme = colorScheme,
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

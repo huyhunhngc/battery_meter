@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,16 +31,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.features.settings.SettingsViewModel
 import io.github.ifa.glancewidget.model.AppSettings
-import io.github.ifa.glancewidget.ui.component.TextWithImage
-import io.github.ifa.glancewidget.ui.component.appPadding
+import io.github.ifa.glancewidget.utils.listItemColor
+import io.github.ifa.glancewidget.utils.singleItemListItemShapes
 import kotlinx.coroutines.launch
 
 @SuppressLint("LocalContextConfigurationRead")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LanguageSetting(
     uiState: SettingsViewModel.SettingsScreenUiState,
@@ -49,40 +53,39 @@ fun LanguageSetting(
     val sheetState = rememberModalBottomSheetState()
     val openBottomSheet = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .appPadding()
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.background)
-            .clickable {
-                if (openBottomSheet.value) {
-                    scope.launch { sheetState.hide() }
-                } else {
-                    openBottomSheet.value = true
-                    scope.launch { sheetState.show() }
-                }
-            }
-            .padding(16.dp),
-    ) {
-        TextWithImage(
-            text = stringResource(R.string.language),
-            image = painterResource(id = R.drawable.ic_language),
-        )
-        Spacer(Modifier.weight(1f))
-        Text(
-            text = stringResource(selectedLanguage.displayNameResId()),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
 
+    SegmentedListItem(
+        leadingContent = {
+            Icon(painterResource(R.drawable.ic_language), contentDescription = null)
+        },
+        supportingContent = {
+            Text(
+                text = stringResource(selectedLanguage.displayNameResId()),
+            )
+        },
+        trailingContent = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        selected = openBottomSheet.value,
+        shapes = ListItemDefaults.segmentedShapes(0, 1, singleItemListItemShapes),
+        colors = listItemColor,
+        onClick = {
+            if (openBottomSheet.value) {
+                scope.launch { sheetState.hide() }
+            } else {
+                openBottomSheet.value = true
+                scope.launch { sheetState.show() }
+            }
+        },
+    ) {
+        Text(stringResource(R.string.language))
     }
+
+
     if (openBottomSheet.value) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -134,5 +137,16 @@ fun LanguageSetting(
 
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LanguageSettingPreview() {
+    MaterialTheme {
+        LanguageSetting(
+            uiState = SettingsViewModel.SettingsScreenUiState(
+                language = AppSettings.Language.ENGLISH
+            ), onSelectLanguage = {})
     }
 }

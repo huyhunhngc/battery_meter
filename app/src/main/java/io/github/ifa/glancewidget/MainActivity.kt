@@ -11,6 +11,7 @@ import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.features.main.mainScreenRoute
 import io.github.ifa.glancewidget.navigation.AppNavHost
 import io.github.ifa.glancewidget.ui.theme.AppTheme
+import io.github.ifa.glancewidget.utils.startBatteryStatus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         viewModel.startBatteryMonitoring()
+        startBatteryStatus()
     }
 
     override fun onStop() {

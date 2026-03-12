@@ -59,7 +59,7 @@ class BatteryStatusService : Service() {
             actions.forEach { addAction(it) }
         }
         return if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            registerReceiver(batteryMonitor, filter, Context.RECEIVER_NOT_EXPORTED)
+            registerReceiver(batteryMonitor, filter, RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(batteryMonitor, filter)
         }
@@ -68,12 +68,6 @@ class BatteryStatusService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-        // Optionally restart service immediately if killed by some OEMs
-        // ContextExt.kt startBatteryStatus uses startForegroundService safely.
     }
 
     override fun onDestroy() {

@@ -1,9 +1,7 @@
 package io.github.ifa.glancewidget.features.battery
 
-import android.Manifest
 import android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID
 import android.content.Intent
-import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
@@ -14,17 +12,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.ScreenLockPortrait
 import androidx.compose.material.icons.rounded.Widgets
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconToggleButton
@@ -34,7 +29,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -63,7 +57,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.features.about.TonalButton
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
 import io.github.ifa.glancewidget.model.BonedDevice
@@ -76,14 +69,12 @@ import io.github.ifa.glancewidget.features.battery.component.BonedDeviceItem
 import io.github.ifa.glancewidget.features.battery.component.ConnectedDevice
 import io.github.ifa.glancewidget.features.battery.component.DropdownMenu
 import io.github.ifa.glancewidget.features.battery.component.MeasurementWarning
-import io.github.ifa.glancewidget.features.battery.component.WidgetSelectionType
 import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
-import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.addWidget
 import io.github.ifa.glancewidget.utils.findActivity
-import io.github.ifa.glancewidget.utils.mergePaddingValues
+import io.github.ifa.glancewidget.utils.combinePadding
 import io.github.ifa.glancewidget.utils.requestToPinWidget
 import kotlinx.coroutines.launch
 
@@ -182,7 +173,7 @@ private fun BatteryMonitorScreen(
         },
         containerColor = topBarColors.containerColor,
     ) { padding ->
-        val insets = mergePaddingValues(padding, contentPadding)
+        val insets = combinePadding(padding, contentPadding)
         LazyColumn(
             contentPadding = insets,
             modifier = Modifier
@@ -254,12 +245,12 @@ private fun BatteryMonitorScreen(
                     }
                 }
             }
-            connectedDevices(
-                modifier = Modifier.padding(bottom = 16.dp),
-                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
-                batteryDeviceSettings = uiState.bonedDeviceSettings,
-                onShowInWidgetChanged = onShowInWidgetChanged
-            )
+//            connectedDevices(
+//                modifier = Modifier.padding(bottom = 16.dp),
+//                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
+//                batteryDeviceSettings = uiState.bonedDeviceSettings,
+//                onShowInWidgetChanged = onShowInWidgetChanged
+//            )
         }
 
         if (isShowAddWidgetBottomSheet) {

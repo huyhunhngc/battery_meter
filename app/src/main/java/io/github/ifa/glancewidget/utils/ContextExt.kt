@@ -176,22 +176,9 @@ fun Context.getInstalledApps(): List<String> {
     return installedApps + resolvedApps
 }
 
-fun Context.isMyServiceRunning(serviceClass: Class<*>): Boolean {
-    val manager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager ?: return false
-    for (service in manager.getRunningServices(Int.Companion.MAX_VALUE)) {
-        if (serviceClass.name == service.service.className) {
-            return true
-        }
-    }
-    return false
-}
-
 fun Context.startBatteryStatus() {
-    val intent = Intent(this, BatteryStatusService::class.java)
-    startForegroundService(intent)
-}
-
-fun Context.stopBatteryStatus() {
-    val intent = Intent(this, BatteryStatusService::class.java)
-    stopService(intent)
+    runCatching {
+        val intent = Intent(this, BatteryStatusService::class.java)
+        startForegroundService(intent)
+    }
 }

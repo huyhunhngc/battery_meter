@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,7 @@ fun TextWithRightArrow(
     text: String,
     color: Color = MaterialTheme.colorScheme.primary,
     icon: Painter? = null,
+    rightIcon: ImageVector? = null,
     onClick: () -> Unit
 ) {
     Row(
@@ -53,11 +56,10 @@ fun TextWithRightArrow(
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.weight(1f)
         )
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            imageVector = rightIcon ?: Icons.AutoMirrored.Rounded.KeyboardArrowRight,
             contentDescription = null,
             tint = color
         )

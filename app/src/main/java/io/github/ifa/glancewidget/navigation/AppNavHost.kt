@@ -4,11 +4,9 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import io.github.ifa.glancewidget.features.about.aboutScreen
 import io.github.ifa.glancewidget.features.appusage.appUsageScreen
 import io.github.ifa.glancewidget.features.paywall.paywallPremiumScreen
 import io.github.ifa.glancewidget.features.main.mainTabScreens
@@ -18,7 +16,6 @@ import io.github.ifa.glancewidget.features.battery.wattsmonitor.wattsDetailScree
 import io.github.ifa.glancewidget.features.battery.batteryMonitorScreen
 import io.github.ifa.glancewidget.features.health.healthScreen
 import io.github.ifa.glancewidget.ui.localcomposition.LocalSharedTransitionScope
-import io.github.ifa.glancewidget.utils.navigateUrl
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -36,10 +33,6 @@ fun AppNavHost(
             ) {
                 mainScreen(navController)
                 paywallPremiumScreen(onNavigationIconClick = navController::popBackStack)
-                aboutScreen(
-                    onNavigationIconClick = navController::popBackStack,
-                    onExternalUrlClick = { navigateUrl(it) },
-                )
                 wattsDetailScreen(
                     onNavigationIconClick = navController::popBackStack
                 )
@@ -63,7 +56,6 @@ private fun NavGraphBuilder.mainScreen(
         appUsageScreen()
         settingsScreen(
             contentPadding = contentPadding,
-            onOpenAboutScreen = navController::navigateToAboutScreen,
         )
     }
 }
