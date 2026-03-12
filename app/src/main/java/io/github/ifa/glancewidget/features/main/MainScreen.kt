@@ -13,10 +13,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,7 +38,7 @@ import io.github.ifa.glancewidget.utils.stopBatteryStatus
 const val mainScreenRoute = "main_screen_route"
 
 fun NavGraphBuilder.mainTabScreens(
-    mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
+    mainNavGraph: NavGraphBuilder.(PaddingValues, SnackbarHostState) -> Unit,
 ) {
     composable(mainScreenRoute) {
         CompositionLocalProvider(
@@ -52,17 +55,16 @@ fun NavGraphBuilder.mainTabScreens(
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    mainNavGraph: NavGraphBuilder.(NavController, PaddingValues) -> Unit,
+    mainNavGraph: NavGraphBuilder.(PaddingValues, SnackbarHostState) -> Unit,
 ) {
     val mainTabNavController = rememberNavController()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
+    val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.shouldStartNotification) {
         if (uiState.shouldStartNotification) {
             context.startBatteryStatus()
-        } else {
-            context.stopBatteryStatus()
         }
     }
     Scaffold(
@@ -72,6 +74,7 @@ fun MainScreen(
                 colorScheme = colorScheme
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         containerColor = topBarColors.containerColor
     ) { contentPadding ->
         NavHost(
@@ -81,7 +84,7 @@ fun MainScreen(
             enterTransition = { materialFadeThroughIn() },
             exitTransition = { materialFadeThroughOut() },
         ) {
-            mainNavGraph(mainTabNavController, contentPadding)
+            mainNavGraph(contentPadding, snackbarHostState)
         }
     }
 }

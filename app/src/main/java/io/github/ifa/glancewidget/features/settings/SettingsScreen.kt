@@ -44,6 +44,7 @@ import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.Constants.IFA_LICENSES_URL
 import io.github.ifa.glancewidget.utils.findActivity
 import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
+import io.github.ifa.glancewidget.utils.mergePaddingValues
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
 import io.github.ifa.glancewidget.utils.navigateUrl
 import io.github.ifa.glancewidget.utils.syncShowPairedDevicesToWidget
@@ -130,11 +131,11 @@ internal fun SettingsScreen(
         containerColor = topBarColors.containerColor,
         floatingActionButtonPosition = FabPosition.End
     ) { padding ->
+        val insets = mergePaddingValues(padding, contentPadding)
         LazyColumn(
-            contentPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding()),
+            contentPadding = insets,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {

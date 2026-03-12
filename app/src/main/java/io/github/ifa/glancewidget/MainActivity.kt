@@ -9,6 +9,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ifa.glancewidget.di.RepositoryProvider
 import io.github.ifa.glancewidget.features.main.mainScreenRoute
+import io.github.ifa.glancewidget.navigation.AppNavHost
+import io.github.ifa.glancewidget.ui.theme.AppTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -18,14 +20,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var repositoryProvider: RepositoryProvider
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         enableEdgeToEdge()
         setContent {
             repositoryProvider.Provide {
-                BatteryApp(startDestination = mainScreenRoute)
+                AppTheme {
+                    AppNavHost(startDestination = mainScreenRoute)
+                }
             }
         }
     }

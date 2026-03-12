@@ -83,6 +83,7 @@ import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.addWidget
 import io.github.ifa.glancewidget.utils.findActivity
+import io.github.ifa.glancewidget.utils.mergePaddingValues
 import io.github.ifa.glancewidget.utils.requestToPinWidget
 import kotlinx.coroutines.launch
 
@@ -90,11 +91,13 @@ const val batteryMonitorScreenRoute = "battery_monitor_screen_route"
 
 fun NavGraphBuilder.batteryMonitorScreen(
     contentPadding: PaddingValues,
+    snackbarHostState: SnackbarHostState,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
     composable(batteryMonitorScreenRoute) {
         BatteryMonitorScreen(
             onOpenWattsDetailScreen = onOpenWattsDetailScreen,
+            snackbarHostState = snackbarHostState,
             contentPadding = contentPadding,
         )
     }
@@ -104,13 +107,14 @@ fun NavGraphBuilder.batteryMonitorScreen(
 internal fun BatteryMonitorScreen(
     viewModel: BatteryMonitorViewModel = hiltViewModel(),
     contentPadding: PaddingValues,
+    snackbarHostState: SnackbarHostState,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val showBottomSheet by rememberUpdatedState(uiState.setupWidgetId != INVALID_APPWIDGET_ID)
     val context = LocalContext.current
     val activity = context.findActivity()
-    val snackbarHostState = remember { SnackbarHostState() }
+
     val scope = rememberCoroutineScope()
     val addPinnedWidgetMessage = stringResource(id = R.string.pinned_widget_added)
     LaunchedEffect(Unit) {
@@ -119,7 +123,6 @@ internal fun BatteryMonitorScreen(
     }
     BatteryMonitorScreen(
         uiState = uiState,
-        snackbarHostState = snackbarHostState,
         contentPadding = contentPadding,
         isShowAddWidgetBottomSheet = showBottomSheet,
         onOpenWattsDetailScreen = onOpenWattsDetailScreen,
@@ -158,7 +161,7 @@ internal fun BatteryMonitorScreen(
 @Composable
 private fun BatteryMonitorScreen(
     uiState: BatteryMonitorViewModel.BatteryMonitorScreenUiState,
-    snackbarHostState: SnackbarHostState,
+
     contentPadding: PaddingValues,
     isShowAddWidgetBottomSheet: Boolean = false,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
@@ -171,7 +174,6 @@ private fun BatteryMonitorScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val haptic = LocalHapticFeedback.current
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             Appbar(
                 scrollBehavior = scrollBehavior,
@@ -180,12 +182,12 @@ private fun BatteryMonitorScreen(
         },
         containerColor = topBarColors.containerColor,
     ) { padding ->
+        val insets = mergePaddingValues(padding, contentPadding)
         LazyColumn(
-            contentPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding()),
+            contentPadding = insets,
             modifier = Modifier
                 .appPadding()
                 .fillMaxSize()
-                .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             batteryMeasurementWarning(

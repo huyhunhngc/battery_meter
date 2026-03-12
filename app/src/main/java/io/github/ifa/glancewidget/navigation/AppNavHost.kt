@@ -7,6 +7,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import io.github.ifa.glancewidget.features.about.aboutScreen
 import io.github.ifa.glancewidget.features.appusage.appUsageScreen
 import io.github.ifa.glancewidget.features.paywall.paywallPremiumScreen
@@ -22,9 +23,8 @@ import io.github.ifa.glancewidget.utils.navigateUrl
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavHost(
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
     startDestination: String,
-    modifier: Modifier = Modifier,
 ) {
     SharedTransitionLayout {
         CompositionLocalProvider(
@@ -33,7 +33,6 @@ fun AppNavHost(
             NavHostWithSlideEffect(
                 navController = navController,
                 startDestination = startDestination,
-                modifier = modifier,
             ) {
                 mainScreen(navController)
                 paywallPremiumScreen(onNavigationIconClick = navController::popBackStack)
@@ -52,9 +51,10 @@ fun AppNavHost(
 private fun NavGraphBuilder.mainScreen(
     navController: NavHostController,
 ) {
-    mainTabScreens { navMainController, contentPadding ->
+    mainTabScreens { contentPadding, snackbarHostState ->
         batteryMonitorScreen(
             contentPadding = contentPadding,
+            snackbarHostState = snackbarHostState,
             onOpenWattsDetailScreen = navController::navigateToWattsDetailScreen
         )
         healthScreen(

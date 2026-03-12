@@ -2,6 +2,7 @@ package io.github.ifa.glancewidget.ui.component
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,10 +25,16 @@ fun AppAlertDialog(
             Icon(icon, contentDescription = "Icon")
         },
         title = {
-            Text(text = dialogTitle)
+            Text(
+                text = dialogTitle,
+                style = MaterialTheme.typography.titleMedium
+            )
         },
         text = {
-            Text(text = dialogText)
+            Text(
+                text = dialogText,
+                style = MaterialTheme.typography.bodyMedium
+            )
         },
         onDismissRequest = {
             onDismissRequest()

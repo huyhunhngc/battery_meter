@@ -6,19 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.StringRes
 
-data class RuntimePermissionRequest(
-    val permissions: List<String>,
-    val required: Boolean = false,
-    @StringRes val rationale: Int? = null,
-    val onResult: (isSuccess: Boolean) -> Unit,
-) {
-    init {
-        if (required) {
-            assert(rationale != null) { "must set rationale if required" }
-        }
-    }
-}
-
 fun Context.isPermissionGranted(permission: String): Boolean =
     checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
 

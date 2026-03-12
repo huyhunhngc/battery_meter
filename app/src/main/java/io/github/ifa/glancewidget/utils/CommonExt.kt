@@ -112,14 +112,6 @@ val BluetoothPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
     )
 }
 
-val NotificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    listOf(Manifest.permission.POST_NOTIFICATIONS)
-} else {
-    emptyList()
-}
-
-val AppPermissions = BluetoothPermissions //+ NotificationPermissions
-
 val BluetoothDevice.batteryLevel
     get() = this.let { device ->
         val method = device.javaClass.getMethod("getBatteryLevel")

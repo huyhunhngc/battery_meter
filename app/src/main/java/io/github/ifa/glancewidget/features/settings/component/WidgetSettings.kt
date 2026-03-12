@@ -100,9 +100,9 @@ fun WidgetSettings(
     if (dialogUiState.isOpen) {
         AppAlertDialog(
             onDismissRequest = {
-            dialogUiState = dialogUiState.close
-            dialogUiState.onDismissRequest()
-        },
+                dialogUiState = dialogUiState.close
+                dialogUiState.onDismissRequest()
+            },
             onConfirmation = {
                 dialogUiState = dialogUiState.close
                 dialogUiState.onConfirmation()
@@ -114,7 +114,8 @@ fun WidgetSettings(
             positiveButtonText = stringResource(id = dialogUiState.positiveButtonText),
             negativeButtonText = "",
             icon = dialogUiState.iconRes?.let { ImageVector.vectorResource(id = it) }
-                ?: dialogUiState.icon)
+                ?: dialogUiState.icon,
+        )
     }
 
     SwitchWithDescription(
@@ -126,29 +127,38 @@ fun WidgetSettings(
         icon = Icons.Rounded.BatteryChargingFull,
         onCheckedChange = scope@{ checked ->
             if (notificationPermission == null) {
-                onSetNotificationEnabled(checked)
-                notificationEnabled = checked
+                if (!checked) {
+                    context.startActivity(NotificationSettingsIntent, null)
+                } else {
+                    onSetNotificationEnabled(true)
+                    notificationEnabled = true
+                }
                 return@scope
             }
-            notificationEnabled = checked
-            if (!notificationPermission.status.isGranted && checked) {
-                if (notificationPermission.status.shouldShowRationale) {
-                    notificationPermission.launchPermissionRequest()
+            if (checked) {
+                notificationEnabled = true
+                if (!notificationPermission.status.isGranted) {
+                    if (notificationPermission.status.shouldShowRationale) {
+                        notificationPermission.launchPermissionRequest()
+                    } else {
+                        dialogUiState = SettingAlertDialogUiState(
+                            isOpen = true,
+                            title = R.string.need_to_allow_notification,
+                            text = R.string.allow_notification,
+                            onDismissRequest = { notificationEnabled = false },
+                            positiveButtonText = R.string.go_to_app_settings,
+                            icon = Icons.Default.Notifications,
+                            onConfirmation = {
+                                onSetNotificationEnabled(true)
+                                context.startActivity(NotificationSettingsIntent, null)
+                            })
+                    }
                 } else {
-                    dialogUiState = SettingAlertDialogUiState(
-                        isOpen = true,
-                        title = R.string.need_to_allow_notification,
-                        text = R.string.allow_notification,
-                        onDismissRequest = { notificationEnabled = false },
-                        positiveButtonText = R.string.go_to_app_settings,
-                        icon = Icons.Default.Notifications,
-                        onConfirmation = {
-                            onSetNotificationEnabled(true)
-                            context.startActivity(NotificationSettingsIntent, null)
-                        })
+                    onSetNotificationEnabled(true)
                 }
             } else {
-                onSetNotificationEnabled(checked)
+                context.startActivity(NotificationSettingsIntent, null)
+                notificationEnabled = true
             }
         },
         checked = notificationEnabled,
