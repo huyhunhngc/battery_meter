@@ -20,6 +20,7 @@ import io.github.ifa.glancewidget.utils.goAsyncCoroutine
 import io.github.ifa.glancewidget.utils.safeGetPairedDevices
 import io.github.ifa.glancewidget.utils.toLocaleDuration
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
+import io.github.ifa.glancewidget.utils.startBatteryStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.firstOrNull
@@ -55,6 +56,7 @@ class BatteryAppMonitor : BroadcastReceiver() {
                 }
 
                 Intent.ACTION_POWER_CONNECTED -> {
+                    context.startBatteryStatus()
                     val currentData = batteryStateRepository.batteryFlow().firstOrNull()
                     if (currentData != null) {
                         batteryStateRepository.setBatteryData(currentData.setChargingStatus(true))
@@ -63,11 +65,16 @@ class BatteryAppMonitor : BroadcastReceiver() {
                 }
 
                 Intent.ACTION_POWER_DISCONNECTED -> {
+                    context.startBatteryStatus()
                     val currentData = batteryStateRepository.batteryFlow().firstOrNull()
                     if (currentData != null) {
                         batteryStateRepository.setBatteryData(currentData.setChargingStatus(false))
                     }
                     notifyBatteryInfo(context = context, overrideCharging = false)
+                }
+
+                Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                    context.startBatteryStatus()
                 }
 
                 AppIntent.ACTION_SHOW_PAIRED_DEVICES_CHANGED -> {

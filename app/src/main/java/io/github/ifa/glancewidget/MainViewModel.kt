@@ -62,10 +62,4 @@ class MainViewModel @Inject constructor(
         monitoringJob?.cancel()
         monitoringJob = null
     }
-
-    fun saveShowPairedDevicesSetting(showPairedDevices: Boolean) {
-        viewModelScope.launch {
-            appSettingsRepository.saveShowPairedDevicesSetting(showPairedDevices)
-        }
-    }
 }

@@ -252,12 +252,12 @@ private fun BatteryMonitorScreen(
                     }
                 }
             }
-//            connectedDevices(
-//                modifier = Modifier.padding(bottom = 16.dp),
-//                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
-//                batteryDeviceSettings = uiState.bonedDeviceSettings,
-//                onShowInWidgetChanged = onShowInWidgetChanged
-//            )
+            connectedDevices(
+                modifier = Modifier.padding(bottom = 16.dp),
+                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
+                batteryDeviceSettings = uiState.bonedDeviceSettings,
+                onShowInWidgetChanged = onShowInWidgetChanged
+            )
         }
 
         if (isShowAddWidgetBottomSheet) {

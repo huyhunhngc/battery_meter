@@ -57,27 +57,28 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == AppIntent.ACTION_PINNED_WIDGET_SUCCESS) {
-            val widgetStyle = WidgetSetting.Style.fromOrdinal(
-                intent.getIntExtra(AppExtra.WIDGET_STYLE, 0)
-            )
-            val isTransparent = intent.getBooleanExtra(
-                AppExtra.WIDGET_TRANSPARENT, false
-            )
-            MainScope().launch(Dispatchers.IO) {
-                val appWidgetId = context.batteryWidgetStore.getInt(PINNED_WIDGET_PREFERENCES)
-                    ?: return@launch
-                batteryStateRepository.saveWidgetInitialSetting(
-                    appWidgetId = appWidgetId,
-                    isTransparent = isTransparent,
-                    widgetStyle = widgetStyle
+        when (intent.action) {
+            AppIntent.ACTION_PINNED_WIDGET_SUCCESS -> {
+                val widgetStyle = WidgetSetting.Style.fromOrdinal(
+                    intent.getIntExtra(AppExtra.WIDGET_STYLE, 0)
                 )
-                val glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId)
-                withContext(Dispatchers.Main) {
-                    glanceAppWidget.update(context, glanceId)
+                val isTransparent = intent.getBooleanExtra(
+                    AppExtra.WIDGET_TRANSPARENT, false
+                )
+                MainScope().launch(Dispatchers.IO) {
+                    val appWidgetId = context.batteryWidgetStore.getInt(PINNED_WIDGET_PREFERENCES)
+                        ?: return@launch
+                    batteryStateRepository.saveWidgetInitialSetting(
+                        appWidgetId = appWidgetId,
+                        isTransparent = isTransparent,
+                        widgetStyle = widgetStyle
+                    )
+                    val glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId)
+                    withContext(Dispatchers.Main) {
+                        glanceAppWidget.update(context, glanceId)
+                    }
                 }
             }
-
         }
     }
 
