@@ -37,6 +37,7 @@
         </activity>
 
         <receiver
+            android:label="@string/widget_flexible_name"
             android:name=".glance.battery.BatteryWidgetReceiver"
             android:exported="true">
             <intent-filter>

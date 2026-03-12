@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.about
+package io.github.ifa.glancewidget.features.settings.about
 
 import android.content.Context
 import androidx.compose.animation.core.LinearEasing
@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Mail
@@ -32,8 +33,10 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -54,8 +57,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
@@ -64,10 +65,13 @@ import io.github.ifa.glancewidget.utils.Constants.IFA_GITHUB_URL
 import io.github.ifa.glancewidget.utils.Constants.IFA_LICENSES_URL
 import io.github.ifa.glancewidget.utils.Constants.IFA_SUPPORT_URL
 import io.github.ifa.glancewidget.utils.Constants.IFA_TEAM_URL
+import io.github.ifa.glancewidget.utils.Constants.STORE_APP_URL
 import io.github.ifa.glancewidget.utils.cookieShape
+import io.github.ifa.glancewidget.utils.listItemColor
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
 import io.github.ifa.glancewidget.utils.navigateUrl
 import io.github.ifa.glancewidget.utils.sendMail
+import io.github.ifa.glancewidget.utils.singleItemListItemShapes
 
 @Composable
 fun AboutScreen(
@@ -100,6 +104,9 @@ internal fun AboutScreen(
     }
     val onOpenPrivacyPolicy = {
         context.navigateUrl(IFA_LICENSES_URL)
+    }
+    val onOpenGooglePlay = {
+        context.navigateUrl(STORE_APP_URL)
     }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
@@ -256,7 +263,28 @@ internal fun AboutScreen(
                     }
                 }
             }
-
+            item {
+                SegmentedListItem(
+                    leadingContent = {
+                        Icon(painterResource(R.drawable.ic_play_store), contentDescription = null)
+                    },
+                    trailingContent = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    supportingContent = {
+                        Text(text = stringResource(R.string.rate_on_google_play))
+                    },
+                    shapes = ListItemDefaults.segmentedShapes(0, 1, singleItemListItemShapes),
+                    colors = listItemColor,
+                    onClick = onOpenGooglePlay,
+                ) {
+                    Text(stringResource(id = R.string.rate))
+                }
+            }
             item {
                 Column(
                     modifier = Modifier

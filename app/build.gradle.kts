@@ -123,11 +123,6 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.suite)
     implementation(libs.play.services.oss.licenses)
 
-    implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.androidx.work.runtime)
-    implementation(libs.androidx.work.multiprocess)
-    implementation(libs.androidx.hilt.work)
-
     implementation(libs.billing)
     implementation(libs.billing.ktx)
 

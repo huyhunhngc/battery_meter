@@ -3,7 +3,6 @@ package io.github.ifa.glancewidget.features.settings.component
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Contrast
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +62,7 @@ fun ThemeSetting(
     }
     SwitchWithDescription(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(16.dp)
             .clip(RoundedCornerShape(16.dp)),
         icon = Icons.Rounded.Contrast,
         enabled = isDarkTheme,

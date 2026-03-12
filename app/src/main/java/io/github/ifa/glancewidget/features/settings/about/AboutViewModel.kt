@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.features.about
+package io.github.ifa.glancewidget.features.settings.about
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

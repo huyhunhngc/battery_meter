@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.rounded.FormatColorFill
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -83,8 +84,8 @@ private fun DefaultPaletteItem(
     ) {
         Icon(
             modifier = Modifier.fillMaxSize(selectedShape),
-            painter = painterResource(id = R.drawable.ic_block),
-            contentDescription = "Decline",
+            imageVector = Icons.Rounded.FormatColorFill,
+            contentDescription = "Dynamic",
             tint = MaterialTheme.colorScheme.primary.copy(alpha = selectedShape)
         )
     }

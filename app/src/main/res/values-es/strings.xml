@@ -99,7 +99,12 @@
     <string name="bluetooth_device_setting">Dispositivos Bluetooth emparejados. Alternar para ocultar o mostrar en el widget</string>
     <string name="battery">Batería</string>
     <string name="capacity">Capacidad</string>
-    <string name="bug_report">Bug report</string>
-    <string name="black_dark">Black dark theme</string>
-    <string name="theme_settings_desc">Config theme, Dynamic color, Pure dark</string>
+    <string name="bug_report">Reportar error</string>
+    <string name="black_dark">Tema negro puro</string>
+    <string name="black_dark_description">Usar un tema oscuro negro puro</string>
+    <string name="theme_settings_desc">Configurar tema, color dinámico y negro puro</string>
+    <string name="widget_flexible_name">Batería flexible</string>
+    <string name="widget_flexible_desc">Widget flexible con porcentaje e información de carga</string>
+    <string name="rate">Calificar</string>
+    <string name="rate_on_google_play">Deja una valoración positiva en Google Play</string>
 </resources>

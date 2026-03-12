@@ -43,14 +43,14 @@ fun TextWithRightArrow(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         if (icon != null) {
             Icon(
                 painter = icon,
                 contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp)
             )
         }
         Text(

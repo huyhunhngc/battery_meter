@@ -100,7 +100,12 @@
     <string name="bluetooth_device_setting">Bluetoothペアリングデバイス。ウィジェットで非表示または表示を切り替えます。</string>
     <string name="battery">バッテリー</string>
     <string name="capacity">容量</string>
-    <string name="bug_report">Bug report</string>
-    <string name="black_dark">Black dark theme</string>
-    <string name="theme_settings_desc">Config theme, Dynamic color, Pure dark</string>
+    <string name="bug_report">バグ報告</string>
+    <string name="black_dark">ピュアブラックテーマ</string>
+    <string name="black_dark_description">ピュアブラックのダークテーマを使用</string>
+    <string name="theme_settings_desc">テーマ、ダイナミックカラー、ピュアブラックを設定</string>
+    <string name="widget_flexible_name">フレキシブルバッテリー</string>
+    <string name="widget_flexible_desc">パーセンテージと充電情報を表示する柔軟なウィジェット</string>
+    <string name="rate">評価</string>
+    <string name="rate_on_google_play">Google Play で高評価をお願いします</string>
 </resources>

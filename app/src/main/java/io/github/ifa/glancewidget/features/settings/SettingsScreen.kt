@@ -1,20 +1,20 @@
 package io.github.ifa.glancewidget.features.settings
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
@@ -23,10 +23,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDragHandle
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AdaptStrategy
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldDefaults
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -47,16 +50,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.R
-import io.github.ifa.glancewidget.features.about.AboutScreen
+import io.github.ifa.glancewidget.features.settings.about.AboutScreen
 import io.github.ifa.glancewidget.features.main.MainScreenTab
 import io.github.ifa.glancewidget.features.settings.component.LanguageSetting
-import io.github.ifa.glancewidget.features.settings.component.ThemeSetting
-import io.github.ifa.glancewidget.features.settings.component.WidgetSettings
 import io.github.ifa.glancewidget.model.AppSettings
-import io.github.ifa.glancewidget.model.ThemeType
-import io.github.ifa.glancewidget.model.ThemeTypeColor
-import io.github.ifa.glancewidget.ui.component.TextWithRightArrow
-import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.combinePadding
 import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
@@ -92,7 +89,10 @@ fun SettingsSupportingPaneScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val navigator = rememberSupportingPaneScaffoldNavigator()
+    val navigator = rememberSupportingPaneScaffoldNavigator(
+        adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(supportingPaneAdaptStrategy = AdaptStrategy.Hide)
+    )
+    val expansionState = rememberPaneExpansionState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -173,7 +173,20 @@ fun SettingsSupportingPaneScreen(
                     }
                 }
             }
-        }
+        },
+        paneExpansionDragHandle = {
+            val interactionSource = remember { MutableInteractionSource() }
+            VerticalDragHandle(
+                modifier = Modifier
+                    .paneExpansionDraggable(
+                        expansionState,
+                        LocalMinimumInteractiveComponentSize.current,
+                        interactionSource
+                    )
+                    .systemGestureExclusion()
+            )
+        },
+        paneExpansionState = expansionState
     )
 }
 
@@ -195,13 +208,13 @@ internal fun SettingsScreenLayout(
         topBar = {
             TopAppBar(
                 title = {
-                Text(
-                    text = stringResource(id = MainScreenTab.Settings.label),
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            },
+                    Text(
+                        text = stringResource(id = MainScreenTab.Settings.label),
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 subtitle = {},
                 titleHorizontalAlignment = Alignment.CenterHorizontally,
                 scrollBehavior = scrollBehavior,
@@ -220,6 +233,11 @@ internal fun SettingsScreenLayout(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            if (!isAppCompatLocaleDeprecated()) {
+                item {
+                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
+                }
+            }
             item {
                 SegmentedListItem(
                     leadingContent = {
@@ -264,13 +282,6 @@ internal fun SettingsScreenLayout(
                     Text(stringResource(id = R.string.widget_tab))
                 }
             }
-
-            if (!isAppCompatLocaleDeprecated()) {
-                item {
-                    LanguageSetting(onSelectLanguage = onSelectLanguage, uiState = uiState)
-                }
-            }
-
             item {
                 SegmentedListItem(
                     leadingContent = {

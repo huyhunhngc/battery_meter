@@ -1,12 +1,14 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_flexible_desc"
     android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewLayout="@layout/glance_default_preview_layout"
     android:minWidth="50dp"
     android:minHeight="50dp"
     android:maxHeight="200dp"
     android:maxResizeHeight="200dp"
     android:targetCellWidth="3"
     android:targetCellHeight="1"
-    android:updatePeriodMillis="1000"
+    android:updatePeriodMillis="1800000"
     android:configure="io.github.ifa.glancewidget.MainActivity"
     android:resizeMode="horizontal|vertical">
 </appwidget-provider>

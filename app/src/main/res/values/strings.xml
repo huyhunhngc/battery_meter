@@ -107,7 +107,11 @@
     <string name="battery">Battery</string>
     <string name="capacity">Capacity</string>
     <string name="bug_report">Bug report</string>
-    <string name="black_dark">Black dark theme</string>
+    <string name="black_dark">Pure black theme</string>
     <string name="black_dark_description">Use a pure black dark theme</string>
-    <string name="theme_settings_desc">Config theme, Dynamic color, Pure dark</string>
+    <string name="theme_settings_desc">Configure theme, dynamic color, and pure dark</string>
+    <string name="widget_flexible_name">Flexible Battery</string>
+    <string name="widget_flexible_desc">Flexible widget with percentage and charging info</string>
+    <string name="rate">Rate</string>
+    <string name="rate_on_google_play">Leave a positive rating on Google Play</string>
 </resources>

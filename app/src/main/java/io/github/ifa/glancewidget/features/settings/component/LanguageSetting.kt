@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.features.settings.SettingsViewModel
 import io.github.ifa.glancewidget.model.AppSettings
@@ -85,7 +86,6 @@ fun LanguageSetting(
         Text(stringResource(R.string.language))
     }
 
-
     if (openBottomSheet.value) {
         ModalBottomSheet(
             onDismissRequest = {
@@ -93,8 +93,9 @@ fun LanguageSetting(
                 scope.launch { sheetState.hide() }
             },
             sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
-            AppSettings.Language.options().forEach { languageCode ->
+            AppSettings.Language.options().fastForEach { languageCode ->
                 val language = AppSettings.Language.fromCode(languageCode)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

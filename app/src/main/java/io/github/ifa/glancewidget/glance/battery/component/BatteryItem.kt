@@ -23,11 +23,14 @@ import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import io.github.ifa.glancewidget.MainActivity
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.glance.battery.ui.PixelBatteryTheme
 import io.github.ifa.glancewidget.glance.battery.utils.cornerRadiusCompat
 import io.github.ifa.glancewidget.model.DeviceType
 import io.github.ifa.glancewidget.utils.Constants.ANDROID_SETTING_PACKAGE
@@ -160,5 +163,20 @@ private fun RowScope.Segment(currentSegment: Int, percent: Int) {
                 )
             )
         }
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview
+@Composable
+fun BatteryItemPreview() {
+    PixelBatteryTheme {
+        BatteryItem(
+            deviceType = DeviceType.PHONE,
+            percent = 85,
+            isCharging = true,
+            deviceName = "Pixel 7 Pro",
+            modifier = GlanceModifier.size(width = 200.dp, height = 60.dp)
+        )
     }
 }

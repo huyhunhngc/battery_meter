@@ -99,7 +99,12 @@
     <string name="bluetooth_device_setting">Bluetooth 페어링된 기기. 위젯에서 숨기거나 표시하려면 전환하세요</string>
     <string name="battery">배터리</string>
     <string name="capacity">용량</string>
-    <string name="bug_report">Bug report</string>
-    <string name="black_dark">Black dark theme</string>
-    <string name="theme_settings_desc">Config theme, Dynamic color, Pure dark</string>
+    <string name="bug_report">버그 신고</string>
+    <string name="black_dark">퓨어 블랙 테마</string>
+    <string name="black_dark_description">순수 블랙 다크 테마 사용</string>
+    <string name="theme_settings_desc">테마, 동적 색상 및 퓨어 블랙 설정</string>
+    <string name="widget_flexible_name">유연한 배터리</string>
+    <string name="widget_flexible_desc">퍼센트와 충전 정보를 표시하는 유연한 위젯</string>
+    <string name="rate">평가</string>
+    <string name="rate_on_google_play">Google Play에 긍정적인 평가를 남겨 주세요</string>
 </resources>
