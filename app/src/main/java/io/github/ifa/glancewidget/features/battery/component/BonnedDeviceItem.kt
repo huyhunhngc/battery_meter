@@ -41,7 +41,7 @@ fun BonedDeviceItem(
 ) {
     Column(
         modifier = modifier
-            .padding(vertical = 8.dp)
+            .padding(vertical = 4.dp, horizontal = 16.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)

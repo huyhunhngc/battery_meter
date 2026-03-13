@@ -11,6 +11,7 @@ data class AppSettings(
     val syncColorEnabled: Boolean = true,
     val isBlackDarkEnabled: Boolean = false,
     val language: Language = Language.DEFAULT,
+    val temperatureUnit: MyDevice.Temperature.TemperatureUnit? = null,
     val notificationSetting: NotificationSetting = NotificationSetting()
 ) {
     @Serializable

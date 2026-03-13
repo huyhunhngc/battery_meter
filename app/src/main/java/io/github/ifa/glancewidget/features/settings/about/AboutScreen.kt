@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,6 +67,7 @@ import io.github.ifa.glancewidget.utils.Constants.IFA_LICENSES_URL
 import io.github.ifa.glancewidget.utils.Constants.IFA_SUPPORT_URL
 import io.github.ifa.glancewidget.utils.Constants.IFA_TEAM_URL
 import io.github.ifa.glancewidget.utils.Constants.STORE_APP_URL
+import io.github.ifa.glancewidget.utils.combinePadding
 import io.github.ifa.glancewidget.utils.cookieShape
 import io.github.ifa.glancewidget.utils.listItemColor
 import io.github.ifa.glancewidget.utils.navigateLicencesScreen
@@ -76,6 +78,7 @@ import io.github.ifa.glancewidget.utils.singleItemListItemShapes
 @Composable
 fun AboutScreen(
     viewModel: AboutViewModel = hiltViewModel(),
+    contentPadding: PaddingValues,
     onNavigationIconClick: () -> Unit,
     onExternalUrlClick: Context.(String) -> Unit
 ) {
@@ -84,6 +87,7 @@ fun AboutScreen(
     AboutScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        contentPadding = contentPadding,
         onNavigationIconClick = onNavigationIconClick,
         onExternalUrlClick = onExternalUrlClick
     )
@@ -94,6 +98,7 @@ fun AboutScreen(
 internal fun AboutScreen(
     uiState: AboutViewModel.AboutScreenUiState,
     snackbarHostState: SnackbarHostState,
+    contentPadding: PaddingValues,
     onNavigationIconClick: () -> Unit,
     onExternalUrlClick: Context.(String) -> Unit = {},
 ) {
@@ -127,9 +132,10 @@ internal fun AboutScreen(
         )
     }, containerColor = topBarColors.containerColor
     ) { padding ->
+        val insets = combinePadding(padding, contentPadding)
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = padding,
+            contentPadding = insets,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 16.dp)
@@ -338,5 +344,9 @@ fun TonalButton(
 @Preview
 @Composable
 fun AboutScreenPreview() {
-    AboutScreen(onNavigationIconClick = {}, onExternalUrlClick = {})
+    AboutScreen(
+        contentPadding = PaddingValues(),
+        onNavigationIconClick = {},
+        onExternalUrlClick = {},
+    )
 }

@@ -133,8 +133,5 @@ data class MyDevice(
             val temperatureInCelsius = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1)
             return (temperatureInCelsius / 10.0f)
         }
-
-        fun getTemperatureInFahrenheit(temperatureInCelsius: Double) =
-            (temperatureInCelsius * 1.8) + 32.0
     }
 }

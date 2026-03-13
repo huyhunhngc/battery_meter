@@ -22,8 +22,9 @@ import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.WidgetSetting
 import io.github.ifa.glancewidget.utils.getInt
 import io.github.ifa.glancewidget.utils.setInt
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -43,12 +44,13 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        syncLatestBatteryState(context)
-        for (appWidgetId in appWidgetIds) {
-            MainScope().launch(Dispatchers.IO) {
-                context.batteryWidgetStore.setInt(
+        val appContext = context.applicationContext
+        syncLatestBatteryState(appContext)
+        appWidgetIds.lastOrNull()?.let { lastWidgetId ->
+            receiverScope.launch(Dispatchers.IO) {
+                appContext.batteryWidgetStore.setInt(
                     key = PINNED_WIDGET_PREFERENCES,
-                    value = appWidgetId
+                    value = lastWidgetId
                 )
             }
         }
@@ -57,6 +59,7 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
+        val appContext = context.applicationContext
         when (intent.action) {
             AppIntent.ACTION_PINNED_WIDGET_SUCCESS -> {
                 val widgetStyle = WidgetSetting.Style.fromOrdinal(
@@ -65,17 +68,20 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
                 val isTransparent = intent.getBooleanExtra(
                     AppExtra.WIDGET_TRANSPARENT, false
                 )
-                MainScope().launch(Dispatchers.IO) {
-                    val appWidgetId = context.batteryWidgetStore.getInt(PINNED_WIDGET_PREFERENCES)
+
+                receiverScope.launch(Dispatchers.IO) {
+                    val appWidgetId = appContext.batteryWidgetStore.getInt(PINNED_WIDGET_PREFERENCES)
                         ?: return@launch
+
                     batteryStateRepository.saveWidgetInitialSetting(
                         appWidgetId = appWidgetId,
                         isTransparent = isTransparent,
                         widgetStyle = widgetStyle
                     )
-                    val glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId)
+
+                    val glanceId = GlanceAppWidgetManager(appContext).getGlanceIdBy(appWidgetId)
                     withContext(Dispatchers.Main) {
-                        glanceAppWidget.update(context, glanceId)
+                        glanceAppWidget.update(appContext, glanceId)
                     }
                 }
             }
@@ -89,12 +95,14 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
         newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        val appContext = context.applicationContext
         val minW = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
         val minH = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-        MainScope().launch {
+
+        receiverScope.launch(Dispatchers.Main) {
             (glanceAppWidget as? BatteryWidget)?.updateOnSizeChanged(
-                context = context,
-                glanceId = GlanceAppWidgetManager(context).getGlanceIdBy(appWidgetId),
+                context = appContext,
+                glanceId = GlanceAppWidgetManager(appContext).getGlanceIdBy(appWidgetId),
                 widgetSetting = WidgetSetting(
                     appWidgetId = appWidgetId,
                     width = minW,
@@ -105,23 +113,21 @@ class BatteryWidgetReceiver : GlanceAppWidgetReceiver() {
     }
 
     private fun syncLatestBatteryState(context: Context) {
-        val filter = IntentFilter().apply {
-            (BATTERY_ACTIONS + BLUETOOTH_STATE_ACTIONS).forEach { addAction(it) }
-        }
+        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val status = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                null, filter, Context.RECEIVER_NOT_EXPORTED
-            )
+            context.registerReceiver(null, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             context.registerReceiver(null, filter)
         } ?: Intent()
+
         val myDevice = MyDevice.fromIntent(status)
-        MainScope().launch(Dispatchers.IO) {
+        receiverScope.launch(Dispatchers.IO) {
             batteryStateRepository.setMyDevice(myDevice)
         }
     }
 
     companion object {
+        private val receiverScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         val BATTERY_ACTIONS = listOf(
             Intent.ACTION_BATTERY_CHANGED,
             Intent.ACTION_BATTERY_LOW,

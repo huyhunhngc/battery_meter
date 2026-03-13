@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import io.github.ifa.glancewidget.di.LocalRepositories
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BonnedDeviceSettings
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,8 @@ interface AppSettingsRepository {
     suspend fun saveShowPairedDevicesSetting(showPairedDevices: Boolean)
     suspend fun saveBondedDeviceSetting(macAddress: String, showInWidget: Boolean)
     suspend fun saveEnableBlackDark(enabled: Boolean)
-    fun getBondedDevices(): Flow<BonnedDeviceSettings>
+    suspend fun saveTemperatureUnit(temperatureUnit: MyDevice.Temperature.TemperatureUnit)
+    fun getBondedDeviceSettings(): Flow<BonnedDeviceSettings>
 }
 
 @Composable

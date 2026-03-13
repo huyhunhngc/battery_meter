@@ -107,4 +107,6 @@
     <string name="widget_flexible_desc">Widget flexible con porcentaje e información de carga</string>
     <string name="rate">Calificar</string>
     <string name="rate_on_google_play">Deja una valoración positiva en Google Play</string>
+    <string name="appearance">Appearance</string>
+    <string name="notification_settings_desc">Show battery status, Bluetooth paired devices</string>
 </resources>

@@ -108,4 +108,6 @@
     <string name="widget_flexible_desc">Widget linh hoạt với phần trăm và thông tin sạc</string>
     <string name="rate">Đánh giá</string>
     <string name="rate_on_google_play">Để lại đánh giá tích cực trên Google Play</string>
+    <string name="appearance">Appearance</string>
+    <string name="notification_settings_desc">Show battery status, Bluetooth paired devices</string>
 </resources>

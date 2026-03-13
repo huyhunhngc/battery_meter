@@ -6,6 +6,7 @@ import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.glance.battery.BatteryWidget
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BonnedDeviceSettings
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.utils.setLocale
@@ -83,7 +84,12 @@ class DefaultAppSettingsRepository(
         appSettingDataStore.saveSettings(settings.copy(isBlackDarkEnabled = enabled))
     }
 
-    override fun getBondedDevices(): Flow<BonnedDeviceSettings> {
+    override suspend fun saveTemperatureUnit(temperatureUnit: MyDevice.Temperature.TemperatureUnit) {
+        val settings = appSettingDataStore.getSettings()
+        appSettingDataStore.saveSettings(settings.copy(temperatureUnit = temperatureUnit))
+    }
+
+    override fun getBondedDeviceSettings(): Flow<BonnedDeviceSettings> {
         return appSettingDataStore.getBondedDevicesFlow()
     }
 

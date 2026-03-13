@@ -7,8 +7,6 @@ import android.os.Build
 import android.provider.Settings
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -95,7 +93,6 @@ fun WidgetSettings(
             onSetNotificationEnabled(true)
         }
     }
-
     var dialogUiState by remember { mutableStateOf(SettingAlertDialogUiState()) }
     if (dialogUiState.isOpen) {
         AppAlertDialog(
@@ -151,7 +148,8 @@ fun WidgetSettings(
                             onConfirmation = {
                                 onSetNotificationEnabled(true)
                                 context.startActivity(NotificationSettingsIntent, null)
-                            })
+                            },
+                        )
                     }
                 } else {
                     onSetNotificationEnabled(true)
@@ -164,7 +162,18 @@ fun WidgetSettings(
         checked = notificationEnabled,
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
+    SwitchWithDescription(
+        modifier = Modifier
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        icon = Icons.Rounded.Sync,
+        label = stringResource(id = R.string.sync_color_scheme_with_widget),
+        description = stringResource(id = R.string.sync_color_scheme_with_widget_description),
+        onCheckedChange = scope@{ checked ->
+            syncEnabled = checked
+        },
+        checked = syncEnabled,
+    )
 
     SwitchWithDescription(
         modifier = Modifier
@@ -192,26 +201,14 @@ fun WidgetSettings(
                         onConfirmation = {
                             onSetShowPairedDevice(true)
                             context.startActivity(ApplicationDetailsSettingsIntent, null)
-                        })
+                        },
+                    )
                 }
             } else {
                 onSetShowPairedDevice(checked)
             }
         },
         checked = showPairedDevice,
-    )
-
-    SwitchWithDescription(
-        modifier = Modifier
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        icon = Icons.Rounded.Sync,
-        label = stringResource(id = R.string.sync_color_scheme_with_widget),
-        description = stringResource(id = R.string.sync_color_scheme_with_widget_description),
-        onCheckedChange = scope@{ checked ->
-            syncEnabled = checked
-        },
-        checked = syncEnabled,
     )
 }
 

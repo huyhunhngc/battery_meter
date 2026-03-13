@@ -70,6 +70,7 @@ import io.github.ifa.glancewidget.features.battery.component.ConnectedDevice
 import io.github.ifa.glancewidget.features.battery.component.DropdownMenu
 import io.github.ifa.glancewidget.features.battery.component.MeasurementWarning
 import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.ui.component.appPadding
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.addWidget
@@ -136,7 +137,6 @@ internal fun BatteryMonitorScreen(
             }
         },
         onRequestPiningWidget = viewModel::createPinnedWidget,
-        onShowInWidgetChanged = viewModel::updateDeviceShowInWidget,
         onForceReloadClick = {
             activity?.apply {
                 val intent = Intent(this, MainActivity::class.java)
@@ -152,14 +152,12 @@ internal fun BatteryMonitorScreen(
 @Composable
 private fun BatteryMonitorScreen(
     uiState: BatteryMonitorViewModel.BatteryMonitorScreenUiState,
-
     contentPadding: PaddingValues,
     isShowAddWidgetBottomSheet: Boolean = false,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     onDisMissBottomSheet: () -> Unit = {},
     onClickAddWidget: (AddWidgetParams) -> Unit,
     onRequestPiningWidget: () -> Unit = {},
-    onShowInWidgetChanged: (String, Boolean) -> Unit,
     onForceReloadClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -188,6 +186,7 @@ private fun BatteryMonitorScreen(
             batteryOverall(
                 batteryDataWrapper = uiState.batteryOverall,
                 chartTrackingData = uiState.chartTrackingData,
+                temperatureUnit = uiState.temperatureUnit,
                 onOpenWattsDetailScreen = onOpenWattsDetailScreen,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
@@ -245,12 +244,6 @@ private fun BatteryMonitorScreen(
                     }
                 }
             }
-//            connectedDevices(
-//                modifier = Modifier.padding(bottom = 16.dp),
-//                batteryConnectedDevices = uiState.batteryOverall.batteryData.batteryConnectedDevices,
-//                batteryDeviceSettings = uiState.bonedDeviceSettings,
-//                onShowInWidgetChanged = onShowInWidgetChanged
-//            )
         }
 
         if (isShowAddWidgetBottomSheet) {
@@ -321,6 +314,7 @@ private fun LazyListScope.batteryMeasurementWarning(
 private fun LazyListScope.batteryOverall(
     batteryDataWrapper: BatteryDataWrapper,
     chartTrackingData: ChartRecord,
+    temperatureUnit: MyDevice.Temperature.TemperatureUnit?,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -329,35 +323,8 @@ private fun LazyListScope.batteryOverall(
             modifier = modifier,
             batteryDataWrapper = batteryDataWrapper,
             chartTrackingData = chartTrackingData,
+            temperatureUnit = temperatureUnit,
             onOpenWattsDetailScreen = onOpenWattsDetailScreen
         )
-    }
-}
-
-
-
-private fun LazyListScope.connectedDevices(
-    modifier: Modifier = Modifier,
-    batteryConnectedDevices: List<BonedDevice>,
-    batteryDeviceSettings: BonnedDeviceSettings,
-    onShowInWidgetChanged: (String, Boolean) -> Unit,
-) {
-    if (batteryConnectedDevices.isNotEmpty()) {
-        item {
-            ConnectedDevice(
-                modifier = modifier,
-            )
-        }
-        items(
-            items = batteryConnectedDevices,
-            key = { device -> device.address }
-        ) { device ->
-            val showInWidget = batteryDeviceSettings.settings[device.address]?.showInWidget ?: true
-            BonedDeviceItem(
-                device = device,
-                showInWidget = showInWidget,
-                onShowInWidgetChanged = onShowInWidgetChanged
-            )
-        }
     }
 }

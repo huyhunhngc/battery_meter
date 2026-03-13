@@ -21,8 +21,9 @@ import io.github.ifa.glancewidget.utils.safeGetPairedDevices
 import io.github.ifa.glancewidget.utils.toLocaleDuration
 import io.github.ifa.glancewidget.utils.updateBatteryWidget
 import io.github.ifa.glancewidget.utils.startBatteryStatus
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
@@ -38,7 +39,10 @@ class BatteryAppMonitor : BroadcastReceiver() {
     lateinit var appSettingsRepository: AppSettingsRepository
 
     override fun onReceive(context: Context, intent: Intent) {
-        goAsyncCoroutine(MainScope(), Dispatchers.IO) {
+        goAsyncCoroutine(monitorScope, Dispatchers.IO) {
+            val isBatteryDataAction = intent.action in BATTERY_DATA_ACTIONS
+            val shouldUpdateWidget = intent.action !in BOOT_ACTIONS
+
             when (intent.action) {
                 Intent.ACTION_BATTERY_CHANGED -> {
                     val myDevice = MyDevice.fromIntent(intent)
@@ -107,8 +111,14 @@ class BatteryAppMonitor : BroadcastReceiver() {
                     }
                 }
             }
-            batteryStateRepository.saveExtraBatteryInformation()
-            context.updateBatteryWidget()
+
+            if (isBatteryDataAction) {
+                batteryStateRepository.saveExtraBatteryInformation()
+            }
+
+            if (shouldUpdateWidget) {
+                context.updateBatteryWidget()
+            }
         }
     }
 
@@ -144,5 +154,20 @@ class BatteryAppMonitor : BroadcastReceiver() {
             temperature = temperature
         )
         notificationHandler.notifyBatteryMonitorNotification(notification)
+    }
+
+    companion object {
+        private val monitorScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+        private val BATTERY_DATA_ACTIONS = setOf(
+            Intent.ACTION_BATTERY_CHANGED,
+            Intent.ACTION_POWER_CONNECTED,
+            Intent.ACTION_POWER_DISCONNECTED
+        )
+
+        private val BOOT_ACTIONS = setOf(
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED
+        )
     }
 }

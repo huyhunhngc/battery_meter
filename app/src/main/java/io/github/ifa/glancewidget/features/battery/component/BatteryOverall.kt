@@ -11,19 +11,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ElectricBolt
+import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,12 +47,12 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import io.github.ifa.glancewidget.R
+import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.model.ChartRecord
+import io.github.ifa.glancewidget.model.MyDevice.Temperature.TemperatureUnit
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
-import io.github.ifa.glancewidget.features.battery.wattsmonitor.WattsDetailDestination
 import io.github.ifa.glancewidget.ui.component.AnimatedCounter
-import io.github.ifa.glancewidget.ui.component.SessionText
 import io.github.ifa.glancewidget.utils.Constants.MA_UNIT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -65,6 +63,7 @@ fun BatteryOverall(
     modifier: Modifier = Modifier,
     batteryDataWrapper: BatteryDataWrapper,
     chartTrackingData: ChartRecord,
+    temperatureUnit: TemperatureUnit?,
     onOpenWattsDetailScreen: (WattsDetailDestination) -> Unit = {}
 ) {
     val myDevice = batteryDataWrapper.batteryData.myDevice
@@ -87,10 +86,21 @@ fun BatteryOverall(
         batteryDataWrapper.remainBatteryTime(context)
     }
 
+    val temperature = remember(temperatureUnit, myDevice.temperature) {
+        if (temperatureUnit == null) return@remember myDevice.temperature
+        if (temperatureUnit == TemperatureUnit.CELSIUS) {
+            myDevice.temperature
+        } else {
+           MyDevice.Temperature(
+               temperature = (myDevice.temperature.temperature * 1.8f) + 32f,
+               temperatureUnit = TemperatureUnit.FAHRENHEIT
+           )
+        }
+    }
+
+
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -98,8 +108,10 @@ fun BatteryOverall(
             FilledTonalIconButton(
                 onClick = {
                     context.startActivity(Intent(Intent.ACTION_POWER_USAGE_SUMMARY))
-                },
-                modifier = Modifier.width(52.dp).height(32.dp).align(Alignment.BottomEnd)
+                }, modifier = Modifier
+                    .width(52.dp)
+                    .height(32.dp)
+                    .align(Alignment.BottomEnd)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_monitoring),
@@ -134,8 +146,7 @@ fun BatteryOverall(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             WattsMonitor(
                 modifier = Modifier
@@ -145,13 +156,10 @@ fun BatteryOverall(
                     .clickable {
                         onOpenWattsDetailScreen(
                             WattsDetailDestination(
-                                power = power.toFloat(),
-                                powerPercentage = powerPercentage
+                                power = power.toFloat(), powerPercentage = powerPercentage
                             )
                         )
-                    },
-                power = power.toFloat(),
-                powerPercentage = powerPercentage
+                    }, power = power.toFloat(), powerPercentage = powerPercentage
             )
             Column(
                 modifier = Modifier
@@ -191,12 +199,12 @@ fun BatteryOverall(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+
             TemperatureMonitor(
                 modifier = Modifier.weight(1f),
-                temperature = myDevice.temperature,
+                temperature = temperature,
                 temperatureTracking = chartTrackingData.temperatures
             )
             VoltageMonitor(
@@ -268,9 +276,7 @@ private fun CurrentAndChargingMonitor(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun TemperatureMonitor(
-    modifier: Modifier,
-    temperature: MyDevice.Temperature,
-    temperatureTracking: List<Float>
+    modifier: Modifier, temperature: MyDevice.Temperature, temperatureTracking: List<Float>
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
     LaunchedEffect(temperatureTracking) {
@@ -296,16 +302,16 @@ private fun TemperatureMonitor(
             text = temperature.formatTemperature(),
             modifier = Modifier.padding(16.dp),
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.tertiary
         )
         Icon(
-            painter = painterResource(id = R.drawable.ic_device_thermostat),
+            imageVector = Icons.Rounded.Thermostat,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .padding(8.dp)
-                .size(24.dp)
+                .padding(12.dp)
+                .size(32.dp)
                 .align(Alignment.TopEnd)
         )
     }
@@ -343,16 +349,16 @@ private fun VoltageMonitor(
             text = String.format("%.2f", voltage) + " V",
             modifier = Modifier.padding(16.dp),
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.tertiary
         )
         Icon(
-            painter = painterResource(id = R.drawable.ic_vital_signs),
+            imageVector = Icons.Rounded.ElectricBolt,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .padding(8.dp)
-                .size(24.dp)
+                .padding(12.dp)
+                .size(32.dp)
                 .align(Alignment.TopEnd)
         )
     }
@@ -360,29 +366,23 @@ private fun VoltageMonitor(
 
 @Composable
 private fun LineChart(
-    modelProducer: CartesianChartModelProducer,
-    modifier: Modifier,
-    minY: Double,
-    maxY: Double
+    modelProducer: CartesianChartModelProducer, modifier: Modifier, minY: Double, maxY: Double
 ) {
     val marker = rememberMarker()
     val lineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f)
     CartesianChartHost(
-        chart =
-            rememberCartesianChart(
-                rememberLineCartesianLayer(
-                    LineCartesianLayer.LineProvider.series(
-                        LineCartesianLayer.rememberLine(
-                            remember(lineColor) { LineCartesianLayer.LineFill.single(fill(lineColor)) }
-                        )
-                    ),
-                    rangeProvider = remember {
-                        CartesianLayerRangeProvider.fixed(minY = minY, maxY = maxY)
-                    },
-                    pointSpacing = 1.dp
-                ),
-                marker = marker,
+        chart = rememberCartesianChart(
+            rememberLineCartesianLayer(
+                LineCartesianLayer.LineProvider.series(
+                    LineCartesianLayer.rememberLine(
+                    remember(lineColor) { LineCartesianLayer.LineFill.single(fill(lineColor)) })),
+                rangeProvider = remember {
+                    CartesianLayerRangeProvider.fixed(minY = minY, maxY = maxY)
+                },
+                pointSpacing = 1.dp
             ),
+            marker = marker,
+        ),
         modelProducer = modelProducer,
         modifier = modifier,
         zoomState = rememberVicoZoomState(zoomEnabled = false),
@@ -395,6 +395,7 @@ private fun LineChart(
 fun BatteryOverallPreview() {
     BatteryOverall(
         batteryDataWrapper = BatteryDataWrapper(),
-        chartTrackingData = ChartRecord()
+        chartTrackingData = ChartRecord(),
+        temperatureUnit = TemperatureUnit.CELSIUS,
     )
 }

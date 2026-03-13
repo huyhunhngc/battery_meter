@@ -108,4 +108,6 @@
     <string name="widget_flexible_desc">Widget flexible avec pourcentage et informations de charge</string>
     <string name="rate">Évaluer</string>
     <string name="rate_on_google_play">Laissez une évaluation positive sur Google Play</string>
+    <string name="appearance">Appearance</string>
+    <string name="notification_settings_desc">Show battery status, Bluetooth paired devices</string>
 </resources>

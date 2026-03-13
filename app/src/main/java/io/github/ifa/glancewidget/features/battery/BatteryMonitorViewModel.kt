@@ -9,8 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ifa.glancewidget.domain.AppSettingsRepository
 import io.github.ifa.glancewidget.domain.BatteryStateRepository
 import io.github.ifa.glancewidget.domain.BatteryUseCase
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.glance.battery.BatteryWidgetReceiver.Companion.PINNED_WIDGET_DEFAULT_ID
 import io.github.ifa.glancewidget.model.AddWidgetParams
+import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.BonnedDeviceSettings
 import io.github.ifa.glancewidget.model.ChartRecord
 import io.github.ifa.glancewidget.model.wrapper.BatteryDataWrapper
@@ -21,6 +23,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,10 +35,15 @@ class BatteryMonitorViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     batteryUseCase: BatteryUseCase,
 ) : ViewModel() {
+    init {
+        autoTemperature()
+    }
+
     data class BatteryMonitorScreenUiState(
         val setupWidgetId: Int = INVALID_APPWIDGET_ID,
         val batteryOverall: BatteryDataWrapper,
         val chartTrackingData: ChartRecord,
+        val temperatureUnit: MyDevice.Temperature.TemperatureUnit? = null,
     ) {
         val measurementProgress = batteryOverall.chargeDisChargeCurrent.getMeasurementProgress()
     }
@@ -49,15 +60,23 @@ class BatteryMonitorViewModel @Inject constructor(
         initialValue = BatteryDataWrapper()
     )
 
+    private val _temperatureUnit = appSettingsRepository.get().map { it.temperatureUnit }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        null
+    )
+
     val uiState: StateFlow<BatteryMonitorScreenUiState> = buildUiState(
         _setupWidgetId,
         _batteryDataWrapper,
         _chartTrackingData,
-    ) { setupWidgetId, batteryDataWrapper, chartTrackingData ->
+        _temperatureUnit
+    ) { setupWidgetId, batteryDataWrapper, chartTrackingData, temperatureUnit ->
         BatteryMonitorScreenUiState(
             setupWidgetId = setupWidgetId,
             batteryOverall = batteryDataWrapper,
             chartTrackingData = chartTrackingData,
+            temperatureUnit = temperatureUnit
         )
     }
 
@@ -89,12 +108,23 @@ class BatteryMonitorViewModel @Inject constructor(
         }
     }
 
-    fun updateDeviceShowInWidget(
-        address: String,
-        showInWidget: Boolean
-    ) {
+
+    private fun autoTemperature() {
         viewModelScope.launch(Dispatchers.IO) {
-            appSettingsRepository.saveBondedDeviceSetting(address, showInWidget)
+            val appSettings = runCatching {
+                appSettingsRepository.getAppSettings()
+            }.getOrDefault(AppSettings())
+            if (appSettings.temperatureUnit == null) {
+                val countryCode = Locale.getDefault().country
+                val fahrenheitCountries = listOf("US", "BS", "BZ", "KY", "PW", "LR", "FM", "MH")
+                val isFahrenheit = fahrenheitCountries.contains(countryCode.uppercase())
+                val defaultUnit = if (isFahrenheit) {
+                    MyDevice.Temperature.TemperatureUnit.FAHRENHEIT
+                } else {
+                    MyDevice.Temperature.TemperatureUnit.CELSIUS
+                }
+                appSettingsRepository.saveTemperatureUnit(defaultUnit)
+            }
         }
     }
 }

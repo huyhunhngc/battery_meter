@@ -53,7 +53,9 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.features.settings.about.AboutScreen
 import io.github.ifa.glancewidget.features.main.MainScreenTab
 import io.github.ifa.glancewidget.features.settings.component.LanguageSetting
+import io.github.ifa.glancewidget.features.settings.component.TemperatureUnitSetting
 import io.github.ifa.glancewidget.model.AppSettings
+import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.ui.theme.topBarColors
 import io.github.ifa.glancewidget.utils.combinePadding
 import io.github.ifa.glancewidget.utils.isAppCompatLocaleDeprecated
@@ -127,6 +129,7 @@ fun SettingsSupportingPaneScreen(
                         }
                     },
                     onSelectLanguage = viewModel::setLanguage,
+                    onSelectTemperatureUnit = viewModel::setTemperatureUnit,
                 )
             }
         },
@@ -135,6 +138,7 @@ fun SettingsSupportingPaneScreen(
                 when (navigator.currentDestination?.contentKey) {
                     SettingsPane.About -> {
                         AboutScreen(
+                            contentPadding = contentPadding,
                             onNavigationIconClick = {
                                 scope.launch { navigator.navigateBack() }
                             },
@@ -161,9 +165,11 @@ fun SettingsSupportingPaneScreen(
                     SettingsPane.WidgetSettings -> {
                         WidgetSettingsScreen(
                             uiState = uiState,
+                            contentPadding = contentPadding,
                             onNavigationIconClick = {
                                 scope.launch { navigator.navigateBack() }
                             },
+                            onSetDeviceShowInWidgetChanged = viewModel::updateDeviceShowInWidget,
                             onSetNotificationEnabled = viewModel::onBatteryAlertChanged,
                             onSetShowPairedDevice = { enabled ->
                                 context.syncShowPairedDevicesToWidget(enabled)
@@ -200,7 +206,7 @@ internal fun SettingsScreenLayout(
     onOpenWidgetSettings: () -> Unit,
     onOpenThemeSettings: () -> Unit,
     onSelectLanguage: (AppSettings.Language) -> Unit,
-
+    onSelectTemperatureUnit: (MyDevice.Temperature.TemperatureUnit) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -239,6 +245,9 @@ internal fun SettingsScreenLayout(
                 }
             }
             item {
+                TemperatureUnitSetting(onSelectTemperatureUnit = onSelectTemperatureUnit, uiState = uiState)
+            }
+            item {
                 SegmentedListItem(
                     leadingContent = {
                         Icon(painterResource(R.drawable.ic_brightness_auto), contentDescription = null)
@@ -257,7 +266,7 @@ internal fun SettingsScreenLayout(
                     colors = listItemColor,
                     onClick = onOpenThemeSettings,
                 ) {
-                    Text(stringResource(id = R.string.theme))
+                    Text(stringResource(id = R.string.appearance))
                 }
             }
             item {
@@ -273,13 +282,13 @@ internal fun SettingsScreenLayout(
                         )
                     },
                     supportingContent = {
-                        Text(stringResource(id = R.string.notification_settings))
+                        Text(stringResource(id = R.string.notification_settings_desc))
                     },
                     shapes = ListItemDefaults.segmentedShapes(0, 1, singleItemListItemShapes),
                     colors = listItemColor,
                     onClick = onOpenWidgetSettings,
                 ) {
-                    Text(stringResource(id = R.string.widget_tab))
+                    Text(stringResource(id = R.string.notification_settings))
                 }
             }
             item {

@@ -16,6 +16,9 @@
     <string name="add_widget">Add Widget</string>
     <string name="show_transparent">Use Transparent Widget</string>
     <string name="temperature">Temperature</string>
+    <string name="temperature_unit" translatable="false">Temperature Unit</string>
+    <string name="celsius_unit" translatable="false">Celsius (°C)</string>
+    <string name="fahrenheit_unit" translatable="false">Fahrenheit (°F)</string>
     <string name="technology">Technology</string>
     <string name="health">Health</string>
     <string name="voltage">Voltage</string>
@@ -114,4 +117,6 @@
     <string name="widget_flexible_desc">Flexible widget with percentage and charging info</string>
     <string name="rate">Rate</string>
     <string name="rate_on_google_play">Leave a positive rating on Google Play</string>
+    <string name="appearance">Appearance</string>
+    <string name="notification_settings_desc">Show battery status, Bluetooth paired devices</string>
 </resources>

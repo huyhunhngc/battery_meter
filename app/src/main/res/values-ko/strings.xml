@@ -107,4 +107,6 @@
     <string name="widget_flexible_desc">퍼센트와 충전 정보를 표시하는 유연한 위젯</string>
     <string name="rate">평가</string>
     <string name="rate_on_google_play">Google Play에 긍정적인 평가를 남겨 주세요</string>
+    <string name="appearance">Appearance</string>
+    <string name="notification_settings_desc">Show battery status, Bluetooth paired devices</string>
 </resources>
