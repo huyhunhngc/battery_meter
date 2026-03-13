@@ -110,4 +110,9 @@
     <string name="rate_on_google_play">Google Play で高評価をお願いします</string>
     <string name="appearance">Appearance</string>
     <string name="notification_settings_desc">Show battery status, Bluetooth paired devices</string>
+    <string name="title">Title</string>
+    <string name="describe_the_issue_or_bug">Describe the issue or bug</string>
+    <string name="send">Send</string>
+    <string name="feedback_or_bug_report">Feedback or Bug Report</string>
+    <string name="inquiry">Inquiry</string>
 </resources>

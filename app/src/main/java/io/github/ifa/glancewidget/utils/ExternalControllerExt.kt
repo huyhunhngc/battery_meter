@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import io.github.ifa.glancewidget.BuildConfig
 import io.github.ifa.glancewidget.R
 
 fun Context.navigateLicencesScreen() {
@@ -35,6 +36,30 @@ fun Context.sendMail() {
     intent.putExtra(Intent.EXTRA_EMAIL, "huyhunhngc@gmail.com")
     intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
     startActivity(Intent.createChooser(intent, ""))
+}
+
+@SuppressLint("QueryPermissionsNeeded")
+fun Context.sendInquiryEmail(title: String, description: String) {
+    val appVersion = BuildConfig.VERSION_NAME
+    val osVersion = Build.VERSION.RELEASE
+    val deviceModel = Build.MODEL
+    val deviceManufacturer = Build.MANUFACTURER
+
+    val fullDescription = """
+        $description
+        
+        ----------------------
+        App Version: $appVersion
+        OS Version: Android $osVersion
+        Device: $deviceManufacturer $deviceModel
+    """.trimIndent()
+
+    val intent = Intent(Intent.ACTION_SENDTO)
+    intent.data = "mailto:".toUri()
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@ifateam.dev"))
+    intent.putExtra(Intent.EXTRA_SUBJECT, title)
+    intent.putExtra(Intent.EXTRA_TEXT, fullDescription)
+    startActivity(Intent.createChooser(intent, "Send Email"))
 }
 
 @Suppress("SwallowedException")

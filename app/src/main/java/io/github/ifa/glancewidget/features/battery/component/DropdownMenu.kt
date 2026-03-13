@@ -21,6 +21,7 @@ internal fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onForceReloadClick: () -> Unit,
+    onOpenInquiryScreen: () -> Unit,
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -50,7 +51,7 @@ internal fun DropdownMenu(
             ),
         )
         DropdownMenuItem(
-            onClick = {},
+            onClick = onOpenInquiryScreen,
             leadingIcon = {
                 Icon(
                     Icons.Rounded.BugReport, contentDescription = null
