@@ -11,13 +11,14 @@
   <img src="https://img.shields.io/badge/Hilt-DI-FF6F00?logo=android&logoColor=white" alt="Hilt"/>
   <img src="https://img.shields.io/badge/Clean_Architecture-Pattern-blueviolet" alt="Clean Architecture"/>
 </p>
-<a href="https://play.google.com/store/apps/details?id=io.github.ifa.glancewidget">
-  <p align="center">
-    <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
-      alt="Get it on Google Play" width="323" height="125" border="10"/>
-  </p>
-</a>
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=io.github.ifa.glancewidget">
+      <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+        alt="Get it on Google Play" width="194" height="75"/>
+  </a>
+</p>
 <img width="1920" height="1080" alt="demo-battery" src="https://github.com/user-attachments/assets/cea9569f-dda3-458f-9721-347e74d5adaa" />
+
 ---
 
 ## Overview
