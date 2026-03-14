@@ -27,6 +27,7 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.ui.component.AnimatedTextTopAppBar
 import io.github.ifa.glancewidget.ui.theme.topBarColors
+
 @Composable
 fun ThemeSettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
@@ -61,7 +62,8 @@ internal fun ThemeSettingsScreenLayout(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             AnimatedTextTopAppBar(
-                title = stringResource(id = R.string.theme), navigationIcon = {
+                title = stringResource(id = R.string.theme),
+                navigationIcon = {
                     IconButton(
                         onClick = { onNavigationIconClick() },
                         colors = IconButtonDefaults.iconButtonColors().copy(
@@ -73,7 +75,8 @@ internal fun ThemeSettingsScreenLayout(
                             contentDescription = "Back",
                         )
                     }
-                }, scrollBehavior = scrollBehavior
+                },
+                scrollBehavior = scrollBehavior,
             )
         },
         containerColor = topBarColors.containerColor,
@@ -81,7 +84,9 @@ internal fun ThemeSettingsScreenLayout(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = padding,
-            modifier = Modifier.fillMaxSize().padding(top = 16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp),
         ) {
             item {
                 ThemeSetting(

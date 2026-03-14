@@ -51,7 +51,7 @@ import io.github.ifa.glancewidget.features.paywall.component.PlanPremiumCard
 import io.github.ifa.glancewidget.features.paywall.component.PurchaseStateBottomSheet
 import io.github.ifa.glancewidget.ui.component.PagerIndicator
 import io.github.ifa.glancewidget.ui.theme.DynamicAnimatedTheme
-import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.AnimatedThemeDuration
+import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.ANIMATED_THEME_DURATION
 import io.github.ifa.glancewidget.ui.theme.LocalDynamicAnimatedTheme
 import io.github.ifa.glancewidget.utils.findActivity
 
@@ -205,6 +205,6 @@ fun animateColor(targetValue: Color): State<Color> {
     return animateColorAsState(
         targetValue = targetValue,
         label = "dynamic",
-        animationSpec = tween(AnimatedThemeDuration)
+        animationSpec = tween(ANIMATED_THEME_DURATION)
     )
 }

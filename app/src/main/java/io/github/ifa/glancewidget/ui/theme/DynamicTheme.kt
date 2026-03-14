@@ -14,19 +14,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import io.github.ifa.glancewidget.model.ThemeTypeColor
-import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.ThemeTimeout
+import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.THEME_TIMEOUT
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 object DynamicThemeConstants {
-    const val AnimatedThemeDuration = 4500
-    const val ThemeTimeout = 10000L
+    const val ANIMATED_THEME_DURATION = 4500
+    const val THEME_TIMEOUT = 10000L
 }
 
 @Suppress("CompositionLocalAllowlist")
 val LocalDynamicAnimatedTheme: ProvidableCompositionLocal<ColorScheme> =
     compositionLocalOf {
-        getLightScheme()
+        getLightScheme(ThemeTypeColor.System.code)
     }
 
 @Composable
@@ -38,9 +38,9 @@ fun DynamicAnimatedTheme(
     LifecycleResumeEffect(Unit) {
         scope.launch {
             while (true) {
-                delay(ThemeTimeout / 2)
+                delay(THEME_TIMEOUT / 2)
                 themeTypeColor = themeTypeColor.next
-                delay(ThemeTimeout / 2)
+                delay(THEME_TIMEOUT / 2)
             }
         }
         onPauseOrDispose { }

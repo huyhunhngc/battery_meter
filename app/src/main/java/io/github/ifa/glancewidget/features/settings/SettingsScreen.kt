@@ -4,7 +4,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.systemGestureExclusion
@@ -43,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -237,7 +240,7 @@ internal fun SettingsScreenLayout(
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             if (!isAppCompatLocaleDeprecated()) {
                 item {
@@ -262,13 +265,14 @@ internal fun SettingsScreenLayout(
                     supportingContent = {
                         Text(text = stringResource(R.string.theme_settings_desc))
                     },
-                    shapes = ListItemDefaults.segmentedShapes(0, 1, singleItemListItemShapes),
+                    shapes = ListItemDefaults.segmentedShapes(2, 3),
                     colors = listItemColor,
                     onClick = onOpenThemeSettings,
                 ) {
                     Text(stringResource(id = R.string.appearance))
                 }
             }
+            item { Spacer(modifier = Modifier.height(14.dp)) }
             item {
                 SegmentedListItem(
                     leadingContent = {
@@ -291,6 +295,7 @@ internal fun SettingsScreenLayout(
                     Text(stringResource(id = R.string.notification_settings))
                 }
             }
+            item { Spacer(modifier = Modifier.height(14.dp)) }
             item {
                 SegmentedListItem(
                     leadingContent = {
@@ -316,5 +321,22 @@ internal fun SettingsScreenLayout(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenLayoutPreview() {
+    MaterialTheme {
+        SettingsScreenLayout(
+            uiState = SettingsViewModel.SettingsScreenUiState(),
+            snackbarHostState = remember { SnackbarHostState() },
+            contentPadding = PaddingValues(),
+            onOpenAboutScreen = {},
+            onOpenWidgetSettings = {},
+            onOpenThemeSettings = {},
+            onSelectLanguage = {},
+            onSelectTemperatureUnit = {}
+        )
     }
 }

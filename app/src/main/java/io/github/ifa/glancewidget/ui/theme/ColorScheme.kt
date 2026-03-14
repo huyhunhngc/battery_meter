@@ -11,7 +11,7 @@ import com.google.android.material.color.utilities.SchemeTonalSpot
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 
 @SuppressLint("RestrictedApi")
-fun getLightScheme(argb: Int = ThemeTypeColor.entries.first().code): ColorScheme {
+fun getLightScheme(argb: Int): ColorScheme {
     val hct = Hct.fromInt(argb)
     val scheme = SchemeTonalSpot(hct, false, 0.0)
     val dynamicColors = MaterialDynamicColors()
@@ -62,7 +62,7 @@ fun getLightScheme(argb: Int = ThemeTypeColor.entries.first().code): ColorScheme
 
 @SuppressLint("RestrictedApi")
 fun getDarkScheme(
-    argb: Int = ThemeTypeColor.entries.first().code,
+    argb: Int,
     isAmoled: Boolean = false,
 ): ColorScheme {
     val hct = Hct.fromInt(argb)

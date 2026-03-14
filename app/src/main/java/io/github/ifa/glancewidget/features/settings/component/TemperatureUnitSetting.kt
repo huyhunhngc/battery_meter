@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -66,13 +66,13 @@ fun TemperatureUnitSetting(
         },
         trailingContent = {
             Icon(
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                imageVector = Icons.Rounded.KeyboardArrowDown,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
         },
         selected = openBottomSheet.value,
-        shapes = ListItemDefaults.segmentedShapes(0, 1, singleItemListItemShapes),
+        shapes = ListItemDefaults.segmentedShapes(1, 3),
         colors = listItemColor,
         onClick = {
             if (openBottomSheet.value) {
