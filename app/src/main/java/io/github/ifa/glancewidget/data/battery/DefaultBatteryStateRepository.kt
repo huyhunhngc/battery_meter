@@ -1,6 +1,7 @@
 package io.github.ifa.glancewidget.data.battery
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,10 +50,12 @@ class DefaultBatteryStateRepository(
         val extraBattery = try {
             context.getExtraBatteryInformation()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "extraBatteryFlow: ${e.message}")
             ExtraBatteryInfo()
         }
-        return batteryDataStore.getExtraBatteryInformation(extraBattery).chunked(2).conflate()
+        return batteryDataStore.getExtraBatteryInformation(extraBattery)
+            .chunked(2)
+            .conflate()
             .map { it.average() }
     }
 
@@ -60,7 +63,7 @@ class DefaultBatteryStateRepository(
         val extraBattery = try {
             context.getExtraBatteryInformation()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "extraBattery: ${e.message}")
             ExtraBatteryInfo()
         }
         return batteryDataStore.getExtraBatteryData(extraBattery)
@@ -82,7 +85,7 @@ class DefaultBatteryStateRepository(
         val extraBatteryInfo = try {
             context.getExtraBatteryInformation()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "saveExtraBatteryInformation: ${e.message}")
             ExtraBatteryInfo()
         }
         batteryDataStore.saveExtraBatteryInformation(extraBatteryInfo)
@@ -171,7 +174,8 @@ class DefaultBatteryStateRepository(
         if (!shouldSave) return
         batteryDataStore.saveChartRecord(
             ChartRecord(
-                temperatures = temperatures.takeLast(100), voltages = voltages.takeLast(100)
+                temperatures = temperatures.takeLast(100),
+                voltages = voltages.takeLast(100),
             )
         )
     }
@@ -185,8 +189,11 @@ class DefaultBatteryStateRepository(
         val newSettings =
             widgetSettings.copy(settings = widgetSettings.settings.toMutableMap().apply {
                 this[appWidgetId] = newWidgetSetting
-            })
+            },)
         batteryDataStore.saveWidgetSettings(newSettings)
+    }
+    companion object {
+        const val TAG = "DefaultBatteryStateRepository"
     }
 }
 

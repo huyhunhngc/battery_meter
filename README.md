@@ -1,10 +1,3 @@
-<a href="https://play.google.com/store/apps/details?id=io.github.ifa.glancewidget">
-  <p align="center">
-    <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
-      alt="Get it on Google Play" width="323" height="125" border="10"/>
-  </p>
-</a>
-
 <h1 align="center">Battery Meter & Widget</h1>
 
 <p align="center">
@@ -18,7 +11,13 @@
   <img src="https://img.shields.io/badge/Hilt-DI-FF6F00?logo=android&logoColor=white" alt="Hilt"/>
   <img src="https://img.shields.io/badge/Clean_Architecture-Pattern-blueviolet" alt="Clean Architecture"/>
 </p>
-
+<a href="https://play.google.com/store/apps/details?id=io.github.ifa.glancewidget">
+  <p align="center">
+    <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+      alt="Get it on Google Play" width="323" height="125" border="10"/>
+  </p>
+</a>
+<img width="1920" height="1080" alt="demo-battery" src="https://github.com/user-attachments/assets/cea9569f-dda3-458f-9721-347e74d5adaa" />
 ---
 
 ## Overview
@@ -26,7 +25,7 @@
 **Battery Meter & Widget** provides real-time battery level monitoring both in-app and on the Android home screen. The widget supports multiple display styles (circular, horizontal, full-width, grid) and updates frequently enough to always reflect the current device state.
 
 <p align="center">
-  <video src="https://github-production-user-asset-6210df.s3.amazonaws.com/46745326/368035607-3bea29fe-c25a-40fb-9bb5-9d6f16aebbb7.mp4" width="360"/>
+
 </p>
 
 ---
@@ -35,12 +34,13 @@
 
 | Feature | Description |
 |---|---|
-| **Real-time Battery Monitoring** | Displays live battery level, charging state, and health via a dynamic UI |
+| **Real-time Battery Monitoring** | Displays live battery level, charging state, and health via an adaptive, dynamic UI |
 | **Home Screen Widget** | Multiple widget layouts powered by Jetpack Glance — circle, horizontal, full-width, and grid |
+| **Comprehensive Device Health** | Dedicated health screen for detailed battery condition and temperature unit settings |
+| **Widget Customization & Themes** | Custom widget styling, plus AMOLED-friendly pure black in-app dark theme |
 | **App Usage Stats** | View per-app battery consumption with usage tracking |
-| **Widget Customization** | Customize widget appearance, colors, and display preferences from the settings screen |
-| **GoPro Integration** | Extended monitoring support for GoPro accessories |
-| **Background Updates** | Efficient WorkManager-based background refresh with broadcast receivers for instant events |
+| **Background Updates** | Seamless live updates via Foreground Service and Broadcast Receivers for instant widget refresh |
+| **Support & Bug Reporting** | Built-in inquiry screen for direct feedback and bug reporting |
 | **No Login Required** | Core features are fully available without an account |
 
 ---
@@ -75,19 +75,19 @@ app/src/main/java/io/github/ifa/glancewidget/
 ├── di/                         ← Hilt modules (common + feature-specific)
 ├── domain/                     ← Repository interfaces + UseCases + domain models
 ├── features/                   ← Feature screens (composable routes + ViewModels)
-│   ├── main/                   ← Main screen
+│   ├── main/                   ← Main screen with bottom navigation
 │   ├── appusage/               ← App usage stats screen
-│   ├── widget/                 ← Widget management screen
-│   ├── widgetsettings/         ← Widget customization screen
-│   ├── settings/               ← App settings screen
-│   ├── gopro/                  ← GoPro integration screen
-│   └── about/                  ← About screen
+│   ├── battery/                ← Battery detail screen
+│   ├── health/                 ← Battery health and temperature screen
+│   ├── paywall/                ← Premium features paywall screen
+│   ├── settings/               ← App settings, about, and inquiry screens
+│   └── widgetsettings/         ← Widget customization screen
 ├── glance/                     ← Glance widget composables (battery styles)
 │   └── battery/                ← BatteryWidget, circular, horizontal, grid variants
 ├── model/                      ← Shared data models
 ├── navigation/                 ← AppNavHost, type-safe routes, slide transitions
-├── service/                    ← Notification and foreground services
-├── ui/                         ← Design system (theme, components, CompositionLocals)
+├── service/                    ← Notification and foreground services (BatteryStatusService)
+├── ui/                         ← Design system (theme, pure black, components, CompositionLocals)
 └── utils/                      ← Extension functions, UiStateBuilder
 ```
 
