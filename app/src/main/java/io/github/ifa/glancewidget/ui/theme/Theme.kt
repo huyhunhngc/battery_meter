@@ -57,8 +57,9 @@ fun AppTheme(
 
     val colorScheme = rememberColorScheme(
         isDarkTheme = isDarkTheme,
-        themeColor = settings.themeColor,
-        isEnabledBlackDark = settings.isBlackDarkEnabled
+        isEnabledBlackDark = settings.isBlackDarkEnabled,
+        isDynamicColor = settings.themeColor == ThemeTypeColor.System,
+        seedColor = settings.themeColor.code,
     )
     val appColorScheme = rememberAppColorScheme(isDarkTheme, colorScheme)
     CompositionLocalProvider(
@@ -71,39 +72,6 @@ fun AppTheme(
             content = content
         )
     }
-}
-
-@Composable
-fun rememberColorScheme(
-    isDarkTheme: Boolean,
-    isEnabledBlackDark: Boolean,
-    themeColor: ThemeTypeColor,
-): ColorScheme {
-    val context = LocalContext.current
-    val colorScheme = if (themeColor == ThemeTypeColor.System && isSupportedDynamicColor()) {
-        if (isDarkTheme) {
-            val dynamicDark = dynamicDarkColorScheme(context)
-            dynamicDark.copy(
-                onBackground = if (isEnabledBlackDark) Color.White else dynamicDark.onBackground,
-                surface = if (isEnabledBlackDark) Color.Black else dynamicDark.surface,
-                onSurface = if (isEnabledBlackDark) Color.White else dynamicDark.onSurface,
-                surfaceDim = if (isEnabledBlackDark) Color.Black else dynamicDark.surfaceDim,
-                surfaceContainer = if (isEnabledBlackDark) Color.Black else dynamicDark.surfaceContainer,
-                surfaceContainerLow = if (isEnabledBlackDark) Color.Black else dynamicDark.surfaceContainerLow,
-                surfaceContainerLowest = if (isEnabledBlackDark) Color.Black else dynamicDark.surfaceContainerLowest
-            )
-        } else {
-            dynamicLightColorScheme(context)
-        }
-    } else {
-        if (isDarkTheme) {
-            getDarkScheme(themeColor.code, isEnabledBlackDark)
-        } else {
-            getLightScheme(themeColor.code)
-        }
-    }
-
-    return remember(isDarkTheme, themeColor, isEnabledBlackDark) { colorScheme }
 }
 
 @Composable

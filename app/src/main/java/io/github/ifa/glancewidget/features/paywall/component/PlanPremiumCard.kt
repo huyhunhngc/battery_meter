@@ -39,7 +39,7 @@ import io.github.ifa.glancewidget.features.paywall.LocalPremiumPlan
 import io.github.ifa.glancewidget.features.paywall.PremiumPlanData
 import io.github.ifa.glancewidget.features.paywall.animateColor
 import io.github.ifa.glancewidget.ui.component.TextWithIcon
-import io.github.ifa.glancewidget.ui.theme.LocalDynamicAnimatedTheme
+import io.github.ifa.glancewidget.utils.LocalDynamicAnimatedTheme
 import kotlin.math.absoluteValue
 
 @Composable

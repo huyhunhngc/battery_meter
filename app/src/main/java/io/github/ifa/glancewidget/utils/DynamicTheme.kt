@@ -1,4 +1,4 @@
-package io.github.ifa.glancewidget.ui.theme
+package io.github.ifa.glancewidget.utils
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -14,7 +14,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import io.github.ifa.glancewidget.model.ThemeTypeColor
-import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.THEME_TIMEOUT
+import io.github.ifa.glancewidget.ui.theme.LocalAppColorSchemes
+import io.github.ifa.glancewidget.ui.theme.getLightScheme
+import io.github.ifa.glancewidget.utils.DynamicThemeConstants.THEME_TIMEOUT
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

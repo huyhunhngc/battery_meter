@@ -50,9 +50,9 @@ import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.features.paywall.component.PlanPremiumCard
 import io.github.ifa.glancewidget.features.paywall.component.PurchaseStateBottomSheet
 import io.github.ifa.glancewidget.ui.component.PagerIndicator
-import io.github.ifa.glancewidget.ui.theme.DynamicAnimatedTheme
-import io.github.ifa.glancewidget.ui.theme.DynamicThemeConstants.ANIMATED_THEME_DURATION
-import io.github.ifa.glancewidget.ui.theme.LocalDynamicAnimatedTheme
+import io.github.ifa.glancewidget.utils.DynamicAnimatedTheme
+import io.github.ifa.glancewidget.utils.DynamicThemeConstants.ANIMATED_THEME_DURATION
+import io.github.ifa.glancewidget.utils.LocalDynamicAnimatedTheme
 import io.github.ifa.glancewidget.utils.findActivity
 
 const val paywallPremiumScreenRoute = "go_pro_screen_route"
