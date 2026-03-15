@@ -17,7 +17,7 @@
         alt="Get it on Google Play" width="194" height="75"/>
   </a>
 </p>
-<img width="1920" height="1080" alt="demo-battery" src="https://github.com/user-attachments/assets/cea9569f-dda3-458f-9721-347e74d5adaa" />
+<img width="1920" height="1080" alt="demo-battery" src="https://cdn.ifateam.dev/demo-battery.png" />
 
 ---
 

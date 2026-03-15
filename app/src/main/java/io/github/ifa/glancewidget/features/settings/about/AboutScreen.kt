@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Mail
@@ -50,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,6 +79,7 @@ import io.github.ifa.glancewidget.utils.singleItemListItemShapes
 fun AboutScreen(
     viewModel: AboutViewModel = hiltViewModel(),
     contentPadding: PaddingValues,
+    showNavigationIcon: Boolean = true,
     onNavigationIconClick: () -> Unit,
     onExternalUrlClick: Context.(String) -> Unit
 ) {
@@ -87,6 +88,7 @@ fun AboutScreen(
     AboutScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        showNavigationIcon = showNavigationIcon,
         contentPadding = contentPadding,
         onNavigationIconClick = onNavigationIconClick,
         onExternalUrlClick = onExternalUrlClick
@@ -99,6 +101,7 @@ internal fun AboutScreen(
     uiState: AboutViewModel.AboutScreenUiState,
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
+    showNavigationIcon: Boolean = true,
     onNavigationIconClick: () -> Unit,
     onExternalUrlClick: Context.(String) -> Unit = {},
 ) {
@@ -114,23 +117,27 @@ internal fun AboutScreen(
         context.navigateUrl(STORE_APP_URL)
     }
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
-        AnimatedTextTopAppBar(
-            title = stringResource(id = R.string.about_tab), navigationIcon = {
-                IconButton(
-                    onClick = { onNavigationIconClick() },
-                    colors = IconButtonDefaults.iconButtonColors().copy(
-                        containerColor = MaterialTheme.colorScheme.background
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBackIosNew,
-                        contentDescription = "Back",
-                    )
-                }
-            }, scrollBehavior = scrollBehavior
-        )
-    }, containerColor = topBarColors.containerColor
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            AnimatedTextTopAppBar(
+                title = stringResource(id = R.string.about_tab),
+                navigationIcon = {
+                    if (showNavigationIcon) IconButton(
+                        onClick = { onNavigationIconClick() },
+                        colors = IconButtonDefaults.iconButtonColors().copy(
+                            containerColor = MaterialTheme.colorScheme.background
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = "Back",
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+        containerColor = topBarColors.containerColor,
     ) { padding ->
         val insets = combinePadding(padding, contentPadding)
         LazyColumn(
@@ -139,7 +146,8 @@ internal fun AboutScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 16.dp)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
                 Column(

@@ -1,11 +1,7 @@
 package io.github.ifa.glancewidget.features.settings
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -42,6 +38,7 @@ import io.github.ifa.glancewidget.utils.combinePadding
 fun WidgetSettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
     contentPadding: PaddingValues,
+    showNavigationIcon: Boolean,
     onSetDeviceShowInWidgetChanged: (String, Boolean) -> Unit,
     onNavigationIconClick: () -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
@@ -52,6 +49,7 @@ fun WidgetSettingsScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         contentPadding = contentPadding,
+        showNavigationIcon = showNavigationIcon,
         onSetDeviceShowInWidgetChanged = onSetDeviceShowInWidgetChanged,
         onNavigationIconClick = onNavigationIconClick,
         onSetNotificationEnabled = onSetNotificationEnabled,
@@ -65,6 +63,7 @@ internal fun WidgetSettingsScreenLayout(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
+    showNavigationIcon: Boolean,
     onSetDeviceShowInWidgetChanged: (String, Boolean) -> Unit,
     onSetNotificationEnabled: (Boolean) -> Unit,
     onSetShowPairedDevice: (Boolean) -> Unit,
@@ -75,8 +74,9 @@ internal fun WidgetSettingsScreenLayout(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             AnimatedTextTopAppBar(
-                title = stringResource(id = R.string.widget_tab), navigationIcon = {
-                    IconButton(
+                title = stringResource(id = R.string.widget_tab),
+                navigationIcon = {
+                    if (showNavigationIcon) IconButton(
                         onClick = { onNavigationIconClick() },
                         colors = IconButtonDefaults.iconButtonColors().copy(
                             containerColor = MaterialTheme.colorScheme.background
@@ -96,7 +96,8 @@ internal fun WidgetSettingsScreenLayout(
         val insets = combinePadding(padding, contentPadding)
         LazyColumn(
             contentPadding = insets,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(top = 16.dp)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
@@ -133,9 +134,7 @@ private fun LazyListScope.connectedDevices(
             )
         }
         items(
-            items = batteryConnectedDevices,
-            key = { device -> device.address }
-        ) { device ->
+            items = batteryConnectedDevices, key = { device -> device.address }) { device ->
             val showInWidget = batteryDeviceSettings.settings[device.address]?.showInWidget ?: true
             BonedDeviceItem(
                 device = device,

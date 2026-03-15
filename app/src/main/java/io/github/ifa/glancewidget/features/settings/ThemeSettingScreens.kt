@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
@@ -31,6 +32,7 @@ import io.github.ifa.glancewidget.ui.theme.topBarColors
 @Composable
 fun ThemeSettingsScreen(
     uiState: SettingsViewModel.SettingsScreenUiState,
+    showNavigationIcon: Boolean,
     onNavigationIconClick: () -> Unit,
     onSelectTheme: (ThemeType) -> Unit,
     onSelectThemeColor: (ThemeTypeColor) -> Unit,
@@ -40,6 +42,7 @@ fun ThemeSettingsScreen(
     ThemeSettingsScreenLayout(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
+        showNavigationIcon = showNavigationIcon,
         onNavigationIconClick = onNavigationIconClick,
         onSelectTheme = onSelectTheme,
         onSelectThemeColor = onSelectThemeColor,
@@ -52,6 +55,7 @@ fun ThemeSettingsScreen(
 internal fun ThemeSettingsScreenLayout(
     uiState: SettingsViewModel.SettingsScreenUiState,
     snackbarHostState: SnackbarHostState,
+    showNavigationIcon: Boolean,
     onSelectTheme: (ThemeType) -> Unit,
     onSelectThemeColor: (ThemeTypeColor) -> Unit,
     onEnableBlackDark: (Boolean) -> Unit,
@@ -64,7 +68,7 @@ internal fun ThemeSettingsScreenLayout(
             AnimatedTextTopAppBar(
                 title = stringResource(id = R.string.theme),
                 navigationIcon = {
-                    IconButton(
+                    if (showNavigationIcon) IconButton(
                         onClick = { onNavigationIconClick() },
                         colors = IconButtonDefaults.iconButtonColors().copy(
                             containerColor = MaterialTheme.colorScheme.background
@@ -86,7 +90,8 @@ internal fun ThemeSettingsScreenLayout(
             contentPadding = padding,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
                 ThemeSetting(
