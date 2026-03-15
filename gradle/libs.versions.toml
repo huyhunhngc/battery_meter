@@ -91,3 +91,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 ksp-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 oss-licenses-plugin = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
+android-library = { id = "com.android.library", version.ref = "agp" }

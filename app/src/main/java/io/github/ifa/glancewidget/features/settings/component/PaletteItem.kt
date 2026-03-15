@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ifa.glancewidget.R
 import io.github.ifa.glancewidget.model.ThemeTypeColor
-import io.github.ifa.glancewidget.ui.theme.getLightScheme
+import com.dotsdev.material3color.getLightScheme
 
 @Composable
 fun SelectablePaletteItem(

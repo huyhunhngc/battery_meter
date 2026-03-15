@@ -117,6 +117,7 @@ dependencies {
 
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
+    implementation(project(":material3color"))
     implementation(libs.accompanist.permission)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.browser)

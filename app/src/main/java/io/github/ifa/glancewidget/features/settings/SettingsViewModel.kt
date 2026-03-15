@@ -12,7 +12,7 @@ import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
 import io.github.ifa.glancewidget.model.MyDevice
 import io.github.ifa.glancewidget.utils.buildUiState
-import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
+import com.dotsdev.material3color.isSupportedDynamicColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

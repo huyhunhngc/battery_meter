@@ -1,6 +1,6 @@
 package io.github.ifa.glancewidget.model
 
-import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
+import com.dotsdev.material3color.isSupportedDynamicColor
 
 enum class ThemeType {
     FOLLOW_SYSTEM,

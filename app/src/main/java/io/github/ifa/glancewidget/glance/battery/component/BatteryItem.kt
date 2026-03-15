@@ -25,6 +25,7 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.preview.ExperimentalGlancePreviewApi
 import androidx.glance.preview.Preview
+import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -100,15 +101,28 @@ fun BatteryItem(
             )
 
             if (percent > 0) {
-                Text(
-                    text = "$percent%",
-                    style = TextStyle(
-                        color = GlanceTheme.colors.primary,
-                        fontSize = fontSizeScale.sp
-                    ),
-                    fontWeight = FontWeight.Bold,
-                    modifier = GlanceModifier.padding(end = 4.dp)
-                )
+                Row {
+                    Text(
+                        text = percent.toString(),
+                        style = TextStyle(
+                            color = GlanceTheme.colors.primary,
+                            fontSize = fontSizeScale.sp,
+                            fontFamily = FontFamily("monospace")
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        modifier = GlanceModifier.padding(end = 1.dp)
+                    )
+                    Text(
+                        text = "%",
+                        style = TextStyle(
+                            color = GlanceTheme.colors.primary,
+                            fontSize = (fontSizeScale * 0.8).sp
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        modifier = GlanceModifier.padding(end = 4.dp)
+                    )
+                }
+
             }
             if (deviceType != DeviceType.PHONE) {
                 Image(

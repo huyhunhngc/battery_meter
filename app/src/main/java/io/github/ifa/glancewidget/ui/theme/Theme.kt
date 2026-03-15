@@ -24,7 +24,10 @@ import io.github.ifa.glancewidget.domain.localAppSettingsRepository
 import io.github.ifa.glancewidget.model.AppSettings
 import io.github.ifa.glancewidget.model.ThemeType
 import io.github.ifa.glancewidget.model.ThemeTypeColor
-import io.github.ifa.glancewidget.utils.isSupportedDynamicColor
+import com.dotsdev.material3color.isSupportedDynamicColor
+import com.dotsdev.material3color.getDarkScheme
+import com.dotsdev.material3color.getLightScheme
+import com.dotsdev.material3color.rememberColorScheme
 import kotlin.text.get
 
 data class AppColorScheme(

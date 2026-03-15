@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "GlanceWidget"
 include(":app")
- 
+include(":material3color")

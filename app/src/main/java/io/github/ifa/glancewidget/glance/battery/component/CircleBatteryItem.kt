@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PorterDuff
 import android.graphics.RectF
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -29,11 +30,14 @@ import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import io.github.ifa.glancewidget.MainActivity
+import io.github.ifa.glancewidget.glance.battery.utils.GlanceCanvas
 import io.github.ifa.glancewidget.model.DeviceType
+import io.github.ifa.glancewidget.ui.theme.googleFlex400
 import io.github.ifa.glancewidget.utils.Constants.ANDROID_SETTING_PACKAGE
 import io.github.ifa.glancewidget.utils.Constants.BLUETOOTH_SETTING_CLASS
 
@@ -71,46 +75,60 @@ fun CircleBatteryItem(
     ) {
         GlanceCanvas(modifier = GlanceModifier.fillMaxSize()) {
             val rectF = RectF(x - radius, y - radius + 2f, x + radius, y + radius)
-            val spaceStartAngle = if (isCharging) 40f else 20f
-            val spaceSweepAngle = if (isCharging) 40f else 0f
-            drawCircle(x, y, radius + 32f, Paint().apply {
-                color = widgetBackgroundColor.getColor(context).toArgb()
-            })
-            drawArc(rectF, 250f + spaceStartAngle, 360f - spaceSweepAngle, false, Paint().apply {
-                color = backgroundColor.getColor(context).toArgb()
-                style = Paint.Style.STROKE
-                strokeWidth = 72f
-                strokeCap = Paint.Cap.ROUND
-            })
+            val spaceStartAngle = if (isCharging) 48f else 24f
+            val spaceSweepAngle = if (isCharging) 48f else 0f
+            val totalSweep = 360f - spaceSweepAngle
+
             drawArc(
                 rectF,
-                250f + spaceStartAngle,
-                minOf(percent.toFloat() / 100 * 360f, 360f - spaceSweepAngle),
+                246f + spaceStartAngle,
+                totalSweep,
+                false,
+                Paint().apply {
+                    color = backgroundColor.getColor(context).toArgb()
+                    style = Paint.Style.STROKE
+                    isAntiAlias = true
+                    strokeWidth = 60f
+                    strokeCap = Paint.Cap.ROUND
+                }
+            )
+
+            drawArc(
+                rectF,
+                246f + spaceStartAngle,
+                minOf(percent / 100f * totalSweep, totalSweep),
                 false,
                 Paint().apply {
                     color = foregroundColor.getColor(context).toArgb()
                     style = Paint.Style.STROKE
-                    strokeWidth = 72f
+                    isAntiAlias = true
+                    strokeWidth = 60f
                     strokeCap = Paint.Cap.ROUND
                 }
             )
+
             if (isCharging) {
                 val path = Path()
-                val xAxis = 8f
-                val yAxis = 3 * xAxis
-                path.moveTo(x + 2 * xAxis, y - radius - 2f * yAxis - 8f)
-                path.lineTo(x - 4 * xAxis, y - radius + yAxis - 8f)
-                path.lineTo(x - xAxis, y - radius + yAxis - 8f)
-                path.lineTo(x - 2 * xAxis, y - radius + 3f * yAxis - 8f)
-                path.lineTo(x + 4 * xAxis, y - radius - 8f)
-                path.lineTo(x + xAxis, y - radius - 8f)
+                val scale = 14f
+                val cx = x
+                val cy = y - radius + 8
+
+                path.moveTo(cx + 1.5f * scale, cy - 3f * scale)
+                path.lineTo(cx - 2.5f * scale, cy + 0.5f * scale)
+                path.lineTo(cx - 0.5f * scale, cy + 0.5f * scale)
+                path.lineTo(cx - 1.5f * scale, cy + 3f * scale)
+                path.lineTo(cx + 2.5f * scale, cy - 0.5f * scale)
+                path.lineTo(cx + 0.5f * scale, cy - 0.5f * scale)
                 path.close()
-                drawPath(
-                    path,
-                    Paint().apply {
-                        color = onBackgroundColor.getColor(context).toArgb()
-                    }
-                )
+
+                val paint = Paint().apply {
+                    color = onBackgroundColor.getColor(context).toArgb()
+                    isAntiAlias = true
+                    style = Paint.Style.FILL
+                    pathEffect = android.graphics.CornerPathEffect(6f)
+                }
+
+                drawPath(path, paint)
             }
         }
 
@@ -120,18 +138,24 @@ fun CircleBatteryItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val scale = if (percent > 0) scaleTextSize else scaleTextSize * 1.4f
+            val textSize = if (deviceType == DeviceType.PHONE) 16 else 10
             if (percent > 0) {
                 Text(
                     text = percent.toString(),
                     style = TextStyle(
-                        color = if (transparency == 0f) GlanceTheme.colors.inversePrimary else GlanceTheme.colors.primary,
-                        fontSize = (9 * scaleTextSize).sp
+                        color = if (transparency == 0f) {
+                            GlanceTheme.colors.inversePrimary
+                        } else {
+                            GlanceTheme.colors.primary
+                        },
+                        fontSize = (textSize * scaleTextSize).sp,
+                        fontFamily = FontFamily("monospace")
                     ),
                     fontWeight = FontWeight.Bold,
                     modifier = GlanceModifier.padding(bottom = 2.dp)
                 )
             }
-            Image(
+            if (deviceType != DeviceType.PHONE) Image(
                 modifier = GlanceModifier.size((16 * scale).dp),
                 provider = ImageProvider(deviceType.icon),
                 contentDescription = null,
@@ -141,22 +165,3 @@ fun CircleBatteryItem(
 
     }
 }
-
-@Composable
-private fun GlanceCanvas(
-    modifier: GlanceModifier = GlanceModifier,
-    nativeCanvas: CanvasInGlance.() -> Unit
-) {
-    val bitmap = createBitmap(600, 600)
-    val canvas = CanvasInGlance(bitmap, 300f, 300f, 240f)
-    nativeCanvas(canvas)
-    Image(
-        modifier = modifier,
-        provider = ImageProvider(bitmap),
-        contentScale = ContentScale.Fit,
-        contentDescription = null,
-    )
-}
-
-class CanvasInGlance(bitmap: Bitmap, val x: Float, val y: Float, val radius: Float) :
-    Canvas(bitmap)
